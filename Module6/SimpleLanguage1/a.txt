@@ -1,0 +1,10 @@
+begin
+  b := 2;
+  a := 3;
+  a := b;
+  cycle 3
+  begin
+    a := c;
+    c := 1
+  end
+end

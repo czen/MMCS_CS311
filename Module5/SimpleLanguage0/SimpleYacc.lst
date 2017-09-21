@@ -1,0 +1,64 @@
+
+// ==========================================================================
+//  GPPG error listing for yacc source file <SimpleYacc.y>
+// ==========================================================================
+//  Version:  1.3.6
+//  Machine:  SSM
+//  DateTime: 17.08.2014 10:25:15
+//  UserName: Станислав
+// ==========================================================================
+
+
+%{
+// Ýòè îáúÿâëåíèÿ äîáàâëÿþòñÿ â êëàññ GPPGParser, ïðåäñòàâëÿþùèé ñîáîé ïàðñåð, ãåíåðèðóåìûé ñèñòåìîé gppg
+    public Parser(AbstractScanner<int, LexLocation> scanner) : base(scanner) { }
+%}
+
+%output = SimpleYacc.cs
+
+%using System.IO;
+
+%namespace SimpleParser
+
+%token BEGIN END CYCLE INUM RNUM ID ASSIGN SEMICOLON  
+
+%%
+// Error: NonTerminal symbol "st" has no productions
+// Warning: Terminating st fixes the following size-2 NonTerminal set
+   // {cycle, st}
+// Error: There are 2 non-terminating NonTerminal Symbols
+   //  {cycle, st}
+// ------------------------------------------------------------------
+
+progr   : block
+		;
+
+stlist	: statement 
+		| stlist SEMICOLON statement 
+		;
+
+statement: assign
+		| block  
+		| cycle  
+		;
+
+ident 	: ID 
+		;
+	
+assign 	: ident ASSIGN expr 
+		;
+
+expr	: ident  
+		| INUM 
+		;
+
+block	: BEGIN stlist END 
+		;
+
+cycle	: CYCLE expr st 
+		;
+	
+%%
+
+// ==========================================================================
+

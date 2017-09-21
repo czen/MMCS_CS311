@@ -1,0 +1,11 @@
+begin
+  var a,b,d;
+  b := 2;
+  a := 3;
+  a := a * 4 + b;;;
+  cycle 3
+  begin
+    a := a + 1;
+    write(a)
+  end
+end
