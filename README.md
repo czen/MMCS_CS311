@@ -1,5 +1,3 @@
-\_\_NOTOC\_\_
-
 ### Учебная карта дисциплины
 
 [См. страничку в Moodle](http://edu.mmcs.sfedu.ru/course/view.php?id=194)
