@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using SimpleScanner;
 using SimpleParser;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace SimpleCompiler
 {
@@ -11,6 +13,7 @@ namespace SimpleCompiler
         public static void Main()
         {
             string FileName = @"..\..\a.txt";
+            string OutputFileName = @"..\..\a.json";
             try
             {
                 string Text = File.ReadAllText(FileName);
@@ -26,8 +29,11 @@ namespace SimpleCompiler
                 else
                 {
                     Console.WriteLine("Синтаксическое дерево построено");
-                    //foreach (var st in parser.root.StList)
-                    //Console.WriteLine(st);
+                    JsonSerializerSettings jsonSettings = new JsonSerializerSettings();
+                    jsonSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+                    jsonSettings.TypeNameHandling = TypeNameHandling.All;
+                    string output = JsonConvert.SerializeObject(parser.root, jsonSettings);
+                    File.WriteAllText(OutputFileName, output);
                 }
             }
             catch (FileNotFoundException)
