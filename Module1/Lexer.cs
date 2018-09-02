@@ -83,7 +83,7 @@ public class IntLexer : Lexer
             Error();
         }
 
-        System.Console.WriteLine("Interger is recognized");
+        System.Console.WriteLine("Integer is recognized");
 
     }
 }
