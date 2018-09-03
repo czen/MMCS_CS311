@@ -95,6 +95,43 @@ public class IntLexer : Lexer
     }
 }
 
+public class IdLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public int result;
+    protected int sign;
+    public IdLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override bool Parse()
+    {
+		
+        NextCh();
+        if (char.IsLetter(currentCh))
+			NextCh();
+		else 
+			return false;
+        
+		if (currentCharValue == -1) 
+		 	return true;
+		
+		while(char.IsLetterOrDigit(currentCh))
+			NextCh();
+		   
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            
+            return false;
+        }
+
+        return true;
+    }
+}
+
 
 public class Program
 {
@@ -107,5 +144,11 @@ public class Program
         	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
 		}
         
+		System.Console.WriteLine("Testing IDLexer:");
+		List<string> test_id = new List<string> {"a","a1ad","a___","1",""," "};
+        foreach (var str in test_id) {
+			IdLexer L = new IdLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
 	}    
 }
