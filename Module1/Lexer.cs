@@ -154,8 +154,6 @@ public class IdLexer : Lexer
 {
 
     protected System.Text.StringBuilder intString;
-    public int result;
-    protected int sign;
     public IdLexer(string input)
         : base(input)
     {
@@ -191,8 +189,6 @@ public class LetterDigitLexer : Lexer
 {
 
     protected System.Text.StringBuilder intString;
-    public int result;
-    protected int sign;
     public LetterDigitLexer(string input)
         : base(input)
     {
@@ -217,6 +213,48 @@ public class LetterDigitLexer : Lexer
 			}else 
 				return false;
 		}
+		   
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            
+            return false;
+        }
+
+        return true;
+    }
+}
+
+
+public class ListLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public int result;
+    protected int sign;
+	public List<char> chrs;
+    public ListLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+		chrs = new List<char>();
+    }
+
+    public override bool Parse()
+    {
+		bool was_letter = false;
+        NextCh();
+		if(!char.IsLetter(currentCh))
+			return false;
+		while(char.IsLetter(currentCh) || currentCh == ','|| currentCh ==';'){
+			if(char.IsLetter(currentCh) != was_letter){
+				if(char.IsLetter(currentCh))
+					chrs.Add(currentCh);
+				was_letter = !was_letter;
+			}
+			else return false;
+			NextCh();
+		}
+	    
 		   
         if (currentCharValue != -1) // StringReader вернет -1 в конце строки
         {
@@ -262,6 +300,14 @@ public class Program
 			LetterDigitLexer L = new LetterDigitLexer(str);
         	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
 		}
+		
+		System.Console.WriteLine("Testing ListLexer:");
+		List<string> test_ListLexer = new List<string> {"a","a,","a;b","a,b;","ab","",","," "};
+        foreach (var str in test_ListLexer) {
+			ListLexer L = new ListLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1} : {2}",str,L.Parse(),string.Join(",", L.chrs)));
+		}
+		
 		
 	}    
 }
