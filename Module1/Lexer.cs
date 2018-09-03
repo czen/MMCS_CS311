@@ -76,7 +76,11 @@ public class IntLexer : Lexer
         else if (char.IsDigit(currentCh)) {
 			sign = 1;
 			result  = (int)(currentCh - '0');
+			NextCh();
 		}
+		else
+			return false;
+		
         while (char.IsDigit(currentCh))
         {
             result = result*10 + sign * (int)(currentCh - '0');
@@ -91,6 +95,57 @@ public class IntLexer : Lexer
         }
 
         //System.Console.WriteLine("Integer is recognized");
+        return true;
+    }
+}
+
+public class NoZeroIntLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public int result;
+    protected int sign;
+    public NoZeroIntLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override bool Parse()
+    {
+		result = 0;
+		sign = 0;
+        NextCh(); // at first char
+        if (currentCh == '+' || currentCh == '-' )
+        {
+            sign = currentCh == '-' ? -1 : 1;
+            NextCh();
+			if(char.IsDigit(currentCh) && currentCh != '0')
+			 result = sign * (int)(currentCh - '0');
+			else 
+				return false;
+        } 
+        else if (char.IsDigit(currentCh) && currentCh != '0' ) {
+			sign = 1;
+			result  = (int)(currentCh - '0');
+			NextCh();
+		}
+		else
+			return false;
+        while (char.IsDigit(currentCh))
+        {
+            result = result*10 + sign * (int)(currentCh - '0');
+            NextCh();
+        }
+
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            
+            return false;
+        }
+
+       
         return true;
     }
 }
@@ -148,6 +203,13 @@ public class Program
 		List<string> test_id = new List<string> {"a","a1ad","a___","1",""," "};
         foreach (var str in test_id) {
 			IdLexer L = new IdLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
+		
+		System.Console.WriteLine("Testing NoZeroIntLexer:");
+		List<string> test_nozeroint = new List<string> {"1","123","+123","-123","+0","0","-0"," "};
+        foreach (var str in test_nozeroint) {
+			NoZeroIntLexer L = new NoZeroIntLexer(str);
         	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
 		}
 	}    
