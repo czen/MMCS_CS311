@@ -38,9 +38,9 @@ public class Lexer
         this.position += 1;
     }
 
-    public virtual void Parse()
+    public virtual bool Parse()
     {
-
+        return false;
     }
 }
 
@@ -48,23 +48,27 @@ public class IntLexer : Lexer
 {
 
     protected System.Text.StringBuilder intString;
-
+    public int result;
+    protected int sign;
     public IntLexer(string input)
         : base(input)
     {
         intString = new System.Text.StringBuilder();
     }
 
-    public override void Parse()
+    public override bool Parse()
     {
         NextCh();
-        if (currentCh == '+' || currentCh == '-')
+        if (currentCh == '+' || char.IsDigit(currentCh))
         {
+            sign = 1;
+            result = char.IsDigit(currentCh) ? (int)(currentCh - '0'): 0;
             NextCh();
-        }
-
-        if (char.IsDigit(currentCh))
+        } 
+        else if (currentCh == '-' || currentCharValue != -1)
         {
+            sign = -1;
+            result = 0;
             NextCh();
         }
         else
@@ -72,8 +76,11 @@ public class IntLexer : Lexer
             Error();
         }
 
+
+
         while (char.IsDigit(currentCh))
         {
+            result = result*10 + sign * (int)(currentCh - '0');
             NextCh();
         }
 
@@ -81,10 +88,11 @@ public class IntLexer : Lexer
         if (currentCharValue != -1) // StringReader вернет -1 в конце строки
         {
             Error();
+            return false;
         }
 
         System.Console.WriteLine("Integer is recognized");
-
+        return true;
     }
 }
 
@@ -93,11 +101,11 @@ public class Program
 {
     public static void Main()
     {
-        string input = "154216";
-        Lexer L = new IntLexer(input);
+        string input = "-";
+        IntLexer L = new IntLexer(input);
         try
         {
-            L.Parse();
+            System.Console.WriteLine(L.Parse()); 
         }
         catch (LexerException e)
         {
