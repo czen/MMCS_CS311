@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 public class LexerException : System.Exception
 {
     public LexerException(string msg)
@@ -39,9 +40,11 @@ public class Lexer
     }
 
     public virtual bool Parse()
-    {
+    {	
+		
         return false;
     }
+	
 }
 
 public class IntLexer : Lexer
@@ -58,26 +61,22 @@ public class IntLexer : Lexer
 
     public override bool Parse()
     {
-        NextCh();
-        if (currentCh == '+' || char.IsDigit(currentCh))
+		result = 0;
+		sign = 0;
+        NextCh(); // at first char
+        if (currentCh == '+' || currentCh == '-' )
         {
-            sign = 1;
-            result = char.IsDigit(currentCh) ? (int)(currentCh - '0'): 0;
+            sign = currentCh == '-' ? -1 : 1;
             NextCh();
+			if(char.IsDigit(currentCh))
+			 result = sign * (int)(currentCh - '0');
+			else 
+				return false;
         } 
-        else if (currentCh == '-' || currentCharValue != -1)
-        {
-            sign = -1;
-            result = 0;
-            NextCh();
-        }
-        else
-        {
-            Error();
-        }
-
-
-
+        else if (char.IsDigit(currentCh)) {
+			sign = 1;
+			result  = (int)(currentCh - '0');
+		}
         while (char.IsDigit(currentCh))
         {
             result = result*10 + sign * (int)(currentCh - '0');
@@ -87,11 +86,11 @@ public class IntLexer : Lexer
 
         if (currentCharValue != -1) // StringReader вернет -1 в конце строки
         {
-            Error();
+            
             return false;
         }
 
-        System.Console.WriteLine("Integer is recognized");
+        //System.Console.WriteLine("Integer is recognized");
         return true;
     }
 }
@@ -100,17 +99,13 @@ public class IntLexer : Lexer
 public class Program
 {
     public static void Main()
-    {
-        string input = "-";
-        IntLexer L = new IntLexer(input);
-        try
-        {
-            System.Console.WriteLine(L.Parse()); 
-        }
-        catch (LexerException e)
-        {
-            System.Console.WriteLine(e.Message);
-        }
-
-    }
+    {	
+		System.Console.WriteLine("Testing IntLexer:");
+		List<string> test_int = new List<string> {"1","123","+123","-123","+a","+","+1233f"," "};
+        foreach (var str in test_int) {
+			IntLexer L = new IntLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
+        
+	}    
 }
