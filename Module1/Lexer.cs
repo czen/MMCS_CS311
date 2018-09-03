@@ -187,6 +187,48 @@ public class IdLexer : Lexer
     }
 }
 
+public class LetterDigitLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public int result;
+    protected int sign;
+    public LetterDigitLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override bool Parse()
+    {
+		bool was_letter = false;
+        NextCh();
+        if (char.IsLetter(currentCh)){
+			NextCh();
+			was_letter = true;
+		}
+		else 
+			return false;
+        		
+		while(char.IsLetterOrDigit(currentCh)){
+			if (char.IsDigit(currentCh) == was_letter){
+				was_letter = !was_letter; 
+				NextCh();
+			}else 
+				return false;
+		}
+		   
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            
+            return false;
+        }
+
+        return true;
+    }
+}
+
+
 
 public class Program
 {
@@ -212,5 +254,14 @@ public class Program
 			NoZeroIntLexer L = new NoZeroIntLexer(str);
         	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
 		}
+		
+		
+		System.Console.WriteLine("Testing LetterDigitLexer:");
+		List<string> test_LetterDigitLexer = new List<string> {"a","a1","a1a","1","a11","a1aa",""," "};
+        foreach (var str in test_LetterDigitLexer) {
+			LetterDigitLexer L = new LetterDigitLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
+		
 	}    
 }
