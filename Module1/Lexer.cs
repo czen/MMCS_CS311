@@ -266,6 +266,140 @@ public class ListLexer : Lexer
     }
 }
 
+public class DigitListLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public int result;
+    protected int sign;
+	public List<int> ints;
+    public DigitListLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+		ints = new List<int>();
+    }
+
+    public override bool Parse()
+    {
+        NextCh();
+		if (currentCharValue == -1)
+			return false;
+        while (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+			if (char.IsWhiteSpace(currentCh)) {
+				NextCh();
+				continue;
+			} 	
+            else if (char.IsDigit(currentCh)){
+				ints.Add((int)(currentCh - '0'));
+				NextCh();
+				if(char.IsDigit(currentCh))
+					return false;
+				else 
+					continue;
+			}
+			else 
+				return false;
+			
+            
+        }
+		if (ints.Count == 0) return false;
+        return true;
+    }
+}
+
+public class GroupLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+	public string result;
+    public GroupLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override bool Parse()
+    {
+		bool letter_group = false;
+		int cnt = 0;
+	
+        NextCh();
+		if (currentCharValue == -1)
+			return false;
+		letter_group = char.IsLetter(currentCh);
+		while(currentCharValue != -1){
+			if(!char.IsLetterOrDigit(currentCh)) 
+				return false;
+			if(char.IsLetter(currentCh) == letter_group){
+				cnt++;
+				intString.Append(currentCh);
+			}
+			else{
+				letter_group = !letter_group;
+				cnt = 1;
+				intString.Append(currentCh);
+			}
+			if (cnt > 2) 
+				return false;
+			NextCh();
+		}
+		result = intString.ToString();
+		return true;
+    }
+}
+
+public class RealLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+    public RealLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override bool Parse()
+    {
+		
+        NextCh(); // at first char
+        if (currentCh == '+' || currentCh == '-' )
+        {
+    
+            NextCh();
+			if(!char.IsDigit(currentCh))
+				return false;
+        } 
+        else if (char.IsDigit(currentCh)) {
+			NextCh();
+		}
+		else
+			return false;
+		
+        while (char.IsDigit(currentCh))
+        {
+            NextCh();
+        }
+		
+		
+		if(currentCh == '.'){
+			NextCh();
+			while (char.IsDigit(currentCh))
+            	NextCh();
+		}
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            
+            return false;
+        }
+
+        return true;
+    }
+}
+
+
 
 
 public class Program
@@ -309,5 +443,26 @@ public class Program
 		}
 		
 		
+		System.Console.WriteLine("Testing DigitListLexer:");
+		List<string> test_DigitListLexer = new List<string> {"1","  1 2    3","    ","","1 2 3 b"};
+        foreach (var str in test_DigitListLexer) {
+			DigitListLexer L = new DigitListLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1} : {2}",str,L.Parse(),string.Join(",", L.ints)));
+		}
+		
+		System.Console.WriteLine("Testing GroupLexer:");
+		List<string> test_GroupLexer = new List<string> {"aa12c23dd1","aaa12c23dd1","aa12c232dd1", " ", ""};
+        foreach (var str in test_GroupLexer) {
+			GroupLexer L = new GroupLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1} : {2}",str,L.Parse(),L.result));
+		}
+		
+		
+		System.Console.WriteLine("Testing RealLexer:");
+		List<string> test_RealLexer = new List<string> {"+12","12","+0.1","123.b" ," ", ""};
+        foreach (var str in test_RealLexer) {
+			RealLexer L = new RealLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
 	}    
 }
