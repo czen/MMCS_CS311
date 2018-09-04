@@ -399,6 +399,91 @@ public class RealLexer : Lexer
     }
 }
 
+public class StringLexer : Lexer
+{
+
+    public StringLexer(string input)
+        : base(input)
+    {
+    }
+
+    public override bool Parse()
+    {
+		
+        NextCh(); // at first char
+       	if(currentCh != '\'')
+			return false;
+		NextCh();
+		while(currentCharValue != -1 && currentCh != '\'')
+			NextCh();
+		if (currentCh != '\'')
+			return false;
+		NextCh();
+		if ( currentCharValue != -1)
+			return false;
+		
+		return true;
+		
+    }
+}
+
+public class CommentLexer : Lexer
+{
+
+    public CommentLexer(string input)
+        : base(input)
+    {
+    }
+	
+	private bool ParseStart(){
+		if (currentCh != '/'){
+			NextCh();	
+			return false;}
+		else {
+			NextCh();
+			if (currentCh != '*'){
+				NextCh();
+				return false;}
+			NextCh();
+			return true;
+		}
+	 	
+	}
+	private bool ParseEnd(){
+		if (currentCh != '*'){
+			NextCh();
+			return false;
+			}
+		else {
+			NextCh();
+			if (currentCh != '/'){
+				NextCh();
+				return false;}
+			NextCh();
+			return true;
+		}
+		
+	}
+	
+	
+
+    public override bool Parse()
+    {
+		
+        NextCh(); // at first char
+		if (!ParseStart()) 
+			return false;
+		while(currentCharValue != -1)
+			if (ParseEnd()){
+				if(currentCharValue != -1)
+					return false;
+				return true;
+			}
+		
+		return false;
+    }
+}
+
 
 
 
@@ -462,6 +547,21 @@ public class Program
 		List<string> test_RealLexer = new List<string> {"+12","12","+0.1","123.b" ," ", ""};
         foreach (var str in test_RealLexer) {
 			RealLexer L = new RealLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
+		
+		System.Console.WriteLine("Testing StringLexer:");
+		List<string> test_StringLexer = new List<string> {"'asd'","''","a","'aaa'a","'aaa" ," ", ""};
+        foreach (var str in test_StringLexer) {
+			StringLexer L = new StringLexer(str);
+        	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
+		}
+		
+		
+		System.Console.WriteLine("Testing CommentLexer:");
+		List<string> test_CommentLexer = new List<string> {"/*ddd*/","/**/","/*fff"," ", ""};
+        foreach (var str in test_CommentLexer) {
+			CommentLexer L = new CommentLexer(str);
         	System.Console.WriteLine(System.String.Format("{0} : {1}",str,L.Parse()));
 		}
 	}    
