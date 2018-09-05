@@ -205,6 +205,161 @@ public class TrueIntLexer : Lexer
     }
 }
 
+public class LetterDegitLetterLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool lastLetter;
+    protected bool isLetterDigitLetter;
+
+    public LetterDegitLetterLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsLetterDigitLetter()
+    {
+        return isLetterDigitLetter;
+    }
+
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsLetter(currentCh))
+        {
+            NextCh();
+        }
+        else
+            Error();
+
+        lastLetter = true;
+
+        while ((char.IsDigit(currentCh) && lastLetter) 
+            || (char.IsLetter(currentCh) && !lastLetter))
+        {
+            NextCh();
+            lastLetter = !lastLetter;
+        }
+
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isLetterDigitLetter = true;
+    }
+}
+
+public class LetterCommaLetterLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool lastLetter;
+    protected bool isLetterCommaLetter;
+
+    public LetterCommaLetterLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsLetterCommaLetter()
+    {
+        return isLetterCommaLetter;
+    }
+
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsLetter(currentCh))
+        {
+            NextCh();
+        }
+        else
+            Error();
+
+        lastLetter = true;
+
+        while (lastLetter && (currentCh == ',' || currentCh == ';')
+            || (!lastLetter && char.IsLetter(currentCh)))
+        {
+            NextCh();
+            lastLetter = !lastLetter;
+        }
+
+        if (!lastLetter || currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isLetterCommaLetter = true;
+    }
+}
+
+public class DigitSpacesDigitLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool lastDigit;
+    protected bool isDigitSpacesDigit;
+    protected string listDigits;
+
+    public DigitSpacesDigitLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsDigitSpacesDigit()
+    {
+        return isDigitSpacesDigit;
+    }
+
+    public string GetListDigits()
+    {
+        return listDigits;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsDigit(currentCh))
+        {
+            listDigits += currentCh.ToString() + ' ';
+            NextCh();
+        }
+        else
+            Error();
+
+        lastDigit = true;
+
+        while (char.IsDigit(currentCh) && !lastDigit || currentCh == ' ')
+        {
+            if (currentCh == ' ')
+                lastDigit = false;
+            if (char.IsDigit(currentCh))
+            {
+                lastDigit = true;
+                listDigits += currentCh.ToString() + ' ';
+            }
+            NextCh();
+        }
+
+        if (!lastDigit || currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isDigitSpacesDigit = true;
+    }
+}
 
 public class Program
 {
@@ -212,7 +367,7 @@ public class Program
 	{
         System.Console.WriteLine("--------------- TestIntLexer ---------------");
 
-        string[] strings = { "0", "10", "100523", "a", "" };
+        string[] strings = { "0", "10", "100523", "1g3", "a", "" };
 
 		foreach (string str in strings)
 		{
@@ -222,7 +377,7 @@ public class Program
 			{
                 System.Console.WriteLine("String is <" + input + ">");
                 L.Parse();
-                System.Console.WriteLine("Integer is " + L.GetNum());
+                System.Console.WriteLine("    Integer is " + L.GetNum());
             }
 			catch (LexerException e)
 			{
@@ -247,7 +402,7 @@ public class Program
             {
                 System.Console.WriteLine("String is <" + input + ">");
                 L.Parse();
-                System.Console.WriteLine("String is id = " + L.GetIsId());
+                System.Console.WriteLine("    isId = " + L.GetIsId());
             }
             catch (LexerException e)
             {
@@ -262,7 +417,7 @@ public class Program
     {
         System.Console.WriteLine("--------------- TestTrueIntLexer ---------------");
 
-        string[] strings = { "-1", "+1", "1", "123523", "-213556", "-0", "0", "+0", "abc" };
+        string[] strings = { "-1", "+1", "1", "123523", "-213556", "-0678", "0899", "+098", "abc" };
 
         foreach (string str in strings)
         {
@@ -272,7 +427,7 @@ public class Program
             {
                 System.Console.WriteLine("String is <" + input + ">");
                 L.Parse();
-                System.Console.WriteLine("String is true int = " + L.GetIsTrueInt());
+                System.Console.WriteLine("    isTrueInt = " + L.GetIsTrueInt());
             }
             catch (LexerException e)
             {
@@ -283,12 +438,90 @@ public class Program
         //System.Threading.Thread.Sleep(10000);
     }
 
+    public static void TestLetterDigitLetterLexer()
+    {
+        System.Console.WriteLine("--------------- TestLetterDigitLetterLexer ---------------");
 
+        string[] strings = { "a", "a0", "a0b", "a1b2", "0", "1", "1a", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            LetterDegitLetterLexer L = new LetterDegitLetterLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isLetterDigitLetter = " + L.GetIsLetterDigitLetter());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
+    public static void TestLetterCommaLetterLexer()
+    {
+        System.Console.WriteLine("--------------- TestLetterCommaLetterLexer ---------------");
+
+        string[] strings = { "a", "a,a", "a;b", "a;b,c", "a,", "a,b;", ",", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            LetterCommaLetterLexer L = new LetterCommaLetterLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isLetterCommaLetter = " + L.GetIsLetterCommaLetter());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
+    public static void TestDigitSpacesDigitLexer()
+    {
+        System.Console.WriteLine("--------------- TestDigitSpacesDigitLexer ---------------");
+
+        string[] strings = { "1", "1 2", "2  5", "4  6    9", "4   ", "1 2   ", " ", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            DigitSpacesDigitLexer L = new DigitSpacesDigitLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isDigitSpacesDigit = " + L.GetIsDigitSpacesDigit());
+                System.Console.WriteLine("    ListDigits = " + L.GetListDigits());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
 
     public static void Main()
     {
         TestIntLexer();
         TestIdLexer();
         TestTrueIntLexer();
+        TestLetterDigitLetterLexer();
+        TestLetterCommaLetterLexer();
+
+        TestDigitSpacesDigitLexer();
     }
 }
