@@ -155,16 +155,14 @@ public class HardIntLexer : Lexer
     public override void Parse()
     {
         NextCh();
+
         if (currentCh == '+' || currentCh == '-')
         {
             NextCh();
         }
-        else
-        {
-            Error();
-        }
+       
 
-        if (char.IsDigit(currentCh))
+        if (char.IsDigit(currentCh) && currentCh != '0' )
         {
             NextCh();
         }
@@ -457,6 +455,7 @@ public class DoubleLexer : Lexer
     {
         NextCh();
         bool point = false; //был ли пред. символ точкой
+        bool end_point = false; //был ли пред. символ точкой
 
         if (char.IsDigit(currentCh))
         {
@@ -471,10 +470,14 @@ public class DoubleLexer : Lexer
         {
             if (currentCh == '.')
                 point = true;
+            else
+                if (point)
+                end_point = true;
+
             NextCh();
         }
 
-        if (currentCharValue != -1 || !point) //если точки ни разу не было, то ошибка
+        if (currentCharValue != -1 || !point || !end_point) //если точки ни разу не было, то ошибка
         {
             Error();
         }
@@ -508,7 +511,7 @@ public class StringLexer : Lexer
             Error();
         }
 
-        while (currentCh != '\'')
+        while (currentCh != '\'' && currentCharValue != -1)
         {
             NextCh();
         }
@@ -1023,7 +1026,7 @@ public class Program
 
         string input1 = "12.234";
         string input2 = "0.14";
-        string input3 = "12.01";
+        string input3 = "12.4";
         string input4 = "123";
 
         Lexer L1 = new DoubleLexer(input1);
@@ -1062,6 +1065,18 @@ public class Program
         try
         {
             L6.Parse();
+        }
+        catch (LexerException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        string input7 = "1.";
+        Lexer L7 = new DoubleLexer(input7);
+
+        try
+        {
+            L7.Parse();
         }
         catch (LexerException e)
         {
@@ -1120,6 +1135,18 @@ public class Program
         try
         {
             L6.Parse();
+        }
+        catch (LexerException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        string input7 = "'";
+        Lexer L7 = new StringLexer(input7);
+
+        try
+        {
+            L7.Parse();
         }
         catch (LexerException e)
         {
