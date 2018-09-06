@@ -580,11 +580,99 @@ public class ApostrophesLexer : Lexer
     }
 }
 
+public class CommentLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool lastStar;
+    protected bool lastSlash;
+    protected bool isComment;
+    protected string stringBetween;
+
+    public CommentLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsComment()
+    {
+        return isComment;
+    }
+
+    public string GetStringBetween()
+    {
+        return stringBetween;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (currentCh == '/')
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        if (currentCh == '*')
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        while (currentCharValue != -1)
+        {
+            if (lastStar && lastSlash)
+                Error();
+
+            if (currentCh == '*')
+            {
+                lastStar = true;
+                lastSlash = false;
+                NextCh();
+                continue;
+            }
+            if (currentCh == '/' && lastStar)
+            {
+                lastSlash = true;
+                NextCh();
+                continue;
+            }
+
+            if (lastStar)
+                stringBetween += '*';
+
+            lastStar = false;
+            lastSlash = false;
+            stringBetween += currentCh;
+
+            NextCh();
+        }
+
+        if (!lastStar || !lastSlash)
+            Error();
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isComment = true;
+    }
+}
+
 public class Program
 {
 	public static void TestIntLexer()
 	{
-        System.Console.WriteLine("--------------- TestIntLexer ---------------");
+        System.Console.WriteLine("              --------------- TestIntLexer ---------------");
 
         string[] strings = { "0", "10", "100523", "1g3", "a", "" };
 
@@ -602,14 +690,14 @@ public class Program
 			{
 				System.Console.WriteLine(e.Message);
 			}
-			
-		}
+            System.Console.WriteLine("------------------------------");
+        }
         //System.Threading.Thread.Sleep(10000);
 	}
 
     public static void TestIdLexer()
     {
-        System.Console.WriteLine("--------------- TestIdLexer ---------------");
+        System.Console.WriteLine("              --------------- TestIdLexer ---------------");
 
         string[] strings = { "g", "a0", "a10", "b1b0b0b5ASAS2AS45465456SDSAD3", "0", "" };
 
@@ -627,14 +715,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestTrueIntLexer()
     {
-        System.Console.WriteLine("--------------- TestTrueIntLexer ---------------");
+        System.Console.WriteLine("              --------------- TestTrueIntLexer ---------------");
 
         string[] strings = { "-1", "+1", "1", "123523", "-213556", "-0678", "0899", "+098", "abc" };
 
@@ -652,16 +740,16 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestLetterDigitLetterLexer()
     {
-        System.Console.WriteLine("--------------- TestLetterDigitLetterLexer ---------------");
+        System.Console.WriteLine("              --------------- TestLetterDigitLetterLexer ---------------");
 
-        string[] strings = { "a", "a0", "a0b", "a1b2", "0", "1", "1a", "" };
+        string[] strings = { "a", "a0", "a0b", "a1b2", "a12bf123ccc", "0", "1", "1a", "" };
 
         foreach (string str in strings)
         {
@@ -677,14 +765,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestLetterCommaLetterLexer()
     {
-        System.Console.WriteLine("--------------- TestLetterCommaLetterLexer ---------------");
+        System.Console.WriteLine("              --------------- TestLetterCommaLetterLexer ---------------");
 
         string[] strings = { "a", "a,a", "a;b", "a;b,c", "a,", "a,b;", ",", "" };
 
@@ -702,14 +790,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestDigitSpacesDigitLexer()
     {
-        System.Console.WriteLine("--------------- TestDigitSpacesDigitLexer ---------------");
+        System.Console.WriteLine("              --------------- TestDigitSpacesDigitLexer ---------------");
 
         string[] strings = { "1", "1 2", "2  5", "4  6    9", "4   ", "1 2   ", " ", "" };
 
@@ -728,14 +816,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestDigitsLettersLess2Lexer()
     {
-        System.Console.WriteLine("--------------- TestDigitsLettersLess2Lexer ---------------");
+        System.Console.WriteLine("              --------------- TestDigitsLettersLess2Lexer ---------------");
 
         string[] strings = { "1", "1a1a1a", "1a2bn55", "FG52VV3G6HH", "fgh52gg", "a121an23", "a1b2hhm", "" };
 
@@ -754,14 +842,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestDoubleLexer()
     {
-        System.Console.WriteLine("--------------- TestDoubleLexer ---------------");
+        System.Console.WriteLine("              --------------- TestDoubleLexer ---------------");
 
         string[] strings = { "1.0", "10.3", "136.96", "963.125", "12.56.3", ".16", "45.", "25", "" };
 
@@ -780,14 +868,14 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
 
     public static void TestApostrophesLexer()
     {
-        System.Console.WriteLine("--------------- TestApostrophesLexer ---------------");
+        System.Console.WriteLine("              --------------- TestApostrophesLexer ---------------");
 
         string[] strings = { "''", "'a'", "'ff555'", "'f5fd5dff5'", "'fddfsfd'5d5", "'fggdfff", "fgfgfg'", "dfdf", "" };
 
@@ -806,10 +894,38 @@ public class Program
             {
                 System.Console.WriteLine(e.Message);
             }
-
+            System.Console.WriteLine("------------------------------");
         }
         //System.Threading.Thread.Sleep(10000);
     }
+
+    public static void TestCommentLexer()
+    {
+        System.Console.WriteLine("              --------------- TestCommentLexer ---------------");
+
+        string[] strings = { "/**/", "/*a/*b*/", "/*a52g*/", "/*qw/e*r/ty*/", "/*qwerty", "qwerty*/", "qwerty", "/*qwer*/ty*/", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            CommentLexer L = new CommentLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isApostrophes = " + L.GetIsComment());
+                System.Console.WriteLine("    StringBetween = " + L.GetStringBetween());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+            System.Console.WriteLine("------------------------------");
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
+
 
     public static void Main()
     {
@@ -823,5 +939,6 @@ public class Program
         TestDigitsLettersLess2Lexer();
         TestDoubleLexer();
         TestApostrophesLexer();
+        TestCommentLexer();
     }
 }
