@@ -388,7 +388,7 @@ public class DigitsLexer : Lexer
     }
 }
 
-// ExtraTask 2          // "ab" ??? - должно заканчиваться на группу цифр?
+// ExtraTask 2          //
 public class LettersDigitsLexer : Lexer
 {
 
@@ -483,7 +483,7 @@ public class LettersDigitsLexer : Lexer
 }
 
 
-// ExtraTask 3          // "12." ".12" "12" ???
+// ExtraTask 3          //
 public class FloatLexer : Lexer
 {
 
