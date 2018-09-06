@@ -44,6 +44,11 @@ public class Lexer
     }
 }
 
+/**
+Реализовать в программе семантические действия по накоплению в строке распознанного целого числа 
+    и преобразованию его в целое в конце разбора (при встрече завершающего символа). 
+    Семантические действия следует добавлять перед каждым вызовом NextCh кроме первого. 
+     */
 public class IntLexer : Lexer
 {
 
@@ -108,6 +113,9 @@ public class IntLexer : Lexer
     }
 }
 
+/**
+Идентификатор.
+     */
 public class IdLexer : Lexer
 {
 
@@ -154,6 +162,9 @@ public class IdLexer : Lexer
     }
 }
 
+/**
+Целое со знаком, начинающееся не с цифры 0.
+     */
 public class TrueIntLexer : Lexer
 {
 
@@ -205,6 +216,9 @@ public class TrueIntLexer : Lexer
     }
 }
 
+/**
+Чередующиеся буквы и цифры, начинающиеся с буквы. 
+     */
 public class LetterDegitLetterLexer : Lexer
 {
 
@@ -254,6 +268,11 @@ public class LetterDegitLetterLexer : Lexer
     }
 }
 
+/**
+Список букв, разделенных символом , или ; 
+    В качестве семантического действия должно быть накопление 
+    списка букв в списке и вывод этого списка в конце программы.
+     */
 public class LetterCommaLetterLexer : Lexer
 {
 
@@ -302,6 +321,11 @@ public class LetterCommaLetterLexer : Lexer
     }
 }
 
+/**
+Список цифр, разделенных одним или несколькими пробелами. 
+    В качестве семантического действия должно быть накопление 
+    списка цифр в списке и вывод этого списка в конце программы
+     */
 public class DigitSpacesDigitLexer : Lexer
 {
 
@@ -358,10 +382,14 @@ public class DigitSpacesDigitLexer : Lexer
         }
 
         isDigitSpacesDigit = true;
-    }
+    } 
 }
 
-
+/**
+Лексема вида aa12c23dd1, в которой чередуются группы букв и цифр, 
+    в каждой группе не более 2 элементов. 
+    В качестве семантического действия необходимо накопить данную лексему в виде строки
+     */
 public class DigitsLettersLess2Lexer : Lexer
 {
 
@@ -437,6 +465,9 @@ public class DigitsLettersLess2Lexer : Lexer
     }
 }
 
+/**
+Вещественное с десятичной точкой 123.45678
+     */
 public class DoubleLexer : Lexer
 {
 
@@ -509,6 +540,9 @@ public class DoubleLexer : Lexer
     }
 }
 
+/**
+Лексема вида 'строка', внутри апострофов отсутствует символ '
+     */
 public class ApostrophesLexer : Lexer
 {
 
@@ -580,6 +614,9 @@ public class ApostrophesLexer : Lexer
     }
 }
 
+
+///Лексема вида /*комментарий*/, 
+///внутри комментария не может встретиться последовательность символов*/ 
 public class CommentLexer : Lexer
 {
 
@@ -667,6 +704,80 @@ public class CommentLexer : Lexer
         isComment = true;
     }
 }
+
+/**
+Лексема вида Id1.Id2.Id3 (количество идентификаторов может быть произвольным).
+     */
+public class IdDotIdLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool lastDot;
+    protected bool lastLetter;
+    protected bool isIdDotId;
+
+    public IdDotIdLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsIdDotId()
+    {
+        return isIdDotId;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsLetter(currentCh))
+        {
+            NextCh();
+            lastLetter = true;
+        }
+        else
+        {
+            Error();
+        }
+
+        while (currentCharValue != -1)
+        {
+            if (lastDot)
+            {
+                if (currentCh == '.')
+                    Error();
+                if (!char.IsLetter(currentCh))
+                    Error();
+
+                lastLetter = true;
+                lastDot = false;
+                NextCh();
+                continue;
+            }
+
+            if (currentCh == '.')
+            {
+                lastDot = true;
+                NextCh();
+                continue;
+            }
+
+            NextCh();
+        }
+
+        if (lastDot)
+            Error();
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isIdDotId = true;
+    }
+}
+
 
 public class Program
 {
@@ -925,7 +1036,31 @@ public class Program
         //System.Threading.Thread.Sleep(10000);
     }
 
+    public static void TestIdDotIdLexer()
+    {
+        System.Console.WriteLine("              --------------- TestIdDotIdLexer ---------------");
 
+        string[] strings = { "a12.ff4.gg55gg", "df56", "qw34.rty456", "q.w.e.r.t.y", "qw.", "qw.12.as", "1w.qw34",
+            "qw12.er34.56", ".qw", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            IdDotIdLexer L = new IdDotIdLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isIdDotId = " + L.GetIsIdDotId());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+            System.Console.WriteLine("------------------------------");
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
 
     public static void Main()
     {
@@ -940,5 +1075,7 @@ public class Program
         TestDoubleLexer();
         TestApostrophesLexer();
         TestCommentLexer();
+
+        TestIdDotIdLexer();
     }
 }
