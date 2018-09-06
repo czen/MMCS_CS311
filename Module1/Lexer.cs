@@ -361,6 +361,225 @@ public class DigitSpacesDigitLexer : Lexer
     }
 }
 
+
+public class DigitsLettersLess2Lexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected int cntDigits = 0;
+    protected int cntLetters = 0;
+    protected bool isDigitsLettersLess2;
+    protected string digitsLetters;
+
+    public DigitsLettersLess2Lexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsDigitsLettersLess2()
+    {
+        return isDigitsLettersLess2;
+    }
+
+    public string GetDigitsLetters()
+    {
+        return digitsLetters;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsDigit(currentCh))
+        {
+            digitsLetters += currentCh;
+            cntDigits = 1;
+            NextCh();
+        }
+        else
+            if (char.IsLetter(currentCh))
+            {
+                digitsLetters += currentCh;
+                cntLetters = 1;
+                NextCh();
+            }
+            else
+                Error();
+
+        while (char.IsDigit(currentCh) || char.IsLetter(currentCh))
+        {
+            if (char.IsDigit(currentCh))
+            {
+                digitsLetters += currentCh;
+                cntDigits += 1;
+                cntLetters = 0;
+            }
+            if (char.IsLetter(currentCh))
+            {
+                digitsLetters += currentCh;
+                cntDigits = 0;
+                cntLetters += 1;
+            }
+
+            if (cntLetters == 3 || cntDigits == 3)
+                Error();
+
+            NextCh();
+        }
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isDigitsLettersLess2 = true;
+    }
+}
+
+public class DoubleLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected bool dotIsFound;
+    protected bool digitAfterDot;
+    protected bool isDouble;
+    protected string Double;
+
+    public DoubleLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsDouble()
+    {
+        return isDouble;
+    }
+
+    public string GetDouble()
+    {
+        return Double;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsDigit(currentCh))
+        {
+            Double += currentCh;
+            NextCh();
+        }
+        else
+            Error();
+
+        while (char.IsDigit(currentCh) || currentCh == '.')
+        {
+            if (currentCh == '.' && dotIsFound)
+            {
+                Error();
+            }
+            if (currentCh == '.')
+            {
+                Double += currentCh;
+                dotIsFound = true;
+            }
+            if (char.IsDigit(currentCh))
+            {
+                if (dotIsFound)
+                    digitAfterDot = true;
+                Double += currentCh;
+            }
+            
+            NextCh();
+        }
+
+        if (dotIsFound && !digitAfterDot || !dotIsFound)
+        {
+            Error();
+        }
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isDouble = true;
+    }
+}
+
+public class ApostrophesLexer : Lexer
+{
+
+    protected System.Text.StringBuilder inString;
+    protected int cntApostrophes;
+    protected bool lastApostroph;
+    protected bool isApostrophes;
+    protected string stringBetween;
+
+    public ApostrophesLexer(string input)
+        : base(input)
+    {
+        inString = new System.Text.StringBuilder();
+    }
+
+    public bool GetIsApostrophes()
+    {
+        return isApostrophes;
+    }
+
+    public string GetStringBetween()
+    {
+        return stringBetween;
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (currentCh.ToString() == "'")
+        {
+            cntApostrophes = 1;
+            lastApostroph = true;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        while (currentCharValue != -1)
+        {
+            if (currentCh.ToString() == "'")
+            {
+                cntApostrophes += 1;
+                lastApostroph = true;
+            }
+            else
+            {
+                stringBetween += currentCh;
+                lastApostroph = false;
+            }
+
+            if (cntApostrophes == 2 && !lastApostroph)
+                Error();
+
+            NextCh();
+        }
+
+        if (cntApostrophes != 2 || !lastApostroph)
+            Error();
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        isApostrophes = true;
+    }
+}
+
 public class Program
 {
 	public static void TestIntLexer()
@@ -514,6 +733,84 @@ public class Program
         //System.Threading.Thread.Sleep(10000);
     }
 
+    public static void TestDigitsLettersLess2Lexer()
+    {
+        System.Console.WriteLine("--------------- TestDigitsLettersLess2Lexer ---------------");
+
+        string[] strings = { "1", "1a1a1a", "1a2bn55", "FG52VV3G6HH", "fgh52gg", "a121an23", "a1b2hhm", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            DigitsLettersLess2Lexer L = new DigitsLettersLess2Lexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isDigitsLettersLess2 = " + L.GetIsDigitsLettersLess2());
+                System.Console.WriteLine("    DigitsLetters = " + L.GetDigitsLetters());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
+    public static void TestDoubleLexer()
+    {
+        System.Console.WriteLine("--------------- TestDoubleLexer ---------------");
+
+        string[] strings = { "1.0", "10.3", "136.96", "963.125", "12.56.3", ".16", "45.", "25", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            DoubleLexer L = new DoubleLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isDouble = " + L.GetIsDouble());
+                System.Console.WriteLine("    Double = " + L.GetDouble());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
+    public static void TestApostrophesLexer()
+    {
+        System.Console.WriteLine("--------------- TestApostrophesLexer ---------------");
+
+        string[] strings = { "''", "'a'", "'ff555'", "'f5fd5dff5'", "'fddfsfd'5d5", "'fggdfff", "fgfgfg'", "dfdf", "" };
+
+        foreach (string str in strings)
+        {
+            string input = str;
+            ApostrophesLexer L = new ApostrophesLexer(input);
+            try
+            {
+                System.Console.WriteLine("String is <" + input + ">");
+                L.Parse();
+                System.Console.WriteLine("    isApostrophes = " + L.GetIsApostrophes());
+                System.Console.WriteLine("    StringBetween = " + L.GetStringBetween());
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+        }
+        //System.Threading.Thread.Sleep(10000);
+    }
+
     public static void Main()
     {
         TestIntLexer();
@@ -523,5 +820,8 @@ public class Program
         TestLetterCommaLetterLexer();
 
         TestDigitSpacesDigitLexer();
+        TestDigitsLettersLess2Lexer();
+        TestDoubleLexer();
+        TestApostrophesLexer();
     }
 }
