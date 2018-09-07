@@ -43,7 +43,7 @@ public class Lexer
     }
 }
 
-public class IntLexer : Lexer
+public class IntLexer : Lexer //task 1
 {
 
     protected System.Text.StringBuilder intString;
@@ -97,7 +97,7 @@ public class IntLexer : Lexer
 }
 
 
-public class IdentifierLexer : Lexer
+public class IdentifierLexer : Lexer //task 2
 {
     protected System.Text.StringBuilder intString;
     public IdentifierLexer(string input)
@@ -136,7 +136,7 @@ public class IdentifierLexer : Lexer
     }
 }
 
-public class NumberWithoutZeroLexer : Lexer
+public class NumberWithoutZeroLexer : Lexer //task 3
 {
     protected System.Text.StringBuilder intString;
     public NumberWithoutZeroLexer(string input)
@@ -184,54 +184,90 @@ public class NumberWithoutZeroLexer : Lexer
     }
 }
 
-//public class NumbersAndLetteLexer : Lexer
-//{
-//    protected System.Text.StringBuilder intString;
-//    public NumbersAndLetteLexer(string input)
-//        : base(input)
-//    {
-//        intString = new System.Text.StringBuilder();
-//    }
+public class NumbersAndLettersLexer : Lexer // task 4
+{
+    protected System.Text.StringBuilder intString;
+    public NumbersAndLettersLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (char.IsLetter(currentCh))
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        var flag = true;
+
+        while (char.IsDigit(currentCh) && flag || char.IsLetter(currentCh) && !flag)
+        {
+            NextCh();
+            flag = !flag;
+        }
 
 
-//    public override void Parse()
-//    {
-//        NextCh();
-//        if (currentCh == '+' || currentCh == '-')
-//        {
-//            NextCh();
-//        }
+        if (currentCharValue != -1) 
+        {
+            Error();
+        }
 
-//        if (currentCh == '0')
-//        {
-//            Error();
-//        }
+        System.Console.WriteLine("Numbers and letters are recognized");
 
-//        if (char.IsDigit(currentCh))
-//        {
-//            NextCh();
-//        }
-//        else
-//        {
-//            Error();
-//        }
+    }
+}
 
-//        while (char.IsDigit(currentCh))
-//        {
-//            NextCh();
-//        }
+public class StringWithSymbolsLexer : Lexer // task 5
+{
+    protected System.Text.StringBuilder intString;
+    public StringWithSymbolsLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
 
+    public override void Parse()
+    {
+        string res = "";
+        NextCh();
+        if (char.IsLetter(currentCh))
+        {
+            res += currentCh;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
 
-//        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-//        {
-//            Error();
-//        }
+        var flag = true;
 
-//        System.Console.WriteLine("Number without zero is recognized");
+        while (char.IsLetter(currentCh) && !flag || currentCh == ',' && flag || currentCh == ';' && flag)
+        {
+            res += currentCh;
+            NextCh();
+            flag = !flag;
+        }
+        if (res[res.Length - 1] == ',' || res[res.Length - 1] == ';')
+            Error();
 
-//    }
-//}
+        if (currentCharValue != -1)
+        {
+            Error();
+        }
 
+        System.Console.WriteLine("String is recognized");
+        System.Console.WriteLine("Your string = " + res);
+
+    }
+}
 public class Program
 {
     public static void Main()
@@ -380,5 +416,129 @@ public class Program
 
         System.Console.WriteLine("----------");
 
+
+        NumbersAndLettersLexer NAL = new NumbersAndLettersLexer("a1b2b3n4");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        NAL = new NumbersAndLettersLexer("a1b2b3n4a");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        NAL = new NumbersAndLettersLexer("a1");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        NAL = new NumbersAndLettersLexer("a");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+                 NAL = new NumbersAndLettersLexer("12345");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        NAL = new NumbersAndLettersLexer("a1b2b3n43");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        NAL = new NumbersAndLettersLexer("");
+        try
+        {
+            NAL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+
+        System.Console.WriteLine("----------");
+
+        StringWithSymbolsLexer SWL = new StringWithSymbolsLexer("q,w,f;q");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        SWL = new StringWithSymbolsLexer("t,d,w;s");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        SWL = new StringWithSymbolsLexer("t");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        SWL = new StringWithSymbolsLexer("aw;g");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        SWL = new StringWithSymbolsLexer("a,w;g,");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        SWL = new StringWithSymbolsLexer("");
+        try
+        {
+            SWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
     }
 }
