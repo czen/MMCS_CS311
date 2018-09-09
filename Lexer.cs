@@ -45,6 +45,7 @@ public class Lexer
 
 public class IntLexer : Lexer
 {
+
     protected System.Text.StringBuilder intString;
 
     public IntLexer(string input)
@@ -56,45 +57,36 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-      
-        while (char.IsDigit(currentCh) || char.IsLetter(currentCh))
-        {
-            if (char.IsDigit(currentCh))
-            {
-                intString.Append(currentCh);
-                NextCh();
-                if (char.IsDigit(currentCh))
-                {
-                    intString.Append(currentCh);
-                    NextCh();
-                    if (char.IsDigit(currentCh))
-                        Error();
-                }
-            }
+        if (currentCh == '+' || currentCh == '-')
+            NextCh();
 
-            if (char.IsLetter(currentCh))
-            {
-                intString.Append(currentCh);
-                NextCh();
-                if (char.IsLetter(currentCh))
-                {
-                    intString.Append(currentCh);
-                    NextCh();
-                    if (char.IsLetter(currentCh))
-                        Error();
-                }
-            }
-        }
-
-        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-        {
+        if (char.IsDigit(currentCh))
+            NextCh();
+        else
             Error();
-        }
 
-        System.Console.WriteLine("Letters are recognized");
-        System.Console.WriteLine(intString);
+
+        while (char.IsDigit(currentCh))
+            NextCh();
+        
+
+
+        if (currentCh != '.') //StringReader вернет -1 в конце строки        
+            Error();
+        
+        NextCh();
+        if (!char.IsDigit(currentCh))
+            Error();
+        while (char.IsDigit(currentCh))    
+            NextCh();
+        
+        if (currentCharValue != -1)
+            Error();
+
+        System.Console.WriteLine("Integer is recognized");
     }
 }
+
 
 public class Program
 {
