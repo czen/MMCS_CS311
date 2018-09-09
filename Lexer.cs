@@ -45,9 +45,7 @@ public class Lexer
 
 public class IntLexer : Lexer
 {
-
     protected System.Text.StringBuilder intString;
-
     public IntLexer(string input)
         : base(input)
     {
@@ -57,33 +55,44 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        if (currentCh == '+' || currentCh == '-')
-        {
+        if (char.IsLetter(currentCh))
             NextCh();
-        }
-
-        if (char.IsDigit(currentCh) && currentCh != '0')
-        {
-            NextCh();
-        }
         else
+            if (currentCharValue == -1)
+                ;
+            else
+                Error();
+
+        while (currentCharValue != -1)
         {
-            Error();
-        }
-
-        while (char.IsDigit(currentCh))
-        {
-            NextCh();
-        }
-
-
+            if (!char.IsDigit(currentCh) && !char.IsLetter(currentCh))
+                Error();
+            if (char.IsDigit(currentCh))
+            {
+                NextCh();
+                if (currentCharValue == -1)
+                    break;
+                if (!char.IsLetter(currentCh))
+                    Error();
+                NextCh();
+                continue;
+            }
+            if (char.IsLetter(currentCh))
+            {
+                NextCh();
+                if (currentCharValue == -1)
+                    break;
+                if (!char.IsDigit(currentCh))
+                    Error();
+                NextCh();
+                continue;
+            }
+        } 
+            
         if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-        {
             Error();
-        }
 
         System.Console.WriteLine("Integer is recognized");
-
     }
 }
 
