@@ -42,6 +42,7 @@ public class Lexer
     }
 }
 
+// Task 1
 public class IntLexer : Lexer
 {
     protected string number = "";
@@ -86,6 +87,7 @@ public class IntLexer : Lexer
     }
 }
 
+// Task 2
 public class IdLexer : Lexer
 {
     public IdLexer(string input)
@@ -103,7 +105,7 @@ public class IdLexer : Lexer
             Error();
         }
 
-        while (char.IsDigit(currentCh) || char.IsLetter(currentCh))
+        while (char.IsLetterOrDigit(currentCh))
         {
             NextCh();
         }
@@ -117,6 +119,7 @@ public class IdLexer : Lexer
     }
 }
 
+// Task 3
 public class IntNoLeadingZerosLexer : IntLexer
 {
     public IntNoLeadingZerosLexer(string input)
@@ -158,6 +161,7 @@ public class IntNoLeadingZerosLexer : IntLexer
     }
 }
 
+// Task 4
 public class AlternatingLettersDigitsLexer : Lexer
 {
     public AlternatingLettersDigitsLexer(string input)
@@ -203,6 +207,7 @@ public class AlternatingLettersDigitsLexer : Lexer
     }
 }
 
+// Task 5
 public class DelimitedLettersLexer : Lexer
 {
     private System.Collections.Generic.List<char> letters;
@@ -215,8 +220,7 @@ public class DelimitedLettersLexer : Lexer
         NextCh();
         if (char.IsLetter(currentCh))
         {
-            letters = new System.Collections.Generic.List<char>();
-            letters.Add(currentCh);
+            letters = new System.Collections.Generic.List<char> { currentCh };
             NextCh();
         }
         else
@@ -243,11 +247,6 @@ public class DelimitedLettersLexer : Lexer
             }
         }
 
-        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-        {
-            Error();
-        }
-
         System.Console.Write("List of letters: ");
         foreach (char l in letters)
             System.Console.Write("{0} ", l);
@@ -255,11 +254,247 @@ public class DelimitedLettersLexer : Lexer
     }
 }
 
+// Extra task 1
+public class DelimitedDigitsLexer : Lexer
+{
+    private System.Collections.Generic.List<char> digits;
+
+    public DelimitedDigitsLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (char.IsDigit(currentCh))
+        {
+            digits = new System.Collections.Generic.List<char>() { currentCh };
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        // to not recognise "11 1" string
+        if (char.IsDigit(currentCh))
+            Error();
+
+        while (currentCharValue != -1)
+        {
+            while (currentCh == ' ')
+                NextCh();
+            if (char.IsDigit(currentCh))
+            {
+                digits.Add(currentCh);
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
+        }
+
+        System.Console.Write("List of digits: ");
+        foreach (char l in digits)
+            System.Console.Write("{0} ", l);
+        System.Console.WriteLine();
+    }
+}
+
+// Extra task 2
+public class LettersDigitsLexer : Lexer
+{
+    private string lexeme;
+    private int count;
+    private bool isPrevDigit = false;
+
+    public LettersDigitsLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        if (char.IsLetterOrDigit(currentCh))
+        {
+            count = 1;
+            if (char.IsDigit(currentCh)) isPrevDigit = true;
+            lexeme += currentCh;
+            NextCh();
+        }
+        else
+            Error();
+
+        while (currentCharValue != -1)
+        {
+            if (char.IsDigit(currentCh))
+            {
+                if (!isPrevDigit)
+                {
+                    count = 1;
+                    isPrevDigit = true;
+                }
+                else
+                    ++count;
+                if (count > 2)
+                    Error();
+                lexeme += currentCh;
+                NextCh();
+            }
+            else if (!char.IsLetterOrDigit(currentCh))
+                Error();
+
+            if (char.IsLetter(currentCh))
+            {
+                if (isPrevDigit)
+                {
+                    count = 1;
+                    isPrevDigit = false;
+                }
+                else
+                    ++count;
+                if (count > 2)
+                    Error();
+                lexeme += currentCh;
+                NextCh();
+            }
+        }
+
+        System.Console.Write("Lexeme: {0}", lexeme);
+        System.Console.WriteLine();
+    }
+}
+
+// Extra task 3
+public class DoubleLexer : Lexer
+{
+    public DoubleLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '+' || currentCh == '-')
+        {
+            NextCh();
+        }
+
+        if (char.IsDigit(currentCh))
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        while (char.IsDigit(currentCh))
+        {
+            NextCh();
+        }
+
+        if (currentCh == '.')
+        {
+            NextCh();
+            if (currentCharValue == -1)
+                Error();
+        }
+
+        while (char.IsDigit(currentCh))
+            NextCh();
+
+        if (currentCharValue != -1)
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("Double is recognised");
+    }
+}
+
+// Extra task 4
+public class StringLexer : Lexer
+{
+    public StringLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '\'')
+            NextCh();
+        else
+            Error();
+
+        while (currentCh != '\'')
+        {
+            if (currentCharValue == -1)
+                Error();
+            else
+                NextCh();
+        }
+        NextCh();
+        if (currentCharValue != -1)
+            Error();
+
+        System.Console.WriteLine("String is recognised");
+    }
+}
+
+// Extra task 5
+public class CommentLexer : Lexer
+{
+    public CommentLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '/')
+            NextCh();
+        else
+            Error();
+        if (currentCh == '*')
+            NextCh();
+        else
+            Error();
+
+        while (true)
+        {
+            while (currentCh != '*')
+            {
+                if (currentCharValue == -1)
+                    Error();
+                else
+                    NextCh();
+            }
+            NextCh();
+            if (currentCharValue == -1)
+                Error();
+            if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCharValue != -1)
+                    Error();
+                else
+                    break;
+            }
+        }
+
+        System.Console.WriteLine("Comment is recognised");
+    }
+}
+
 public class Program
 {
     public static void IntLexerTest()
     {
-        System.Console.WriteLine("IntLexerTest");
+        System.Console.WriteLine("------------------------------IntLexerTest------------------------------");
         string[] input = { "", "-0", "-0+1", "+001", "154216" };
         foreach (var s in input)
         {
@@ -277,7 +512,7 @@ public class Program
 
     public static void IdLexerTest()
     {
-        System.Console.WriteLine("IdLexerTest");
+        System.Console.WriteLine("------------------------------IdLexerTest------------------------------");
         string[] input = { "", "b", "1b", "fa64d11", "a1111111" };
         foreach (var s in input)
         {
@@ -293,9 +528,9 @@ public class Program
         System.Console.WriteLine();
     }
 
-    public static void IntLexerNoLeadingZerosTest()
+    public static void IntNoLeadingZerosLexerTest()
     {
-        System.Console.WriteLine("IntNoLeadingZerosLexerTest");
+        System.Console.WriteLine("------------------------------IntNoLeadingZerosLexerTest------------------------------");
         string[] input = { "", "-0", "001", "-1000", "154216" };
         foreach (var s in input)
         {
@@ -313,7 +548,7 @@ public class Program
 
     public static void AlternatingLettersDigitsLexerTest()
     {
-        System.Console.WriteLine("AlternatingLettersDigitsLexerTest");
+        System.Console.WriteLine("------------------------------AlternatingLettersDigitsLexerTest------------------------------");
         string[] input = { "", "m&1", "j1)", "i93", "1b", "bb1", "b1", "a1b2b4m" };
         foreach (var s in input)
         {
@@ -331,7 +566,7 @@ public class Program
 
     public static void DelimitedLettersLexerTest()
     {
-        System.Console.WriteLine("DelimitedLettersLexerTest");
+        System.Console.WriteLine("------------------------------DelimitedLettersLexerTest------------------------------");
         string[] input = { "", ",a;b", "a,b;", "-a,n,b", "A,n;Q,R" };
         foreach (var s in input)
         {
@@ -347,12 +582,108 @@ public class Program
         System.Console.WriteLine();
     }
 
+    public static void DelimitedDigitsLexerTest()
+    {
+        System.Console.WriteLine("------------------------------DelimitedDigitsLexerTest------------------------------");
+        string[] input = { "", " 1", "11 0", "1 ", "_ 1", "1   2 3 4" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new DelimitedDigitsLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
+    public static void LettersDigitsLexerTest()
+    {
+        System.Console.WriteLine("------------------------------LettersDigitsLexerTest------------------------------");
+        string[] input = { "", "aa12c23dd1", "111a", "1a1aaa1" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new LettersDigitsLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
+    public static void DoubleLexerTest()
+    {
+        System.Console.WriteLine("------------------------------DoubleLexerTest------------------------------");
+        string[] input = { "", "-00.22", "0.1.3", "+3.65", "0.", ".11" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new DoubleLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
+    public static void StringLexerTest()
+    {
+        System.Console.WriteLine("------------------------------StringLexerTest------------------------------");
+        string[] input = { "", "'", "'str'd'", "''", "'string'" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new StringLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
+    public static void CommentLexerTest()
+    {
+        System.Console.WriteLine("------------------------------CommentLexerTest------------------------------");
+        string[] input = { "", "/*", "/**", "/*ff*fff*/f", "/**/", "/*c*omment*comment*/" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new CommentLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
     public static void Main()
     {
         IntLexerTest();
         IdLexerTest();
-        IntLexerNoLeadingZerosTest();
+        IntNoLeadingZerosLexerTest();
         AlternatingLettersDigitsLexerTest();
         DelimitedLettersLexerTest();
+
+        DelimitedDigitsLexerTest();
+        LettersDigitsLexerTest();
+        DoubleLexerTest();
+        StringLexerTest();
+        CommentLexerTest();
     }
 }
