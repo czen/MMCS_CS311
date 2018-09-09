@@ -490,6 +490,46 @@ public class CommentLexer : Lexer
     }
 }
 
+// Extra hard task
+public class IdsLexer : Lexer
+{
+    public IdsLexer(string input) : base(input)
+    {
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        while (true)
+        {
+            if (char.IsLetter(currentCh))
+            {
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
+
+            while (char.IsLetterOrDigit(currentCh))
+            {
+                NextCh();
+            }
+
+            if (currentCharValue == -1)
+                break;
+
+            if (currentCh == '.')
+            {
+                NextCh();
+            }
+        }
+
+        System.Console.WriteLine("Identificators are recognized");
+    }
+}
+
 public class Program
 {
     public static void IntLexerTest()
@@ -672,6 +712,25 @@ public class Program
         System.Console.WriteLine();
     }
 
+    public static void IdsLexerTest()
+    {
+        System.Console.WriteLine("------------------------------IdsLexerTest------------------------------");
+        string[] input = { "", ".", ".b12v", "b1.", "fa64d11.a2726b.", "a1111111.b7jjjj.aaakka", "b" };
+        foreach (var s in input)
+        {
+            try
+            {
+                new IdsLexer(s).Parse();
+            }
+            catch (LexerException e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+        System.Console.WriteLine();
+    }
+
+
     public static void Main()
     {
         IntLexerTest();
@@ -685,5 +744,7 @@ public class Program
         DoubleLexerTest();
         StringLexerTest();
         CommentLexerTest();
+
+        IdsLexerTest();
     }
 }
