@@ -57,33 +57,23 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        if (currentCh == '+' || currentCh == '-')
-            NextCh();
-
-        if (char.IsDigit(currentCh))
-            NextCh();
-        else
-            Error();
-
-
-        while (char.IsDigit(currentCh))
-            NextCh();
-        
-
-
-        if (currentCh != '.') //StringReader вернет -1 в конце строки        
+        if (currentCh == '\'')        
+            NextCh();        
+        else       
             Error();
         
+
+        while (currentCh != '\'' && currentCharValue != -1)
+            NextCh();
+        
+        if (currentCharValue == -1) // StringReader вернет -1 в конце строки
+            Error();
+
         NextCh();
-        if (!char.IsDigit(currentCh))
-            Error();
-        while (char.IsDigit(currentCh))    
-            NextCh();
-        
         if (currentCharValue != -1)
             Error();
-
-        System.Console.WriteLine("Integer is recognized");
+       
+        System.Console.WriteLine("recognized");
     }
 }
 
