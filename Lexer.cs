@@ -9,6 +9,7 @@ public class LexerException : System.Exception
 
 public class Lexer
 {
+
     protected int position;
     protected char currentCh;       // очередной считанный символ
     protected int currentCharValue; // целое значение очередного считанного символа
@@ -17,7 +18,7 @@ public class Lexer
 
     public Lexer(string input)
     {
-        inputReader = new System.IO.StringReader(input); //класс, который считывает из указанной строки
+        inputReader = new System.IO.StringReader(input);
         inputString = input;
     }
 
@@ -57,40 +58,18 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        if (currentCh == '+' || currentCh == '-')
-        {
+        if (char.IsLetter(currentCh))
             NextCh();
-        }
-
-        if (char.IsDigit(currentCh))
-        {
-            NextCh();
-        }
         else
-        {
             Error();
-        }
 
-        while (char.IsDigit(currentCh))
-        {
+        while (char.IsDigit(currentCh) || char.IsLetter(currentCh))
             NextCh();
-            if (currentCharValue == -1)
-            {
-                intString.Append(inputString);
-                inputString = System.Console.ReadLine();
-                inputReader = new System.IO.StringReader(inputString);
-                NextCh();
-            }
-        }
 
-
-        if(currentCh != '_')
-        {
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
             Error();
-        }
-
         System.Console.WriteLine("Integer is recognized");
-        System.Console.WriteLine(intString);
+
     }
 }
 
