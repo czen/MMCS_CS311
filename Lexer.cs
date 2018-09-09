@@ -9,7 +9,6 @@ public class LexerException : System.Exception
 
 public class Lexer
 {
-
     protected int position;
     protected char currentCh;       // очередной считанный символ
     protected int currentCharValue; // целое значение очередного считанного символа
@@ -57,41 +56,45 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        if (char.IsDigit(currentCh))
-        {
-            NextCh();
-        }
-        else
-        {
-            Error();
-        }
-
-        while (currentCharValue != -1)
+      
+        while (char.IsDigit(currentCh) || char.IsLetter(currentCh))
         {
             if (char.IsDigit(currentCh))
             {
                 intString.Append(currentCh);
                 NextCh();
-            }
-            else
-                if (currentCh == ' ')
+                if (char.IsDigit(currentCh))
                 {
+                    intString.Append(currentCh);
                     NextCh();
                     if (char.IsDigit(currentCh))
-                    {
-                        intString.Append('\n');
-                        intString.Append(currentCh);
-                    }
-                    if (currentCharValue == -1)
                         Error();
                 }
-                else
-                    Error();
+            }
+
+            if (char.IsLetter(currentCh))
+            {
+                intString.Append(currentCh);
+                NextCh();
+                if (char.IsLetter(currentCh))
+                {
+                    intString.Append(currentCh);
+                    NextCh();
+                    if (char.IsLetter(currentCh))
+                        Error();
+                }
+            }
         }
-        System.Console.WriteLine("Integers are recognized");
+
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("Letters are recognized");
+        System.Console.WriteLine(intString);
     }
 }
-
 
 public class Program
 {
