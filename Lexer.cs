@@ -9,6 +9,7 @@ public class LexerException : System.Exception
 
 public class Lexer
 {
+
     protected int position;
     protected char currentCh;       // очередной считанный символ
     protected int currentCharValue; // целое значение очередного считанного символа
@@ -45,7 +46,6 @@ public class Lexer
 
 public class IntLexer : Lexer
 {
-
     protected System.Text.StringBuilder intString;
 
     public IntLexer(string input)
@@ -57,9 +57,8 @@ public class IntLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        if (char.IsLetter(currentCh))
+        if (char.IsDigit(currentCh))
         {
-            intString.Append(currentCh);
             NextCh();
         }
         else
@@ -67,32 +66,29 @@ public class IntLexer : Lexer
             Error();
         }
 
-        while (currentCh != ';')
+        while (currentCharValue != -1)
         {
-
-            if (currentCh == ',')
-            {
-                intString.Append('\n');
-                NextCh();
-                if (!char.IsLetter(currentCh))
-                    break;
-            }
-            else
+            if (char.IsDigit(currentCh))
             {
                 intString.Append(currentCh);
                 NextCh();
             }
-            
+            else
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    if (char.IsDigit(currentCh))
+                    {
+                        intString.Append('\n');
+                        intString.Append(currentCh);
+                    }
+                    if (currentCharValue == -1)
+                        Error();
+                }
+                else
+                    Error();
         }
-
-        NextCh();
-        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-        {
-            Error();
-        }
-
-        System.Console.WriteLine("letters are recognized");
-        System.Console.WriteLine(intString);
+        System.Console.WriteLine("Integers are recognized");
     }
 }
 
