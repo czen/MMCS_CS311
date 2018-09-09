@@ -45,7 +45,9 @@ public class Lexer
 
 public class IntLexer : Lexer
 {
+
     protected System.Text.StringBuilder intString;
+
     public IntLexer(string input)
         : base(input)
     {
@@ -56,43 +58,41 @@ public class IntLexer : Lexer
     {
         NextCh();
         if (char.IsLetter(currentCh))
-            NextCh();
-        else
-            if (currentCharValue == -1)
-                ;
-            else
-                Error();
-
-        while (currentCharValue != -1)
         {
-            if (!char.IsDigit(currentCh) && !char.IsLetter(currentCh))
-                Error();
-            if (char.IsDigit(currentCh))
-            {
-                NextCh();
-                if (currentCharValue == -1)
-                    break;
-                if (!char.IsLetter(currentCh))
-                    Error();
-                NextCh();
-                continue;
-            }
-            if (char.IsLetter(currentCh))
-            {
-                NextCh();
-                if (currentCharValue == -1)
-                    break;
-                if (!char.IsDigit(currentCh))
-                    Error();
-                NextCh();
-                continue;
-            }
-        } 
-            
-        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+            intString.Append(currentCh);
+            NextCh();
+        }
+        else
+        {
             Error();
+        }
 
-        System.Console.WriteLine("Integer is recognized");
+        while (currentCh != ';')
+        {
+
+            if (currentCh == ',')
+            {
+                intString.Append('\n');
+                NextCh();
+                if (!char.IsLetter(currentCh))
+                    break;
+            }
+            else
+            {
+                intString.Append(currentCh);
+                NextCh();
+            }
+            
+        }
+
+        NextCh();
+        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("letters are recognized");
+        System.Console.WriteLine(intString);
     }
 }
 
