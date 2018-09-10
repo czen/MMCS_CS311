@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +11,22 @@ namespace SimpleLangLexerTest
     {
         public static void Main()
         {
-            string fileContents = @"begin 
-id23 := 24;  
+            string fileContents = @"
+begin 
+id23 := 24 
+id23 += 5
+// my one line comment
++= ====
+<><=<<><
+{ my multiple
+line
+     comment }
+id24 := id23 / 5;
+id23 -= 2;
 cycle ; 2 id258 id29 ; 
-end";
+end
+
+";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
             try
