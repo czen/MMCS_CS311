@@ -464,6 +464,174 @@ public class DoubleLexer : Lexer
     }
 }
 
+public class TextLexer : Lexer
+{
+    protected System.Text.StringBuilder TextString;
+
+    public TextLexer(string input)
+        : base(input)
+    {
+        TextString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '\'')
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        bool close = false;
+        bool quote_inside = false;
+        while (currentCharValue != -1)
+        {
+            if (close)
+            {
+                quote_inside = true;
+                break;
+            }
+            if (currentCh == '\'')
+            {
+                close = true;
+            }
+            NextCh();
+        }
+
+
+        if (currentCharValue != -1 || quote_inside || !close) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("String is recognized");
+
+    }
+}
+
+public class CommentLexer : Lexer
+{
+    protected System.Text.StringBuilder CommentString;
+
+    public CommentLexer(string input)
+        : base(input)
+    {
+        CommentString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '/')
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        if (currentCh == '*')
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        bool last_star = false;
+        bool last_stick = false;
+        bool error = false;
+        while (currentCharValue != -1)
+        {
+            if (last_star && last_stick)
+            {
+                error = true;
+                break;
+            }
+            else if (currentCh == '*')
+            {
+                last_star = true;
+            }
+            else if (currentCh != '/' && last_star)
+            {
+                last_star = false;
+            }
+            else if (currentCh == '/' && last_star)
+            {
+                last_stick = true;
+            }
+
+            
+            NextCh();
+        }
+
+
+        if (currentCharValue != -1 || error || !last_star || !last_stick) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("Comment is recognized");
+
+    }
+}
+
+public class IdGroupLexer : Lexer
+{
+    protected System.Text.StringBuilder IdGroupString;
+
+    public IdGroupLexer(string input)
+        : base(input)
+    {
+        IdGroupString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (char.IsLetter(currentCh))
+        {
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        bool new_id = true;
+        bool error = false;
+        while ((char.IsDigit(currentCh) && new_id) || char.IsLetter(currentCh) || (currentCh == '.' && new_id))
+        {
+            if (currentCh == '.')
+            {
+                new_id = false;
+                error = true;
+            }
+            if(char.IsLetter(currentCh))
+            {
+                new_id = true;
+                error = false;
+            }
+            NextCh();
+        }
+
+
+        if (currentCharValue != -1 || error) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("Id sequence is recognized");
+
+    }
+}
+
 
 public class Program
 {
@@ -1087,6 +1255,250 @@ public class Program
         }
         System.Console.WriteLine("/----------------------------------------------/\n\n");
     }
+
+    private static void TestTextLexer()
+    {
+        System.Console.WriteLine("/----------------------------------------------/");
+        System.Console.WriteLine("Тестирование TextLexer...");
+
+        string s1 = "'fqqwe'";
+        string s2 = "'fqw'ewewe'";
+        string s3 = "eww'";
+        string s4 = "''";
+        string s5 = "'qwerew''";
+
+        Lexer L1 = new TextLexer(s1);
+        Lexer L2 = new TextLexer(s2);
+        Lexer L3 = new TextLexer(s3);
+        Lexer L4 = new TextLexer(s4);
+        Lexer L5 = new TextLexer(s5);
+
+        System.Console.WriteLine("Тест для строки " + s1);
+        try
+        {
+            L1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s2);
+        try
+        {
+            L2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s3);
+        try
+        {
+            L3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s4);
+        try
+        {
+            L4.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s5);
+        try
+        {
+            L5.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        System.Console.WriteLine("/----------------------------------------------/\n\n");
+    }
+
+    private static void TestCommentLexer()
+    {
+        System.Console.WriteLine("/----------------------------------------------/");
+        System.Console.WriteLine("Тестирование CommentLexer...");
+
+        string s1 = "/**/";
+        string s2 = "/*ffq*fe/*/";
+        string s3 = "/qwe";
+        string s4 = "/*ewqeqe";
+        string s5 = "*eee*/";
+
+        Lexer L1 = new CommentLexer(s1);
+        Lexer L2 = new CommentLexer(s2);
+        Lexer L3 = new CommentLexer(s3);
+        Lexer L4 = new CommentLexer(s4);
+        Lexer L5 = new CommentLexer(s5);
+
+        System.Console.WriteLine("Тест для строки " + s1);
+        try
+        {
+            L1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s2);
+        try
+        {
+            L2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s3);
+        try
+        {
+            L3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s4);
+        try
+        {
+            L4.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s5);
+        try
+        {
+            L5.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        System.Console.WriteLine("/----------------------------------------------/\n\n");
+    }
+
+    private static void TestIdGroupLexer()
+    {
+        System.Console.WriteLine("/----------------------------------------------/");
+        System.Console.WriteLine("Тестирование IdGroupLexer...");
+
+        string s1 = "a.b12c.fe";
+        string s2 = ".a123f.ff";
+        string s3 = "abc12";
+        string s4 = "a12f.qe.";
+        string s5 = "12.ffqwe2.ff";
+        string s6 = "fqeqwe.12eqer.1fe3";
+        string s7 = "";
+        string s8 = "0";
+
+        Lexer L1 = new IdGroupLexer(s1);
+        Lexer L2 = new IdGroupLexer(s2);
+        Lexer L3 = new IdGroupLexer(s3);
+        Lexer L4 = new IdGroupLexer(s4);
+        Lexer L5 = new IdGroupLexer(s5);
+        Lexer L6 = new IdGroupLexer(s6);
+        Lexer L7 = new IdGroupLexer(s7);
+        Lexer L8 = new IdGroupLexer(s8);
+
+        System.Console.WriteLine("Тест для строки " + s1);
+        try
+        {
+            L1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s2);
+        try
+        {
+            L2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s3);
+        try
+        {
+            L3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s4);
+        try
+        {
+            L4.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s5);
+        try
+        {
+            L5.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s6);
+        try
+        {
+            L6.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s7);
+        try
+        {
+            L7.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("Тест для строки " + s8);
+        try
+        {
+            L8.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+        System.Console.WriteLine("/----------------------------------------------/\n\n");
+    }
+
     public static void Main()
     {
         TestIntLexer();
@@ -1098,5 +1510,8 @@ public class Program
         TestDigitSequenceLexer();
         TestCharDigitGroupslexer();
         TestDoubleLexer();
+        TestTextLexer();
+        TestCommentLexer();
+        TestIdGroupLexer();
     }
 }
