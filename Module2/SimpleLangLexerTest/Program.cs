@@ -18,6 +18,16 @@ namespace SimpleLangLexerTest
             end",
             @"begin
             > < >= <= = <> 
+            end",
+            @"begin
+            //ggffgfgfgfggf//fddfdf
+            end",
+            @"begin
+            {
+            fsffgfgfg
+            }
+            <><><
+            {
             end"
         };
         public static void TestTasks()

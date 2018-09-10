@@ -45,7 +45,9 @@ namespace SimpleLangLexer
         MOREEQUAL,
         LESSEQUAL,
         EQUAL,
-        NOTEQUAL
+        NOTEQUAL,
+        COMMENT,
+        LONGCOMMENT
     }
 
     public class Lexer
@@ -194,6 +196,13 @@ namespace SimpleLangLexer
                     NextCh();
                     LexKind = Tok.DIVISIONASSIGN;
                 }
+                else if (currentCh == '/')
+                {
+                    NextCh();
+                    while (currentCh != '\n')
+                        NextCh();
+                    LexKind = Tok.COMMENT;
+                }
             }
             else if (currentCh == ',')
             {
@@ -239,6 +248,22 @@ namespace SimpleLangLexer
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
+            }
+            else if (currentCh == '{')
+            {
+                NextCh();
+                LexKind = Tok.LONGCOMMENT;
+                while (true)
+                {
+                    if (currentCh == '}')
+                    {
+                        NextCh();
+                        break;
+                    }
+                    if (currentCh == 0)
+                        LexError("Comment unclosed ");
+                    NextCh();
+                }
             }
             else if (currentCh == ':')
             {
