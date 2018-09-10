@@ -638,7 +638,7 @@ public class Program
     private static void TestIntLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование IntLexer...");
+        System.Console.WriteLine("Test IntLexer...");
         string s1 = "-1532";
         string s2 = "0";
         string s3 = "2+1";
@@ -651,7 +651,7 @@ public class Program
         Lexer L4 = new IntLexer(s4);
         Lexer L5 = new IntLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();        
@@ -661,7 +661,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -671,7 +671,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -681,7 +681,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -691,7 +691,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -707,7 +707,7 @@ public class Program
     private static void TestToIntLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование ToIntLexer...");
+        System.Console.WriteLine("Test ToIntLexer...");
 
         string s1 = "+143232";
         string s2 = "0";
@@ -721,7 +721,7 @@ public class Program
         Lexer L4 = new ToIntLexer(s4);
         Lexer L5 = new ToIntLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -731,7 +731,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -741,7 +741,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -751,7 +751,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -761,7 +761,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -776,7 +776,7 @@ public class Program
     private static void TestIdLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование IdLexer...");
+        System.Console.WriteLine("Test IdLexer...");
 
         string s1 = "a121fqweqf214155";
         string s2 = "121fqweqf214155";
@@ -790,7 +790,7 @@ public class Program
         Lexer L4 = new IdLexer(s4);
         Lexer L5 = new IdLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -800,7 +800,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -810,7 +810,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -820,7 +820,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -830,7 +830,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -845,7 +845,7 @@ public class Program
     private static void TestSignIntLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование SignIntLexer...");
+        System.Console.WriteLine("Test SignIntLexer...");
 
         string s1 = "+12";
         string s2 = "-12";
@@ -859,7 +859,7 @@ public class Program
         Lexer L4 = new SignIntLexer(s4);
         Lexer L5 = new SignIntLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -869,7 +869,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -879,7 +879,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -889,7 +889,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -899,7 +899,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -914,7 +914,7 @@ public class Program
     private static void TestCharDigitLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование CharDigitLexer...");
+        System.Console.WriteLine("Test CharDigitLexer...");
 
         string s1 = "a1b2c3";
         string s2 = "1a2b3c";
@@ -928,7 +928,7 @@ public class Program
         Lexer L4 = new CharDigitLexer(s4);
         Lexer L5 = new CharDigitLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -938,7 +938,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -948,7 +948,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -958,7 +958,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -968,7 +968,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -983,7 +983,7 @@ public class Program
     private static void TestLetterSequenceLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование LetterSequenceLexer...");
+        System.Console.WriteLine("Test LetterSequenceLexer...");
 
         string s1 = "a;b;c,d,e;f,g;h";
         string s2 = ";a,b";
@@ -997,7 +997,7 @@ public class Program
         Lexer L4 = new LetterSequenceLexer(s4);
         Lexer L5 = new LetterSequenceLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1007,7 +1007,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1017,7 +1017,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1027,7 +1027,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1037,7 +1037,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1052,7 +1052,7 @@ public class Program
     private static void TestDigitSequenceLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование DigitSequenceLexer...");
+        System.Console.WriteLine("Test DigitSequenceLexer...");
 
         string s1 = "1      3  4 5          6 7";
         string s2 = " 1 2 3    4";
@@ -1066,7 +1066,7 @@ public class Program
         Lexer L4 = new DigitSequenceLexer(s4);
         Lexer L5 = new DigitSequenceLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1076,7 +1076,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1086,7 +1086,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1096,7 +1096,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1106,7 +1106,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1121,7 +1121,7 @@ public class Program
     private static void TestCharDigitGroupslexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование CharDigitGroupsLexer...");
+        System.Console.WriteLine("Test CharDigitGroupsLexer...");
 
         string s1 = "a12bc3fe45";
         string s2 = "abc12f34";
@@ -1135,7 +1135,7 @@ public class Program
         Lexer L4 = new CharDigitGroupsLexer(s4);
         Lexer L5 = new CharDigitGroupsLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1145,7 +1145,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1155,7 +1155,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1165,7 +1165,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1175,7 +1175,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1190,7 +1190,7 @@ public class Program
     private static void TestDoubleLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование DoubleLexer...");
+        System.Console.WriteLine("Test DoubleLexer...");
 
         string s1 = "123.456";
         string s2 = ".123";
@@ -1204,7 +1204,7 @@ public class Program
         Lexer L4 = new DoubleLexer(s4);
         Lexer L5 = new DoubleLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1214,7 +1214,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1224,7 +1224,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1234,7 +1234,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1244,7 +1244,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1259,7 +1259,7 @@ public class Program
     private static void TestTextLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование TextLexer...");
+        System.Console.WriteLine("Test TextLexer...");
 
         string s1 = "'fqqwe'";
         string s2 = "'fqw'ewewe'";
@@ -1273,7 +1273,7 @@ public class Program
         Lexer L4 = new TextLexer(s4);
         Lexer L5 = new TextLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1283,7 +1283,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1293,7 +1293,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1303,7 +1303,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1313,7 +1313,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1328,7 +1328,7 @@ public class Program
     private static void TestCommentLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование CommentLexer...");
+        System.Console.WriteLine("Test CommentLexer...");
 
         string s1 = "/**/";
         string s2 = "/*ffq*fe/*/";
@@ -1342,7 +1342,7 @@ public class Program
         Lexer L4 = new CommentLexer(s4);
         Lexer L5 = new CommentLexer(s5);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1352,7 +1352,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1362,7 +1362,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1372,7 +1372,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1382,7 +1382,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1397,7 +1397,7 @@ public class Program
     private static void TestIdGroupLexer()
     {
         System.Console.WriteLine("/----------------------------------------------/");
-        System.Console.WriteLine("Тестирование IdGroupLexer...");
+        System.Console.WriteLine("Test IdGroupLexer...");
 
         string s1 = "a.b12c.fe";
         string s2 = ".a123f.ff";
@@ -1417,7 +1417,7 @@ public class Program
         Lexer L7 = new IdGroupLexer(s7);
         Lexer L8 = new IdGroupLexer(s8);
 
-        System.Console.WriteLine("Тест для строки " + s1);
+        System.Console.WriteLine("Test for " + s1);
         try
         {
             L1.Parse();
@@ -1427,7 +1427,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s2);
+        System.Console.WriteLine("Test for " + s2);
         try
         {
             L2.Parse();
@@ -1437,7 +1437,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s3);
+        System.Console.WriteLine("Test for " + s3);
         try
         {
             L3.Parse();
@@ -1447,7 +1447,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s4);
+        System.Console.WriteLine("Test for " + s4);
         try
         {
             L4.Parse();
@@ -1457,7 +1457,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s5);
+        System.Console.WriteLine("Test for " + s5);
         try
         {
             L5.Parse();
@@ -1467,7 +1467,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s6);
+        System.Console.WriteLine("Test for " + s6);
         try
         {
             L6.Parse();
@@ -1477,7 +1477,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s7);
+        System.Console.WriteLine("Test for " + s7);
         try
         {
             L7.Parse();
@@ -1487,7 +1487,7 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
-        System.Console.WriteLine("Тест для строки " + s8);
+        System.Console.WriteLine("Test for " + s8);
         try
         {
             L8.Parse();
