@@ -25,7 +25,17 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT
     }
 
     public class Lexer
@@ -71,6 +81,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -139,10 +154,38 @@ namespace SimpleLangLexer
                 NextCh();
                 if (currentCh != '=')
                 {
-                    LexError("= was expected");
+                    LexKind = Tok.COLON;
                 }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
+                }
+            }
+            else if (currentCh == ',')
+            {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                LexKind = Tok.COMMA;
+            }
+            else if(currentCh == '+')
+            {
+                NextCh();
+                LexKind = Tok.PLUS;
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                LexKind = Tok.MINUS;
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                LexKind = Tok.MULTIPLY;
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                LexKind = Tok.DIVIDE;
             }
             else if (char.IsLetter(currentCh))
             {

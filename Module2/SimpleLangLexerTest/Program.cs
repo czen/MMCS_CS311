@@ -12,8 +12,8 @@ namespace SimpleLangLexerTest
         public static void Main()
         {
             string fileContents = @"begin 
-id23 := 24;  
-cycle ; 2 id258 id29 ; 
+id23 := +24;  
+cycle ; 2 id258 id29 :+ - / * and mod div or not ; 
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
