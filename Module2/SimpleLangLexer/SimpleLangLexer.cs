@@ -245,12 +245,13 @@ namespace SimpleLangLexer
                         NextCh();
                     if ((int)currentCh == 0)
                         LexKind = Tok.EOF;
+                    NextLexem();
                 }
                 else
                 {
                     LexKind = Tok.DIV;
                 }
-                NextLexem();
+                
 
             }
             else if (currentCh == '>')
