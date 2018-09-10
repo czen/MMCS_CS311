@@ -20,9 +20,9 @@ namespace SimpleLangLexer
         EOF,
         ID,
         INUM,
-        COLON,          // :
-        SEMICOLON,      // ;
-        ASSIGN,         // :=
+        COLON,           // :
+        SEMICOLON,       // ;
+        ASSIGN,          // :=
         BEGIN,
         END,
         CYCLE,
@@ -101,6 +101,13 @@ namespace SimpleLangLexer
         public string FinishCurrentLine()
         {
             return CurrentLineText + inputReader.ReadLine();
+        }
+
+        private void SynError()
+        {
+            System.Text.StringBuilder errorDescription = new System.Text.StringBuilder();
+            errorDescription.AppendFormat("Syntax error in line {0}", row);
+            throw new LexerException(errorDescription.ToString());
         }
 
         private void LexError(string message)
@@ -269,14 +276,13 @@ namespace SimpleLangLexer
 
             else if(currentCh == '{')
             {
-                while (currentCh != '}' || (int)currentCh != 0)
+                while (currentCh != '}' && (int)currentCh != 0)
                     NextCh();
                 if ((int)currentCh == 0)
-                    LexError("Incorrect symbol " + currentCh);
+                    SynError();
                 NextCh();
                 NextLexem();
             }
-
 
             else if (char.IsLetter(currentCh))
             {
