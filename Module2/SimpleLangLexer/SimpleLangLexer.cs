@@ -25,7 +25,27 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLE,
+        DIVISION, 
+        DIV,
+        MOD, 
+        AND,
+        OR,
+        NOT,
+        PLUSASSIGN,
+        MINUSASSIGN,
+        MULTIPLEASSIGN,
+        DIVISIONASSIGN,
+        MORE,
+        LESS,
+        MOREEQUAL,
+        LESSEQUAL,
+        EQUAL,
+        NOTEQUAL
     }
 
     public class Lexer
@@ -71,6 +91,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -129,20 +154,101 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
+
+            if (currentCh == '+')
+            {
+                NextCh();
+                LexKind = Tok.PLUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUSASSIGN;
+                }
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                LexKind = Tok.MINUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUSASSIGN;
+                }
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                LexKind = Tok.MULTIPLE;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTIPLEASSIGN;
+                }
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                LexKind = Tok.DIVISION;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVISIONASSIGN;
+                }
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == ';')
+            {
+                NextCh();
+                LexKind = Tok.SEMICOLON;
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                LexKind = Tok.MORE;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MOREEQUAL;
+                }
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                LexKind = Tok.LESS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSEQUAL;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
             else if (currentCh == ':')
             {
+                LexKind = Tok.COLON;
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    LexKind = Tok.ASSIGN;
+                    NextCh();
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
             }
             else if (char.IsLetter(currentCh))
             {
