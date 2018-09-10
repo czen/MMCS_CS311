@@ -226,8 +226,16 @@ namespace SimpleLangLexer
                     NextCh();
                     LexKind = Tok.DECASSIGN;
                 }
+                else if (currentCh == '/')
+                {
+                    while (LexRow == row && (int)currentCh != 0)
+                        NextCh();
+                    if ((int)currentCh == 0)
+                        LexKind = Tok.EOF;
+                }
                 else
                     LexKind = Tok.DIVISION;
+                NextLexem();
             }
 
             else if (currentCh == '>')
@@ -257,6 +265,16 @@ namespace SimpleLangLexer
                 }
                 else
                     LexKind = Tok.LESS;
+            }
+
+            else if(currentCh == '{')
+            {
+                while (currentCh != '}' || (int)currentCh != 0)
+                    NextCh();
+                if ((int)currentCh == 0)
+                    LexError("Incorrect symbol " + currentCh);
+                NextCh();
+                NextLexem();
             }
 
 
