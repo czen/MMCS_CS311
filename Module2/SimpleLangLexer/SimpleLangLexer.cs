@@ -270,11 +270,9 @@ namespace SimpleLangLexer{
                 LexValue = Int32.Parse(LexText);
                 LexKind = Tok.INUM;
             }
-            {
+            else if ((int)currentCh == 0){
                 LexKind = Tok.EOF;
             }
-            else
-            {
             else{
                 LexError("Incorrect symbol " + currentCh);
             }
@@ -287,6 +285,7 @@ namespace SimpleLangLexer{
             } while (LexKind != Tok.EOF);
         }
 
+        public string TokToString(Tok t){
             var result = t.ToString();
             switch (t){
                 case Tok.ID: result += ' ' + LexText;
