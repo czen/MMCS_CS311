@@ -239,10 +239,10 @@ namespace SimpleLangLexer
                         NextCh();
                     if ((int)currentCh == 0)
                         LexKind = Tok.EOF;
+                    NextLexem();
                 }
                 else
                     LexKind = Tok.DIVISION;
-                NextLexem();
             }
 
             else if (currentCh == '>')
