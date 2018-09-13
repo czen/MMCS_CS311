@@ -40,7 +40,7 @@ namespace SimpleLangLexer
         ADDASSIGN,
         SUBASSIGN,
         MULASSIGN,
-        DIVASSIGN, 
+        DIVASSIGN,
 
         LESS,
         GREATER,
@@ -50,7 +50,6 @@ namespace SimpleLangLexer
         NOTEQ,
 
         COMMENT,
-
     }
 
     public class Lexer
@@ -66,7 +65,7 @@ namespace SimpleLangLexer
         public int LexValue;                        // Целое значение, связанное с лексемой LexNum
 
         private string CurrentLineText;  // Накапливает символы текущей строки для сообщений об ошибках
-        
+
 
         public Lexer(TextReader input)
         {
@@ -79,7 +78,8 @@ namespace SimpleLangLexer
             NextLexem();    // Считать первую лексему, заполнив LexText, LexKind и, возможно, LexValue
         }
 
-        public void Init() {
+        public void Init()
+        {
 
         }
 
@@ -159,8 +159,22 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            
-            if (currentCh == '<')
+
+            if (currentCh == '{')
+            {
+                while (currentCh != '}' && (int)currentCh != 0)
+                {
+                    NextCh();
+                }
+                if ((int)currentCh == 0)
+                {
+                    LexError("the end of the comment '}' was expected");
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
+            }
+
+            else if (currentCh == '<')
             {
                 NextCh();
                 if (currentCh == '>')
@@ -325,9 +339,11 @@ namespace SimpleLangLexer
             var result = t.ToString();
             switch (t)
             {
-                case Tok.ID: result += ' ' + LexText;
+                case Tok.ID:
+                    result += ' ' + LexText;
                     break;
-                case Tok.INUM: result += ' ' + LexValue.ToString();
+                case Tok.INUM:
+                    result += ' ' + LexValue.ToString();
                     break;
             }
             return result;
