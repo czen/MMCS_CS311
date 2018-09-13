@@ -9,7 +9,7 @@ public class LexerException : System.Exception
 
 public class Lexer
 {
-
+    //jh
     protected int position;
     protected char currentCh;       // очередной считанный символ
     protected int currentCharValue; // целое значение очередного считанного символа
