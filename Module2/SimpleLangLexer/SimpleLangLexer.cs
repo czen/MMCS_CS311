@@ -8,7 +8,8 @@ namespace SimpleLangLexer{
         public LexerException(string msg) : base(msg){ }
     }
 
-    public enum Tok{
+    public enum Tok
+    {
         EOF,
         ID,
         INUM,
@@ -42,7 +43,8 @@ namespace SimpleLangLexer{
         COMMENT   
     }
 
-    public class Lexer{
+    public class Lexer
+    {
         private int position;
         private char currentCh;                      // Текущий символ
         public int LexRow, LexCol;                  // Строка-столбец начала лексемы. Конец лексемы = LexCol+LexText.Length
@@ -55,7 +57,8 @@ namespace SimpleLangLexer{
 
         private string CurrentLineText;  // Накапливает символы текущей строки для сообщений об ошибках
         
-        public Lexer(TextReader input){
+        public Lexer(TextReader input)
+        {
             CurrentLineText = "";
             inputReader = input;
             keywordsMap = new Dictionary<string, Tok>();
@@ -68,13 +71,17 @@ namespace SimpleLangLexer{
         public void Init() {
 
         }
-        private void PassSpaces(){
-            while (char.IsWhiteSpace(currentCh)){
+
+        private void PassSpaces()
+        {
+            while (char.IsWhiteSpace(currentCh))
+            {
                 NextCh();
             }
         }
 
-        private void InitKeywords(){
+        private void InitKeywords()
+        {
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
@@ -85,11 +92,13 @@ namespace SimpleLangLexer{
             keywordsMap["not"] = Tok.NOT;
         }
 
-        public string FinishCurrentLine(){
+        public string FinishCurrentLine()
+        {
             return CurrentLineText + inputReader.ReadLine();
         }
 
-        private void LexError(string message){
+        private void LexError(string message)
+        {
             System.Text.StringBuilder errorDescription = new System.Text.StringBuilder();
             errorDescription.AppendFormat("Lexical error in line {0}:", row);
             errorDescription.Append("\n");
@@ -104,30 +113,36 @@ namespace SimpleLangLexer{
             throw new LexerException(errorDescription.ToString());
         }
 
-        private void NextCh(){
+        private void NextCh()
+        {
             // В LexText накапливается предыдущий символ и считывается следующий символ
             LexText += currentCh;
             var nextChar = inputReader.Read();
-            if (nextChar != -1){
+            if (nextChar != -1)
+            {
                 currentCh = (char)nextChar;
-                if (currentCh != '\n'){
+                if (currentCh != '\n')
+                {
                     col += 1;
                     CurrentLineText += currentCh;
                 }
-                else{
+                else
+                {
                     row += 1;
                     col = 0;
                     CurrentLineText = "";
                 }
             }
-            else{
+            else
+            {
                 currentCh = (char)0; // если достигнут конец файла, то возвращается #0
             }
         }
 
-        public void NextLexem(){
+        public void NextLexem()
+        {
             PassSpaces();
-            // К этому моменту первый символ лексемы считан в ch
+            // R К этому моменту первый символ лексемы считан в ch
             LexText = "";
             LexRow = row;
             LexCol = col;
@@ -189,28 +204,8 @@ namespace SimpleLangLexer{
                         NextCh();                    
                     }
                 }
-                    //task 5
-                else if(currentCh == '*'){
-                    NextCh();
-                    LexKind = Tok.COMMENT;
-                    bool end = false;
-                    while ((int)currentCh != 0) { 
-                        if(currentCh == '*'){
-                            NextCh();
-                            if (currentCh == '/'){
-                                end = true;
-                                break;
-                            }
-                            else {
-                                NextCh();
-                            }
-                        }
-                    }
-                    if (!end){
-                        LexError("Open comment");
-                    }
-                }
             }
+
             //task 3
             else if (currentCh == '<'){
                 NextCh();
@@ -236,28 +231,49 @@ namespace SimpleLangLexer{
                 NextCh();
                 LexKind = Tok.EQUAL;     
             }
-            else if (char.IsLetter(currentCh)){
-                while (char.IsLetterOrDigit(currentCh)){
+			// task 5
+            else if (currentCh == '{'){
+                NextCh();
+                LexKind = Tok.COMMENT;
+                while (currentCh != '}'){
+                    NextCh();
+                    if ((int)currentCh == 0){
+                        LexError("Open comment");
+                        break;
+                    }
+                }
+				NextCh();
+            }
+            else if (char.IsLetter(currentCh))
+            {
+                while (char.IsLetterOrDigit(currentCh))
+                {
                     NextCh();
                 }
-                if (keywordsMap.ContainsKey(LexText)){
+                if (keywordsMap.ContainsKey(LexText))
+                {
                     LexKind = keywordsMap[LexText];
                 }
-                else{
+                else
+                {
                     LexKind = Tok.ID;
                 }
             }
-            else if (char.IsDigit(currentCh)){
-                while (char.IsDigit(currentCh)){
+            else if (char.IsDigit(currentCh))
+            {
+                while (char.IsDigit(currentCh))
+                {
                     NextCh();
                 }
                 LexValue = Int32.Parse(LexText);
                 LexKind = Tok.INUM;
             }
-            else if ((int)currentCh == 0){
+            else if ((int)currentCh == 0)
+            {
                 LexKind = Tok.EOF;
             }
-            else{
+            else
+            {
                 LexError("Incorrect symbol " + currentCh);
             }
         }
