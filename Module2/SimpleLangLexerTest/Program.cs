@@ -12,9 +12,12 @@ namespace SimpleLangLexerTest
         public static void Main()
         {
             string fileContents = @"begin 
-id23 := 24;  
-cycle ; 2 id258 id29 ; 
-end";
+id23 :=24;
+{ fg }
+or 2=3 : 2<>3 and 3 >2, 5 mod 2
+cycle ; 2>=3 id258 +=id29 ; 
+end
+//qwdfuhsdf";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
             try

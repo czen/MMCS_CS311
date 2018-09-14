@@ -3,16 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SimpleLangLexer
-{
-
-    public class LexerException : System.Exception
-    {
-        public LexerException(string msg)
-            : base(msg)
-        {
-        }
-
+namespace SimpleLangLexer{
+    public class LexerException : System.Exception{
+        public LexerException(string msg) : base(msg){ }
     }
 
     public enum Tok
@@ -20,12 +13,34 @@ namespace SimpleLangLexer
         EOF,
         ID,
         INUM,
-        COLON,
+        COLON, // :
         SEMICOLON,
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,  // ,
+        PLUS, // +
+        MINUS, // -
+        MULTIPLE, //*
+        DIVIDE, // /
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        PSELF, // +=
+        MSELF, // -=
+        MLSELF, // *=
+        DSELF, // /=
+        LESS, // <
+        MORE, // >
+        LESSANDEQUAL, // <=
+        MOREANDEQUAL, // >=
+        EQUAL, // =
+        NOTEQUAL, // <>
+        STRCOMMENT,
+        COMMENT   
     }
 
     public class Lexer
@@ -42,7 +57,6 @@ namespace SimpleLangLexer
 
         private string CurrentLineText;  // Накапливает символы текущей строки для сообщений об ошибках
         
-
         public Lexer(TextReader input)
         {
             CurrentLineText = "";
@@ -71,6 +85,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -129,20 +148,101 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
-            {
+            if (currentCh == ';') {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
-            else if (currentCh == ':')
-            {
+            //tasks 1 and 2
+            else if (currentCh == ':') {
                 NextCh();
-                if (currentCh != '=')
-                {
-                    LexError("= was expected");
+                LexKind = Tok.COLON;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
+            }
+            else if (currentCh == ',') {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+') {
+                NextCh();
+                LexKind = Tok.PLUS;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.PSELF;
+                }
+            }
+            else if (currentCh == '-'){
+                NextCh();
+                LexKind = Tok.MINUS;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.MSELF;
+                }                
+            }
+            else if (currentCh == '*'){
+                NextCh();
+                LexKind = Tok.MULTIPLE;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.MLSELF;
+                }
+            }
+            else if (currentCh == '/'){
+                NextCh();
+                LexKind = Tok.DIVIDE;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.DSELF;
+                }
+                    //task 4 
+                else if(currentCh == '/'){
+                    NextCh();
+                    LexKind = Tok.STRCOMMENT;
+                    while (currentCh != '\n' && (int)currentCh != 0){
+                        NextCh();                    
+                    }
+                }
+            }
+
+            //task 3
+            else if (currentCh == '<'){
+                NextCh();
+                LexKind = Tok.LESS;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.LESSANDEQUAL;
+                }
+                else if (currentCh == '>') {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+            }
+            else if (currentCh == '>'){
+                NextCh();
+                LexKind = Tok.MORE;
+                if (currentCh == '='){
+                    NextCh();
+                    LexKind = Tok.MOREANDEQUAL;
+                }
+            }
+            else if (currentCh == '='){
+                NextCh();
+                LexKind = Tok.EQUAL;     
+            }
+			// task 5
+            else if (currentCh == '{'){
+                NextCh();
+                LexKind = Tok.COMMENT;
+                while (currentCh != '}'){
+                    NextCh();
+                    if ((int)currentCh == 0){
+                        LexError("Open comment");
+                        break;
+                    }
+                }
+				NextCh();
             }
             else if (char.IsLetter(currentCh))
             {
@@ -178,20 +278,16 @@ namespace SimpleLangLexer
             }
         }
 
-        public virtual void ParseToConsole()
-        {
-            do
-            {
+        public virtual void ParseToConsole(){
+            do{
                 Console.WriteLine(TokToString(LexKind));
                 NextLexem();
             } while (LexKind != Tok.EOF);
         }
 
-        public string TokToString(Tok t)
-        {
+        public string TokToString(Tok t){
             var result = t.ToString();
-            switch (t)
-            {
+            switch (t){
                 case Tok.ID: result += ' ' + LexText;
                     break;
                 case Tok.INUM: result += ' ' + LexValue.ToString();
