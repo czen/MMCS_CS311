@@ -46,7 +46,8 @@ namespace SimpleLangLexer
         LESSOREQ, // <=
         EQUAL,  // =
         NOTEQUAL, // <>
-        DOUBLESlASH   //task4
+        DOUBLESlASH,   //task4
+        COMMENT //task5
     }
 
     public class Lexer
@@ -162,7 +163,20 @@ namespace SimpleLangLexer
             //task4 пропуск комментариев // - до конца строки
             //task5 пропуск комментариев { комментарий до закрывающей фигурной скобки }. 
             //Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
-            if (currentCh == '>')
+            if (currentCh == '{')
+            {
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                    {
+                        LexError("'}' was expected");
+                    }
+                    NextCh();
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
+            }
+            else if (currentCh == '>')
             {
                 NextCh();
                 if (currentCh == '=')

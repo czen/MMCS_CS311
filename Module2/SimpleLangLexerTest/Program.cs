@@ -101,6 +101,52 @@ namespace SimpleLangLexerTest
                 Console.WriteLine("lexer error: " + e.Message);
             }
         }
+        public static void test5_1()
+        {
+            string fileContents = @"begin
+                                    {id0 > id1;}
+                                    id1 < id0;
+                                    3 >= 4; {5 <= 6;
+                                    7 = 8;}
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            try
+            {
+                do
+                {
+                    Console.WriteLine(l.TokToString(l.LexKind));
+                    l.NextLexem();
+                } while (l.LexKind != Tok.EOF);
+            }
+            catch (LexerException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+        }
+        public static void test5_2()
+        {
+            string fileContents = @"begin
+                                    {id0 > id1;}
+                                    id1 < id0;
+                                    3 >= 4; {5 <= 6;
+                                    7 = 8;
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            try
+            {
+                do
+                {
+                    Console.WriteLine(l.TokToString(l.LexKind));
+                    l.NextLexem();
+                } while (l.LexKind != Tok.EOF);
+            }
+            catch (LexerException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+        }
         public static void Main()
         {
             Console.WriteLine("=============test 1============");
@@ -111,6 +157,10 @@ namespace SimpleLangLexerTest
             test3();
             Console.WriteLine("=============test 4============");
             test4();
+            Console.WriteLine("=============test 5 (1) ============");
+            test5_1();
+            Console.WriteLine("=============test 5 (2) ============");
+            test5_2();
         }
     }
 }
