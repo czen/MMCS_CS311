@@ -34,9 +34,83 @@ namespace SimpleLangLexerTest
                 Console.WriteLine("lexer error: " + e.Message);
             }
         }
+        public static void test2()
+        {
+            string fileContents = @"begin
+                                    id0 += id0; id0 -= id0;
+                                    id0 *= id0; id0 /= id0;
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            try
+            {
+                do
+                {
+                    Console.WriteLine(l.TokToString(l.LexKind));
+                    l.NextLexem();
+                } while (l.LexKind != Tok.EOF);
+            }
+            catch (LexerException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+        }
+        public static void test3()
+        {
+            string fileContents = @"begin
+                                    id0 > id1; 
+                                    id1 < id0;
+                                    3 >= 4; 5 <= 6;
+                                    7 = 8; 9 <> 10;
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            try
+            {
+                do
+                {
+                    Console.WriteLine(l.TokToString(l.LexKind));
+                    l.NextLexem();
+                } while (l.LexKind != Tok.EOF);
+            }
+            catch (LexerException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+        }
+        public static void test4()
+        {
+            string fileContents = @"begin
+                                    // id0 > id1; 
+                                    id1 < id0;
+                                    3 >= 4; // 5 <= 6;
+                                    7 = 8;
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            try
+            {
+                do
+                {
+                    Console.WriteLine(l.TokToString(l.LexKind));
+                    l.NextLexem();
+                } while (l.LexKind != Tok.EOF);
+            }
+            catch (LexerException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+        }
         public static void Main()
         {
-            test1();
+            Console.WriteLine("=============test 1============");
+            //test1();
+            Console.WriteLine("=============test 2============");
+            test2();
+            Console.WriteLine("=============test 3============");
+            test3();
+            Console.WriteLine("=============test 4============");
+            test4();
         }
     }
 }

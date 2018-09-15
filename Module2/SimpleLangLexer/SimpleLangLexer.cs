@@ -35,7 +35,18 @@ namespace SimpleLangLexer
         MOD,
         AND,
         OR,
-        NOT
+        NOT,
+        ADDASSIGNMENT, // task2 ->  +=
+        SUBASSIGNMENT,          //-=
+        MULTASSIGNMENT,         //*=
+        DIVASSIGNMENT,           // /=
+        GREATER,//task3   -> >
+        LESS,    //   <
+        GREATEROREQ, // >=
+        LESSOREQ, // <=
+        EQUAL,  // =
+        NOTEQUAL, // <>
+        DOUBLESlASH   //task4
     }
 
     public class Lexer
@@ -151,7 +162,38 @@ namespace SimpleLangLexer
             //task4 пропуск комментариев // - до конца строки
             //task5 пропуск комментариев { комментарий до закрывающей фигурной скобки }. 
             //Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
-            if (currentCh == ',')
+            if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATEROREQ;
+                }
+                else
+                    LexKind = Tok.GREATER;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSOREQ;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+                else  LexKind = Tok.LESS;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == ',')
             {
                 NextCh();
                 LexKind = Tok.COMMA;
@@ -159,22 +201,51 @@ namespace SimpleLangLexer
             else if (currentCh == '+')
             {
                 NextCh();
-                LexKind = Tok.PLUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ADDASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.PLUS;
             }
             else if (currentCh == '-')
             {
                 NextCh();
-                LexKind = Tok.MINUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.SUBASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.MINUS;
             }
             else if (currentCh == '*')
             {
                 NextCh();
-                LexKind = Tok.MULTIPLICATION;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.MULTIPLICATION;
             }
             else if (currentCh == '/')
             {
                 NextCh();
-                LexKind = Tok.DIVISION;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVASSIGNMENT;
+                }
+                else if (currentCh == '/')
+                {
+                    while (currentCh != '\n')
+                        NextCh();
+                    LexKind = Tok.DOUBLESlASH;
+                }
+                else LexKind = Tok.DIVISION;
             }
             else if (currentCh == ';')
             {
