@@ -9,12 +9,16 @@ namespace SimpleLangLexerTest
 {
     class Program
     {
-        public static void Main()
+        public static void test1()
         {
             string fileContents = @"begin 
-id23 := 24;  
-cycle ; 2 id258 id29 ; 
-end";
+                                    id0 := 3, id1 := 4;
+                                    id2 : id3;
+                                    id0 := id0 mod 10 + id0 div 3;
+                                    id2 := id2 / 3 - 5 * id1;
+                                    id4 := 1 and 0 or 4;
+                                    id5 := not id2;
+                                    end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
             try
@@ -29,6 +33,10 @@ end";
             {
                 Console.WriteLine("lexer error: " + e.Message);
             }
+        }
+        public static void Main()
+        {
+            test1();
         }
     }
 }

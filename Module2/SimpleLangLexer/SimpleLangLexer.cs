@@ -19,13 +19,23 @@ namespace SimpleLangLexer
     {
         EOF,
         ID,
-        INUM,
-        COLON,
-        SEMICOLON,
-        ASSIGN,
+        INUM,               //number
+        COLON,           //  :
+        SEMICOLON,      //   ;
+        ASSIGN,          // =
         BEGIN,
         END,
-        CYCLE
+        CYCLE, 
+        COMMA,  //task1 -> ,
+        PLUS,       // +
+        MINUS,
+        MULTIPLICATION, //*
+        DIVISION,       // /
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT
     }
 
     public class Lexer
@@ -71,6 +81,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -129,7 +144,39 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
+
+            //task1  , : + - * / div mod and or not
+            //task2 += -= *= /=
+            //task3  > < >= <= = <>
+            //task4 пропуск комментариев // - до конца строки
+            //task5 пропуск комментариев { комментарий до закрывающей фигурной скобки }. 
+            //Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
+            if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                LexKind = Tok.PLUS;
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                LexKind = Tok.MINUS;
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                LexKind = Tok.MULTIPLICATION;
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                LexKind = Tok.DIVISION;
+            }
+            else if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
@@ -137,12 +184,13 @@ namespace SimpleLangLexer
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                    LexKind = Tok.COLON;
             }
             else if (char.IsLetter(currentCh))
             {
