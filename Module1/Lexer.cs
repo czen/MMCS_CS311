@@ -435,6 +435,17 @@ public class Task8 : Lexer
 
         NextCh();
 
+        if (char.IsDigit(currentCh))
+        {
+            str += currentCh;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+
         while (currentCharValue != '.')
         {
             if (char.IsDigit(currentCh))
@@ -449,6 +460,17 @@ public class Task8 : Lexer
         }
         str += ',';
         NextCh();
+
+        if (char.IsDigit(currentCh))
+        {
+            str += currentCh;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
         while (currentCharValue != -1)
         {
             if (char.IsDigit(currentCh))
@@ -658,7 +680,7 @@ public class Program
 
 
         /*----------8 задание------------------*/
-        input = "3.1456";
+        input = "1.456";
         L = new Task8(input);
         try
         {
