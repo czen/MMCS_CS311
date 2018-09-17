@@ -47,16 +47,7 @@ namespace SimpleLangLexer
         EQUAL,
         NOTEQUAL,
         COMMENT,
-        LONGCOMMENT,
-        WHILE,
-        DO,
-        FOR,
-        TO,
-        IF,
-        THEN,
-        ELSE,
-        OPENBRACKET,
-        CLOSEBRACKET
+        LONGCOMMENT
     }
 
     public class Lexer
@@ -107,13 +98,6 @@ namespace SimpleLangLexer
             keywordsMap["and"] = Tok.AND;
             keywordsMap["or"] = Tok.OR;
             keywordsMap["not"] = Tok.NOT;
-            keywordsMap["while"] = Tok.WHILE;
-            keywordsMap["do"] = Tok.DO;
-            keywordsMap["for"] = Tok.FOR;
-            keywordsMap["to"] = Tok.TO;
-            keywordsMap["if"] = Tok.IF;
-            keywordsMap["then"] = Tok.THEN;
-            keywordsMap["else"] = Tok.ELSE;
         }
 
         public string FinishCurrentLine()
@@ -173,16 +157,6 @@ namespace SimpleLangLexer
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
 
-            if (currentCh == '(')
-            {
-                NextCh();
-                LexKind = Tok.OPENBRACKET;
-            }
-            if (currentCh == ')')
-            {
-                NextCh();
-                LexKind = Tok.CLOSEBRACKET;
-            }
             if (currentCh == '+')
             {
                 NextCh();

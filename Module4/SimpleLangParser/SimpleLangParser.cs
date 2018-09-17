@@ -78,6 +78,21 @@ namespace SimpleLangParser
                         Cycle(); 
                         break;
                     }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
+                        break;
+                    }
                 case Tok.ID:
                     {
                         Assign();
@@ -112,6 +127,158 @@ namespace SimpleLangParser
             Expr();
             Statement();
         }
+
+        public void While()
+        {
+            l.NextLexem();  // пропуск while
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            Statement();
+        }
+
+        public void For()
+        {
+            l.NextLexem();  // пропуск for
+            
+            if (l.LexKind == Tok.ID)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            if (l.LexKind == Tok.ASSIGN)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            Expr();
+
+            if (l.LexKind == Tok.TO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            Statement();
+        }
+
+        public void If()
+        {
+            l.NextLexem();  // пропуск if
+            Expr();
+
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("end expected");
+            }
+
+            Statement();
+
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                Statement();
+            }         
+        }
+
+        public void E()
+        {
+            T();
+            A();
+        }
+
+        public void A()
+        {
+            if (l.LexKind == Tok.PLUS)
+            {
+                T();
+                A();
+            }
+            if (l.LexKind == Tok.MINUS)
+            {
+                T();
+                A();
+            }
+        }
+
+        public void T()
+        {
+            M();
+            B();
+        }
+
+        public void B()
+        {
+            if (l.LexKind == Tok.MULTIPLE)
+            {
+                M();
+                B();
+            }
+            if (l.LexKind == Tok.DIVISION)
+            {
+                M();
+                B();
+            }
+        }
+
+        public void M()
+        {
+            if (l.LexKind == Tok.ID)
+            {
+                l.NextLexem();
+            }
+
+            if (l.LexKind == Tok.INUM)
+            {
+                l.NextLexem();
+            }
+
+            if (l.LexKind == Tok.OPENBRACKET)
+            {
+                E();
+                if (l.LexKind == Tok.CLOSEBRACKET)
+                {
+                    l.NextLexem();
+                }
+            }
+        }
+
+
+
 
         public void SyntaxError(string message) 
         {
