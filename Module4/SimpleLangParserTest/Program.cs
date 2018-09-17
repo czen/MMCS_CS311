@@ -20,7 +20,7 @@ namespace SimpleLangParserTest
         c := 234
     end;
 
-    while c do 
+    while (12+4)/a do 
     begin
         b := 1;
         c := 21
@@ -32,7 +32,7 @@ namespace SimpleLangParserTest
        b := 2
    end;
 
-    if b then a := b else a := 2;
+    if b*(1+a) then a := b else a := 2;
 
     if c then a := c 
 end";

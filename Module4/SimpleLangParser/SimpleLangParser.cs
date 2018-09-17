@@ -124,14 +124,14 @@ namespace SimpleLangParser
         public void Cycle() 
         {
             l.NextLexem();  // пропуск cycle
-            Expr();
+            E(); // улучшенная версия Expr из доп. задания 2
             Statement();
         }
 
         public void While()
         {
             l.NextLexem();  // пропуск while
-            Expr();
+            E();// улучшенная версия Expr из доп. задания 2
             if (l.LexKind == Tok.DO)
             {
                 l.NextLexem();
@@ -146,8 +146,8 @@ namespace SimpleLangParser
 
         public void If()
         {
-            l.NextLexem();  // пропуск while
-            Expr();
+            l.NextLexem();  // пропуск if
+            E(); // улучшенная версия Expr из доп. задания 2
             if (l.LexKind == Tok.THEN)
             {
                 l.NextLexem();
@@ -188,7 +188,7 @@ namespace SimpleLangParser
                 SyntaxError("to expected");
             }
 
-            Expr();
+            E(); //E - улучшенная версия Expr();  
 
             if (l.LexKind == Tok.DO)
             {
@@ -205,6 +205,7 @@ namespace SimpleLangParser
         {
             if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
             {
+                l.NextLexem();
                 T();
                 A();
             }
@@ -215,6 +216,7 @@ namespace SimpleLangParser
         {
             if (l.LexKind == Tok.MULT || l.LexKind == Tok.DIVIDE)
             {
+                l.NextLexem();
                 M();
                 B();
             }
@@ -232,9 +234,9 @@ namespace SimpleLangParser
             }
             else if (l.LexKind == Tok.OPBRACKET) 
             {
-                E();
                 l.NextLexem();
-                if (l.LexKind == Tok.OPBRACKET)
+                E();
+                if (l.LexKind == Tok.CLBRACKET)
                     l.NextLexem();
                 else
                     SyntaxError(") expected");
