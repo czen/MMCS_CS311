@@ -1,3 +1,5 @@
+using System.Threading;
+
 public class LexerException : System.Exception
 {
     public LexerException(string msg)
@@ -280,6 +282,284 @@ public class LettersSeparated : Lexer
         System.Console.WriteLine("Chars: {0}", chars);
     }
 }
+
+//Extra task 1
+/*
+ * Список цифр, разделенных одним или несколькими пробелами.
+ * В качестве семантического действия должно быть накопление списка цифр в списке и вывод этого списка в конце программы 
+ */
+public class DigitsSepBySpaces : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public DigitsSepBySpaces(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        string digits = "";
+        bool lastReadSeparator = false;
+        bool wasDigit = false;
+        NextCh();
+        if (char.IsDigit(currentCh))
+        {
+            digits+= currentCh;
+            wasDigit = true;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
+        while (currentCharValue != -1)
+        {
+            if (wasDigit)
+            {
+                if (currentCh != ' ')
+                    Error();
+                while (currentCh == ' ')
+                    NextCh();
+                wasDigit = false;
+            }
+            else
+            {
+                if (!char.IsDigit(currentCh))
+                    Error();
+                wasDigit = true;
+                digits += currentCh;
+                NextCh();
+            }
+        }
+
+        if (!wasDigit)
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("Identificator is recognized");
+        System.Console.WriteLine("Digits: {0}", digits);
+    }
+}
+
+//extra-task 2
+/*
+ * Лексема вида aa12c23dd1, в которой чередуются группы букв и цифр, в каждой группе не более 2 элементов. В качестве семантического действия необходимо накопить данную лексему в виде строки
+ */
+public class Lexem2 : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public Lexem2(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        int digitsCount = 0;
+        int lettersCount = 0;
+        string lexem = "";
+        if (char.IsDigit(currentCh))
+            digitsCount += 1;
+        else if (char.IsLetter(currentCh))
+            lettersCount += 1;
+        lexem += currentCh;
+        NextCh();
+        
+        while (currentCharValue != -1)
+        {
+            if (char.IsDigit(currentCh))
+            {
+                if (digitsCount == 2)
+                    Error();
+                ++digitsCount;
+                lettersCount = 0;
+            }
+            else if (char.IsLetter(currentCh))
+            {
+                if (lettersCount == 2)
+                    Error();
+                ++lettersCount;
+                digitsCount = 0;
+            }
+
+            lexem += currentCh;
+            NextCh();
+        }
+
+        System.Console.WriteLine("Identificator is recognized");
+        System.Console.WriteLine("Parsed lexem: {0}", lexem);
+    }
+}
+
+//extra task3: Вещественное с десятичной точкой
+public class RealLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public RealLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        bool afterDot = false;
+        bool endedWithDot = false;
+        double number = 0;
+        int sign = 1;
+        double divideBy = 10;
+
+        NextCh();
+
+        if (currentCh == '-')
+        {
+            sign = -1;
+            NextCh();
+        }
+        else if (currentCh == '+')
+            NextCh();
+            
+        while (currentCharValue != -1)
+        {
+            if (currentCh == '.')
+            {
+                if (afterDot)
+                    Error();
+                afterDot = true;
+                endedWithDot = true;
+                NextCh();
+            }
+            else if (char.IsDigit(currentCh))
+            {
+                if (!afterDot)
+                    number = 10 * number + int.Parse(currentCh.ToString());
+                else
+                {
+                    number += double.Parse(currentCh.ToString()) / divideBy;
+                    divideBy *= 10;
+                    endedWithDot = false;
+                }
+                NextCh();
+            }
+            else
+                Error();
+        }
+
+        if (endedWithDot == false)
+        {
+            System.Console.WriteLine("Expected numbers after dot!");
+            Error();
+        }
+
+        number *= sign;
+
+        System.Console.WriteLine("Identificator is recognized");
+        System.Console.WriteLine("Parsed number: {0}", number);
+    }
+}
+
+//extra task 4 : Лексема вида 'строка', внутри апострофов отсутствует символ ' (1 балл)
+public class ApostrophiesLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public ApostrophiesLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '\'')
+            NextCh();
+        else
+            Error();
+
+        while (currentCharValue != -1)
+        {
+            if (currentCh == '\'')
+            {
+                NextCh();
+                break;
+            }
+            /*по условию не совсем понятно, есть ли какие-либо ограничения на "строку" внутри апострофов
+           если предполагалось, что они есть, нужно раскомментировать следующие строки кода:
+           if (!char.isLetter(currentCh))
+               Error();
+           */
+            NextCh();
+        }
+
+        if (currentCharValue != -1)
+            Error();
+
+        System.Console.WriteLine("Identificator is recognized");
+    }
+}
+
+//extra task 5 : Лексема вида /*комментарий*/, внутри комментария не может встретиться последовательность символов */
+public class CommentLexer : Lexer
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public CommentLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '/')
+        {
+            NextCh();
+            if (currentCh == '*')
+                NextCh();
+            else
+                Error();
+        }
+        else
+            Error();
+
+        bool wasClosed = false;
+        bool wasAsterisk = false;
+        while (currentCharValue != -1)
+        {
+            if (currentCh == '/' && wasAsterisk)
+            {
+                NextCh();
+                wasClosed = true;
+                break;
+            }
+            if (currentCh == '*')
+                wasAsterisk = true;
+            else
+                wasAsterisk = false;
+            NextCh();
+        }
+
+        if (currentCharValue != -1 || !wasClosed)
+            Error();
+
+        System.Console.WriteLine("Identificator is recognized");
+    }
+}
+
 public class Program
 {
     public static void Main()
@@ -363,6 +643,86 @@ public class Program
             Separated1.Parse();
             Separated2.Parse();
             Separated3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        //extra 1
+        Lexer SpaceDigits1 = new DigitsSepBySpaces("1  2 3");
+        Lexer SpaceDigits2 = new DigitsSepBySpaces("1 2 3");
+        Lexer SpaceDigits3 = new DigitsSepBySpaces("1  ");
+        System.Console.WriteLine("extra task 1:");
+        try
+        {
+            SpaceDigits1.Parse();
+            SpaceDigits2.Parse();
+            SpaceDigits3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        //extra 2
+        Lexer LettersDigitsInterleaved1 = new Lexem2("aa11bb34cc");
+        Lexer LettersDigitsInterleaved2 = new Lexem2("aa11bb3cc");
+        Lexer LettersDigitsInterleaved3 = new Lexem2("aa11bb345");
+        System.Console.WriteLine("extra task 2:");
+        try
+        {
+            LettersDigitsInterleaved1.Parse();
+            LettersDigitsInterleaved2.Parse();
+            LettersDigitsInterleaved3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        //extra 3
+        Lexer Real1 = new RealLexer("123.54");
+        Lexer Real2 = new RealLexer("-15.2");
+        Lexer Real3 = new RealLexer("11..");
+        System.Console.WriteLine("extra task 3:");
+        try
+        {
+            Real1.Parse();
+            Real2.Parse();
+            Real3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        //extra 4
+        Lexer Apostrophies1 = new ApostrophiesLexer("'Hello, world!'");
+        Lexer Apostrophies2 = new ApostrophiesLexer("'Howdy");
+        Lexer Apostrophies3 = new ApostrophiesLexer("'Hey, Hey!'blablabla");
+        System.Console.WriteLine("extra task 4:");
+        try
+        {
+            Apostrophies1.Parse();
+            Apostrophies2.Parse();
+            Apostrophies3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        //extra 5
+        Lexer Comment1 = new CommentLexer("/*hello there*/");
+        Lexer Comment2 = new CommentLexer("/*hello * there */");
+        Lexer Comment3 = new CommentLexer("/*hello * there */, General Kenobi");
+        System.Console.WriteLine("extra task 5:");
+        try
+        {
+            Comment1.Parse();
+            Comment2.Parse();
+            Comment3.Parse();
         }
         catch (LexerException e)
         {
