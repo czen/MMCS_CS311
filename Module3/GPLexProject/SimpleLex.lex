@@ -7,12 +7,16 @@ AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
+DotChr [^\r\n]
+OneLineCmnt  \/\/{DotChr}*
+STRING \'[^']*\'
 
-// Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
+// Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РґРµР»Р°С‚СЊ РѕРїРёСЃР°РЅРёСЏ С‚РёРїРѕРІ, РїРµСЂРµРјРµРЅРЅС‹С… Рё РјРµС‚РѕРґРѕРІ - РѕРЅРё РїРѕРїР°РґР°СЋС‚ РІ РєР»Р°СЃСЃ Scanner
 %{
   public int LexValueInt;
   public double LexValueDouble;
 %}
+
 
 %%
 {INTNUM} { 
@@ -53,18 +57,27 @@ cycle {
   return (int)Tok.SEMICOLON;
 }
 
+{OneLineCmnt} {
+	return (int)Tok.LINECOMMENT;
+}
+
+{STRING} {
+	return (int)Tok.STRING;
+}
+
 [^ \r\n] {
 	LexError();
-	return 0; // конец разбора
+	return 0; // РєРѕРЅРµС† СЂР°Р·Р±РѕСЂР°
 }
+
 
 %%
 
-// Здесь можно делать описания переменных и методов - они тоже попадают в класс Scanner
+// Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РґРµР»Р°С‚СЊ РѕРїРёСЃР°РЅРёСЏ РїРµСЂРµРјРµРЅРЅС‹С… Рё РјРµС‚РѕРґРѕРІ - РѕРЅРё С‚РѕР¶Рµ РїРѕРїР°РґР°СЋС‚ РІ РєР»Р°СЃСЃ Scanner
 
 public void LexError()
 {
-	Console.WriteLine("({0},{1}): Неизвестный символ {2}", yyline, yycol, yytext);
+	Console.WriteLine("({0},{1}): РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃРёРјРІРѕР» {2}", yyline, yycol, yytext);
 }
 
 public string TokToString(Tok tok)

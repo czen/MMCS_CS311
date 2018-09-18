@@ -1,3 +1,8 @@
-begin ggg : ; :+= 7 99.9 5 
+begin ggg : ; := 7 99.9 5 
 1 
-ppp end
+ppp 
+aa
+// dasdsa
+'wow'
+dddddd
+end
