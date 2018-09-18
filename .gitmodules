@@ -1,0 +1,6 @@
+[submodule "gplex"]
+	path = gplex
+	url = https://github.com/czen/gplex.git
+[submodule "gppg"]
+	path = gppg
+	url = https://github.com/czen/gppg.git
