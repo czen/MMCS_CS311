@@ -25,7 +25,27 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLICATION,
+        DIVISION,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        PLUS_ASSIGN,
+        MINUS_ASSIGN,
+        MULT_ASSIGN,
+        DIV_ASSIGN,
+        GREATER,
+        LESS,
+        GREATER_EQUAL,
+        LESS_EQUAL,
+        EQUAL,
+        NOT_EQUAL
     }
 
     public class Lexer
@@ -71,6 +91,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -123,7 +148,7 @@ namespace SimpleLangLexer
         public void NextLexem()
         {
             PassSpaces();
-            // R К этому моменту первый символ лексемы считан в ch
+            // К этому моменту первый символ лексемы считан в ch
             LexText = "";
             LexRow = row;
             LexCol = col;
@@ -134,15 +159,140 @@ namespace SimpleLangLexer
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUS;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUS_ASSIGN;
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUS;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUS_ASSIGN;
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTIPLICATION;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULT_ASSIGN;
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVISION;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIV_ASSIGN;
+                }
+                else if (currentCh == '/')
+                {
+                    NextCh();
+                    while (currentCh != '\n')
+                        NextCh();
+                    NextCh();
+                    NextLexem();
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == ' ')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.COLON;
                 }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
+            else if (currentCh == '<')
+            {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.LESS;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESS_EQUAL;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOT_EQUAL;
+                }
+                else
+                    LexError("= or < or <space> was expected");
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATER;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATER_EQUAL;
+                }
+                else
+                    LexError("= or <space> was expected");
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
             }
             else if (char.IsLetter(currentCh))
             {
@@ -167,6 +317,18 @@ namespace SimpleLangLexer
                 }
                 LexValue = Int32.Parse(LexText);
                 LexKind = Tok.INUM;
+            }
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                        LexError("} was expected");
+                    NextCh();
+                }
+                NextCh();
+                NextLexem();
             }
             else if ((int)currentCh == 0)
             {
