@@ -1,0 +1,6 @@
+begin ggg : ; 7 99.9 5 
+1 
+ppp
+a1 := 1
+b
+end

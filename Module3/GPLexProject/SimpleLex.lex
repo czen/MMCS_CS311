@@ -7,6 +7,8 @@ AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
+DotChr [^\r\n]
+OneLineCmnt  \/\/{DotChr}*
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
@@ -53,10 +55,16 @@ cycle {
   return (int)Tok.SEMICOLON;
 }
 
+{OneLineCmnt} {
+  return (int)Tok.CMNT;
+}
+
 [^ \r\n] {
 	LexError();
 	return 0; // конец разбора
 }
+
+
 
 %%
 

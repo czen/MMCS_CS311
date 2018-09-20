@@ -29,7 +29,7 @@ namespace SimpleLangParser
             Block();
         }
 
-        public void Expr()
+        public void Expr_M()
         {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
             {
@@ -37,8 +37,37 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("expression expected");
+                Expr();
             }
+        }
+
+        private void Expr_B()
+        {
+
+            Expr_M();
+            if (l.LexKind == Tok.MULTIPLY || l.LexKind == Tok.DIVIDE)
+            {
+                l.NextLexem();
+                Expr_B();
+            }
+        }
+
+        private void partT()
+        {
+            Expr_M();
+            Expr_B();
+        }
+
+        private void partA()
+        {
+
+        }
+
+
+        public void Expr()
+        {
+            partT();
+            partA();
         }
 
         public void Assign()
