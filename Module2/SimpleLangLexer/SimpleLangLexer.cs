@@ -25,7 +25,28 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        COMMA,
+        PLUSASSIGN,
+        MINUSASSIGN,
+        MULTIPLYASSIGN,
+        DIVIDEASSIGN,
+        MORE,
+        LESS,
+        EQUALLY,
+        NOTEQUALLY,
+        LESSEQ,
+        MOREEQ,
+        COMMENT
     }
 
     public class Lexer
@@ -71,6 +92,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
         }
 
         public string FinishCurrentLine()
@@ -129,21 +155,157 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
+
+            //----------------------------------------
+            if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh != '=')
+                {
+                    if (LexText == "+")
+                    {
+                        LexKind = Tok.PLUS;
+                    }
+                    else
+                    {
+                        NextCh();
+                        LexKind = Tok.PLUS;
+                    }
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.PLUSASSIGN;
+                }
+            }
+
+            //----------------------------------------
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh != '=')
+                {
+                    if (LexText == "-")
+                    {
+                        LexKind = Tok.MINUS;
+                    }
+                    else
+                    {
+                        NextCh();
+                        LexKind = Tok.MINUS;
+                    }
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MINUSASSIGN;
+                }
+            }
+
+            //----------------------------------------
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh != '=')
+                {
+                    if (LexText == "*")
+                    {
+                        LexKind = Tok.MULTIPLY;
+                    }
+                    else
+                    {
+                        NextCh();
+                        LexKind = Tok.MULTIPLY;
+                    }
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MULTIPLYASSIGN;
+                }
+            }
+
+            //----------------------------------------
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '/')
+                {
+                    while (currentCh != '\n')
+                        NextCh();
+                    LexKind = Tok.COMMENT;
+                }
+                else if (currentCh != '=')
+                {
+                    if (LexText == "/")
+                    {
+                        LexKind = Tok.DIVIDE;
+                    }
+                    else
+                    {
+                        NextCh();
+                        LexKind = Tok.DIVIDE;
+                    }
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.DIVIDEASSIGN;
+                }
+            }
+
+            //----------------------------------------
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                        LexError("незакрытый до конца файла комментарий");
+                    NextCh();
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
+            }
+
+            //----------------------------------------
+            else if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
+
+            //----------------------------------------
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+
+            //----------------------------------------
             else if (currentCh == ':')
             {
                 NextCh();
                 if (currentCh != '=')
                 {
-                    LexError("= was expected");
+                    if (LexText == ":")
+                    {
+                        LexKind = Tok.COLON;
+                    }
+                    else
+                    { 
+                        NextCh();
+                        LexKind = Tok.COLON;
+                    }
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
+                }
             }
+
+            //----------------------------------------
             else if (char.IsLetter(currentCh))
             {
                 while (char.IsLetterOrDigit(currentCh))
@@ -159,6 +321,8 @@ namespace SimpleLangLexer
                     LexKind = Tok.ID;
                 }
             }
+
+            //----------------------------------------
             else if (char.IsDigit(currentCh))
             {
                 while (char.IsDigit(currentCh))
@@ -168,10 +332,58 @@ namespace SimpleLangLexer
                 LexValue = Int32.Parse(LexText);
                 LexKind = Tok.INUM;
             }
+
+            //----------------------------------------
             else if ((int)currentCh == 0)
             {
                 LexKind = Tok.EOF;
             }
+
+            //----------------------------------------
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSEQ;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUALLY;
+                }
+                else
+                {
+                    //NextCh();
+                    LexKind = Tok.LESS;
+                }
+            }
+
+            //---------------------------------------
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh != '=')
+                {
+                    //NextCh();
+                    LexKind = Tok.MORE;
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MOREEQ;
+                }
+            }
+
+            //--------------------------------------
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUALLY;
+            }
+
+            //----------------------------------------
             else
             {
                 LexError("Incorrect symbol " + currentCh);
