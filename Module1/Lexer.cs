@@ -248,7 +248,7 @@ public class AltLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        bool was_num = false; 
+        bool was_num = false;
 
         if (char.IsLetter(currentCh))
         {
@@ -319,7 +319,9 @@ public class DelimLexer : Lexer
             {
                 NextCh();
                 was_letter = false;
-            } 
+                if (currentCharValue == -1)
+                    Error();
+            }
             else
                 if (char.IsLetter(currentCh) && !was_letter)
             {
@@ -335,7 +337,7 @@ public class DelimLexer : Lexer
         }
 
         string s = new string(res.ToArray());
-        System.Console.WriteLine("Letters " + s + " with deliminators are recognized" );
+        System.Console.WriteLine("Letters " + s + " with deliminators are recognized");
 
     }
 }
@@ -366,7 +368,7 @@ public class NumSpacesLexer : Lexer
             Error();
         }
 
-        while (currentCharValue != -1) 
+        while (currentCharValue != -1)
         {
             if (char.IsDigit(currentCh))
             {
@@ -376,6 +378,8 @@ public class NumSpacesLexer : Lexer
             else if (currentCh == ' ')
             {
                 NextCh();
+                if (currentCharValue == -1)
+                    Error();
             }
             else
             {
@@ -474,7 +478,7 @@ public class RealLexer : Lexer
             Error();
         }
 
-        while (currentCharValue != -1) 
+        while (currentCharValue != -1)
         {
             if (char.IsDigit(currentCh))
             {
@@ -526,14 +530,14 @@ public class QuoteLexer : Lexer
             {
                 NextCh();
             }
-            else 
+            else
             {
                 NextCh();
                 if (currentCharValue != -1)
                     Error();
             }
 
-            
+
         }
 
         System.Console.WriteLine("String between quotes is recognized");
@@ -556,7 +560,7 @@ public class CommentLexer : Lexer
     public override void Parse()
     {
         NextCh();
-        
+
         if (currentCh == '/')
         {
             NextCh();
@@ -584,7 +588,7 @@ public class CommentLexer : Lexer
                         Error();
                 }
             }
-         
+
         }
 
         System.Console.WriteLine("Comment is recognized");
@@ -609,6 +613,7 @@ public class Program
         }
 
         // 1
+        System.Console.WriteLine("\n--- Tests for NumLexer --- ");
         string input1 = "654721";
         Lexer L1 = new NumLexer(input1);
         try
@@ -620,8 +625,20 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input1_1 = "00124";
+        Lexer L1_1 = new NumLexer(input1_1);
+        try
+        {
+            L1_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
 
         // 2
+        System.Console.WriteLine("\n--- Tests for IDLexer --- ");
         string input2 = "a154q216";
         Lexer L2 = new IDLexer(input2);
         try
@@ -633,7 +650,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input2_1 = "bbbbb";
+        Lexer L2_1 = new IDLexer(input2_1);
+        try
+        {
+            L2_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input2_2 = "3f67gb";
+        Lexer L2_2 = new IDLexer(input2_2);
+        try
+        {
+            L2_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 3
+        System.Console.WriteLine("\n--- Tests for SignLexer --- ");
         string input3 = "-721";
         Lexer L3 = new SignLexer(input3);
         try
@@ -645,7 +685,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input3_1 = "+4561";
+        Lexer L3_1 = new SignLexer(input3_1);
+        try
+        {
+            L3_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input3_2 = "-004";
+        Lexer L3_2 = new SignLexer(input3_2);
+        try
+        {
+            L3_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 4
+        System.Console.WriteLine("\n--- Tests for ALtLexer --- ");
         string input4 = "a4a7b4";
         Lexer L4 = new AltLexer(input4);
         try
@@ -657,8 +720,31 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input4_1 = "b5hh7m";
+        Lexer L4_1 = new AltLexer(input4_1);
+        try
+        {
+            L4_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input4_2 = "4a6n7";
+        Lexer L4_2 = new AltLexer(input4_2);
+        try
+        {
+            L4_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 5
-        string input5 = "a;a,b;z,r,q;";
+        System.Console.WriteLine("\n--- Tests for DelimLexer --- ");
+        string input5 = "a;a,b;z,r,q";
         Lexer L5 = new DelimLexer(input5);
         try
         {
@@ -669,9 +755,32 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input5_1 = "b;a,t,,r,w;w";
+        Lexer L5_1 = new DelimLexer(input5_1);
+        try
+        {
+            L5_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input5_2 = "a;";
+        Lexer L5_2 = new DelimLexer(input5_2);
+        try
+        {
+            L5_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // дополнительные
         // 1 
-        string input6 = "1  5 3 3    84 ";
+        System.Console.WriteLine("\n--- Tests for NuSpacesLexer --- ");
+        string input6 = "1  5 3 3    84";
         Lexer L6 = new NumSpacesLexer(input6);
         try
         {
@@ -682,7 +791,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input6_1 = " 5  788  1     3           9";
+        Lexer L6_1 = new NumSpacesLexer(input6_1);
+        try
+        {
+            L6_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input6_2 = "5 3   1 6    ";
+        Lexer L6_2 = new NumSpacesLexer(input6_2);
+        try
+        {
+            L6_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 2
+        System.Console.WriteLine("\n--- Tests for AltElemsLexer --- ");
         string input7 = "aa12c23dd1";
         Lexer L7 = new AltElemsLexer(input7);
         try
@@ -694,7 +826,31 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input7_1 = "m6a123nm8";
+        Lexer L7_1 = new AltElemsLexer(input7_1);
+        try
+        {
+            L7_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+
+        string input7_2 = "5pp8l12a";
+        Lexer L7_2 = new AltElemsLexer(input7_2);
+        try
+        {
+            L7_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 3
+        System.Console.WriteLine("\n--- Tests for RealLexer --- ");
         string input8 = "21.455";
         Lexer L8 = new RealLexer(input8);
         try
@@ -706,7 +862,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input8_1 = "45.124.13";
+        Lexer L8_1 = new RealLexer(input8_1);
+        try
+        {
+            L8_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input8_2 = "012.45";
+        Lexer L8_2 = new RealLexer(input8_2);
+        try
+        {
+            L8_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 4
+        System.Console.WriteLine("\n--- Tests for QuoteLexer --- ");
         string input9 = "'meow42'";
         Lexer L9 = new QuoteLexer(input9);
         try
@@ -718,12 +897,79 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        string input9_1 = "'nn'ehe'srh";
+        Lexer L9_1 = new QuoteLexer(input9_1);
+        try
+        {
+            L9_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input9_2 = "gkdgbk'aqfe'";
+        Lexer L9_2 = new QuoteLexer(input9_2);
+        try
+        {
+            L9_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input9_3 = "'xgfm'fgm";
+        Lexer L9_3 = new QuoteLexer(input9_3);
+        try
+        {
+            L9_3.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         // 5
+        System.Console.WriteLine("\n--- Tests for CommentLexer --- ");
         string input10 = "/*pu pu* pu*/";
         Lexer L10 = new CommentLexer(input10);
         try
         {
             L10.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input10_1 = "/*smrjr*/hjtej*/";
+        Lexer L10_1 = new CommentLexer(input10_1);
+        try
+        {
+            L10_1.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input10_2 = "/**/";
+        Lexer L10_2 = new CommentLexer(input10_2);
+        try
+        {
+            L10_2.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        string input10_3 = "/**/sndfy";
+        Lexer L10_3 = new CommentLexer(input10_3);
+        try
+        {
+            L10_3.Parse();
         }
         catch (LexerException e)
         {
