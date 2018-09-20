@@ -7,7 +7,7 @@
     <ProjectGuid>{9715D879-F06E-4A65-ADA0-A4DF3619119D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lexer</RootNamespace>
+    <RootNamespace>LexerTasks</RootNamespace>
     <AssemblyName>Lexer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlternateCharDigitLexer.cs" />
+    <Compile Include="IdLexer.cs" />
+    <Compile Include="IntLexer.cs" />
+    <Compile Include="IntZeroLexer.cs" />
+    <Compile Include="SeparatedCharLexer.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
