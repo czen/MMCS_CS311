@@ -12,6 +12,7 @@ namespace SimpleLangLexerTest
         public static void Main()
         {
             string fileContents = @"begin 
+or9
 id23 := 24; +7 += :9
 cycle; 2 id258 id29 ; 
 - -9 -=
@@ -36,6 +37,7 @@ div mod
 +-/+=
 --=
 <<=
+or8
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);

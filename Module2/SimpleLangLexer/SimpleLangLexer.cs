@@ -311,6 +311,11 @@ namespace SimpleLangLexer
                 while (char.IsLetterOrDigit(currentCh))
                 {
                     NextCh();
+                    if (keywordsMap.ContainsKey(LexText))
+                    {
+                        LexKind = keywordsMap[LexText];
+                        break;
+                    }
                 }
                 if (keywordsMap.ContainsKey(LexText))
                 {
