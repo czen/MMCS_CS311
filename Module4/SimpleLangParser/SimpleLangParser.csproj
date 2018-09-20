@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="SimpleLangLexer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\192.168.0.110\work\SFedU\Курсы2017\Методы_построения_компиляторов\Тема2\SimpleLangLexer\bin\Debug\SimpleLangLexer.dll</HintPath>
+      <HintPath>..\..\Module2\SimpleLangLexer\bin\Debug\SimpleLangLexer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

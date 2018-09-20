@@ -126,7 +126,42 @@ end";
     else
     begin
     a := 4
+    end; 
+    if a then
+    begin
+    a := 1
     end
+end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            Parser p = new Parser(l);
+            try
+            {
+                p.Progr();
+                if (l.LexKind == Tok.EOF)
+                {
+                    Console.WriteLine("Program successfully recognized");
+                }
+                else
+                {
+                    p.SyntaxError("end of file was expected");
+                }
+            }
+            catch (ParserException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+            catch (LexerException le)
+            {
+                Console.WriteLine("parser error: " + le.Message);
+            }
+        }
+
+        static void Test4(string[] args)
+        {
+            string fileContents = @"begin
+    a := 2+3;
+    a := a * 2 + 1;
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
@@ -155,10 +190,10 @@ end";
 
         static void Main(string[] args)
         {
-            // Test0(args);
-            //Test1(args);
-            // Test2(args);
-            Test3(args);
+          //  Test0(args);
+           // Test1(args);
+          //  Test2(args);
+           // Test3(args);
         }
     }
 }
