@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class LexerException : System.Exception
 {
@@ -50,7 +51,7 @@ public class IntLexer : Lexer
 {
 
     protected System.Text.StringBuilder intString;
-    protected String numberString;
+    public String numberString;
     public int number;
 
     public IntLexer(string input)
@@ -100,7 +101,7 @@ public class IdLexer : Lexer
 {
 
     protected System.Text.StringBuilder idString;
-    protected String id;
+    public String id;
 
     public IdLexer(string input)
         : base(input)
@@ -142,7 +143,7 @@ public class IntZeroLexer : Lexer
 {
 
     protected System.Text.StringBuilder intString;
-    protected String numberString;
+    public String numberString;
     public int number;
 
     public IntZeroLexer(string input)
@@ -191,7 +192,7 @@ public class IntZeroLexer : Lexer
 public class AlternateCharDigitLexer: Lexer
 {
     protected System.Text.StringBuilder mesString;
-    protected String message;
+    public String message;
 
     public AlternateCharDigitLexer(string input)
         : base(input)
@@ -243,10 +244,98 @@ public class AlternateCharDigitLexer: Lexer
     }
 }
 
+public class SeparatedCharsLexer : Lexer
+{
+    protected System.Text.StringBuilder mesString;
+    public String message;
+
+    public SeparatedCharsLexer(string input)
+        : base(input)
+    {
+        mesString = new System.Text.StringBuilder();
+        message = "";
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+
+        while (true)
+        {
+            if (char.IsLetter(currentCh))
+            {
+                message += currentCh;
+                NextCh();
+            } else if (currentCh == ',' || currentCh == ';')
+            {
+                NextCh();
+                break;
+            }
+            else
+            {
+                Error();
+            }
+        }
+
+        while (char.IsLetter(currentCh))
+        {
+            message += currentCh;
+            NextCh();
+        }
+
+        if (currentCharValue != -1)
+        {
+            Error();
+        }
+
+        System.Console.WriteLine("string with separated chars by ; or , is recognised " + message);
+    }
+
+    public static void Testing()
+    {
+        var tests = new Dictionary<string, string>{
+            { "a;", "a" },
+            { ";fr", "fr"},
+            { "abg,abg", "abgabg"},
+            { "abg;;", "error"},
+            { ",,", "error"},
+            { "tl;dr", "tldr"},
+            { ",glO", "glO"}
+        };
+
+        foreach (var t in tests)
+        {
+            var L = new SeparatedCharsLexer(t.Key);
+            bool passed = false;
+            try
+            {
+                L.Parse();
+                passed = L.message.Equals(t.Value);                
+            }
+            catch (LexerException e)
+            {
+                passed = true;
+            }
+
+            if (passed)
+            {
+                System.Console.WriteLine("Test is passed");
+            }
+            else
+            {
+                System.Console.WriteLine("Test is not passed");
+            }
+        }
+        
+    }
+}
+
 public class Program
 {
     public static void Main()
     {
+        SeparatedCharsLexer.Testing();
+        /*
         string input = "-154216";
         Lexer L = new IntLexer(input);
         try
@@ -256,7 +345,7 @@ public class Program
         catch (LexerException e)
         {
             System.Console.WriteLine(e.Message);
-        }
-        Console.ReadLine();
+        }*/
+        // Console.ReadLine();
     }
 }
