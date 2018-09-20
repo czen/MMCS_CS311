@@ -77,7 +77,7 @@ namespace LexerTasks
                 }
                 catch (LexerException e)
                 {
-                    passed = true;
+                    passed = t.Value.Equals("error");
                 }
 
                 if (passed)

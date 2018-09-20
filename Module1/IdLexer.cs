@@ -61,16 +61,16 @@ namespace LexerTasks
 
             foreach (var t in tests)
             {
-                var L = new SeparatedCharsLexer(t.Key);
+                var L = new IdLexer(t.Key);
                 bool passed = false;
                 try
                 {
                     L.Parse();
-                    passed = L.message.Equals(t.Value);
+                    passed = L.id.Equals(t.Value);
                 }
                 catch (LexerException e)
                 {
-                    passed = true;
+                    passed = t.Value.Equals("error");
                 }
 
                 if (passed)

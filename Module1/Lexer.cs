@@ -53,6 +53,7 @@ public class Program
 {
     public static void Main()
     {
+        IntLexer.Testing();
         SeparatedCharsLexer.Testing();
         /*
         string input = "-154216";

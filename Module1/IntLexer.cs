@@ -24,7 +24,10 @@ namespace LexerTasks
             NextCh();
             if (currentCh == '+' || currentCh == '-')
             {
-                numberString += currentCh;
+                if (currentCh == '-')
+                {
+                    numberString += currentCh;
+                }
                 NextCh();
             }
 
@@ -58,27 +61,27 @@ namespace LexerTasks
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "a;", "a" },
-                { ";fr", "fr"},
-                { "abg,abg", "abgabg"},
-                { "abg;;", "error"},
-                { ",,", "error"},
-                { "tl;dr", "tldr"},
-                { ",glO", "glO"}
+                { "+1234", "1234" },
+                { "105", "105"},
+                { "-6", "-6"},
+                { "990", "990"},
+                { "94172", "94172"},
+                { "tl3;dr", "error"},
+                { "12tt", "error"}
             };
 
             foreach (var t in tests)
             {
-                var L = new SeparatedCharsLexer(t.Key);
+                var L = new IntLexer(t.Key);
                 bool passed = false;
                 try
                 {
                     L.Parse();
-                    passed = L.message.Equals(t.Value);
+                    passed = L.numberString.Equals(t.Value);
                 }
                 catch (LexerException e)
                 {
-                    passed = true;
+                    passed = t.Value.Equals("error");
                 }
 
                 if (passed)
