@@ -419,6 +419,15 @@ public class T8Lexer : Lexer
         double res;
 
         NextCh();
+        if (char.IsDigit(currentCh))
+        {
+            s += currentCh;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
 
         while (currentCharValue != '.')
         {
@@ -434,6 +443,17 @@ public class T8Lexer : Lexer
         }
         s += ',';
         NextCh();
+
+        if (char.IsDigit(currentCh))
+        {
+            s += currentCh;
+            NextCh();
+        }
+        else
+        {
+            Error();
+        }
+
         while (currentCharValue != -1)
         {
             if (char.IsDigit(currentCh))
@@ -634,6 +654,8 @@ public class Program
 
         TestLexer(new T8Lexer("123.456"));
         TestLexer(new T8Lexer("1.2.3"));
+        TestLexer(new T8Lexer("123."));
+        TestLexer(new T8Lexer(".456"));
 
         TestLexer(new T9Lexer("'eeeeeee'"));
         TestLexer(new T9Lexer("'aweaeawe"));
