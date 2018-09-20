@@ -7,7 +7,7 @@ using SimpleLangLexer;
 
 namespace SimpleLangLexerTest
 {
-    
+
 
     class Program
     {
@@ -34,13 +34,16 @@ namespace SimpleLangLexerTest
             string file1 = @"begin 
 id23 := 24;  
 {cycl}e ; 2 id258 id29 ; 
+4 div 2 mod 5 or a not b
 end";
 
             string file2 = @"begin
-// something happening
+wow = 2 <> 17 // something happening
 int x := 42;
 a += 4;
-boo /= 1;";
+a + 5 - 4
+boo /= 1;
+42 / a * p *= e";
 
             // незакрытый до конца файла комментарий
             string file3 = @"meow := 14;
@@ -49,10 +52,14 @@ end
 not b
 cycle x";
 
+
+            Console.WriteLine("\n --- Test 1 --- ");
             test(file1);
+            Console.WriteLine("\n --- Test 2 --- ");
             test(file2);
+            Console.WriteLine("\n --- Test 3 --- ");
             test(file3);
-           
+
         }
     }
 }
