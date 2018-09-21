@@ -54,18 +54,12 @@ public class Program
     public static void Main()
     {
         IntLexer.Testing();
+        IdLexer.Testing();
+        IntZeroLexer.Testing();
+        AlternateCharDigitLexer.Testing();
         SeparatedCharsLexer.Testing();
-        /*
-        string input = "-154216";
-        Lexer L = new IntLexer(input);
-        try
-        {
-            L.Parse();
-        }
-        catch (LexerException e)
-        {
-            System.Console.WriteLine(e.Message);
-        }*/
-        // Console.ReadLine();
+        
+
+        Console.ReadLine();
     }
 }

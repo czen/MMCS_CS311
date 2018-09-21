@@ -65,15 +65,16 @@ namespace LexerTasks
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "a;", "a" },
-                { ";fr", "fr"},
-                { "abg,abg", "abgabg"},
-                { "abg;;", "error"},
-                { ",,", "error"},
-                { "tl;dr", "tldr"},
-                { ",glO", "glO"}
+                { "a1a", "a1a" },
+                { "", "error"},
+                { "c", "c"},
+                { "y78", "error"},
+                { "h5g6f7d8kl", "error"},
+                { "a1d3f4g5", "a1d3f4g5"},
+                { "a2", "a2"}
             };
 
+            int passedTest = 0;
             foreach (var t in tests)
             {
                 var L = new AlternateCharDigitLexer(t.Key);
@@ -91,12 +92,14 @@ namespace LexerTasks
                 if (passed)
                 {
                     System.Console.WriteLine("Test is passed");
+                    passedTest++;
                 }
                 else
                 {
                     System.Console.WriteLine("Test is not passed");
                 }
             }
+            System.Console.WriteLine("{0} / {1} tests passed", passedTest, tests.Count);
 
         }
     }

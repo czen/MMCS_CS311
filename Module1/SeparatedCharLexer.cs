@@ -21,6 +21,15 @@ namespace LexerTasks
         public override void Parse()
         {
             NextCh();
+            if (char.IsLetter(currentCh))
+            {
+                message += currentCh;
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
 
             while (true)
             {
@@ -40,6 +49,16 @@ namespace LexerTasks
                 }
             }
 
+            if (char.IsLetter(currentCh))
+            {
+                message += currentCh;
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
+
             while (char.IsLetter(currentCh))
             {
                 message += currentCh;
@@ -57,15 +76,17 @@ namespace LexerTasks
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "a;", "a" },
-                { ";fr", "fr"},
+                { "a;", "error" },
+                { "a,h", "ah"},
+                { ";fr", "error"},
                 { "abg,abg", "abgabg"},
                 { "abg;;", "error"},
                 { ",,", "error"},
                 { "tl;dr", "tldr"},
-                { ",glO", "glO"}
+                { ",glO", "error"}
             };
 
+            int passedTest = 0;
             foreach (var t in tests)
             {
                 var L = new SeparatedCharsLexer(t.Key);
@@ -83,12 +104,15 @@ namespace LexerTasks
                 if (passed)
                 {
                     System.Console.WriteLine("Test is passed");
+                    passedTest++;
                 }
                 else
                 {
                     System.Console.WriteLine("Test is not passed");
                 }
             }
+
+            System.Console.WriteLine("{0} / {1} tests passed", passedTest, tests.Count);
 
         }
     }

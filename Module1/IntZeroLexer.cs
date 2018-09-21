@@ -28,7 +28,7 @@ namespace LexerTasks
                 NextCh();
             }
 
-            if (char.IsDigit(currentCh) && currentCh != '9')
+            if (char.IsDigit(currentCh) && currentCh != '0')
             {
                 numberString += currentCh;
                 NextCh();
@@ -58,15 +58,16 @@ namespace LexerTasks
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "a;", "a" },
-                { ";fr", "fr"},
-                { "abg,abg", "abgabg"},
-                { "abg;;", "error"},
-                { ",,", "error"},
-                { "tl;dr", "tldr"},
-                { ",glO", "glO"}
+                { "-10", "-10" },
+                { "24", "24"},
+                { "100", "100"},
+                { "-505", "-505"},
+                { "-012", "error"},
+                { "0123", "error"},
+                { "1,glO", "error"}
             };
 
+            int passedTest = 0;
             foreach (var t in tests)
             {
                 var L = new IntZeroLexer(t.Key);
@@ -83,6 +84,7 @@ namespace LexerTasks
 
                 if (passed)
                 {
+                    passedTest++;
                     System.Console.WriteLine("Test is passed");
                 }
                 else
@@ -90,6 +92,7 @@ namespace LexerTasks
                     System.Console.WriteLine("Test is not passed");
                 }
             }
+            System.Console.WriteLine("{0} / {1} tests passed", passedTest, tests.Count);
 
         }
     }

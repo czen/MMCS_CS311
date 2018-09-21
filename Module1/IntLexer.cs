@@ -67,8 +67,11 @@ namespace LexerTasks
                 { "990", "990"},
                 { "94172", "94172"},
                 { "tl3;dr", "error"},
-                { "12tt", "error"}
+                { "12tt", "error"},
+                { "", "error"}
             };
+
+            int passedTest = 0;
 
             foreach (var t in tests)
             {
@@ -87,12 +90,15 @@ namespace LexerTasks
                 if (passed)
                 {
                     System.Console.WriteLine("Test is passed");
+                    passedTest++;
                 }
                 else
                 {
                     System.Console.WriteLine("Test is not passed");
                 }
             }
+
+            System.Console.WriteLine("{0} / {1} tests passed", passedTest, tests.Count);
 
         }
     }
