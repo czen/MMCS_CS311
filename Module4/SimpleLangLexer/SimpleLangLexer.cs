@@ -47,7 +47,16 @@ namespace SimpleLangLexer
         LESSEQ, // <=
         NOTEQ, // <>
         COMMENT, //  //..
-        LONGCOMMENT // {..}
+        LONGCOMMENT, // {..}
+        WHILE,
+        DO,
+        FOR,
+        TO,
+        IF,
+        THEN,
+        ELSE,
+        OPBRACKET, // (
+        CLBRACKET // )
     }
 
     public class Lexer
@@ -98,6 +107,13 @@ namespace SimpleLangLexer
             keywordsMap["and"] = Tok.AND;
             keywordsMap["div"] = Tok.DIV;
             keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["while"] = Tok.WHILE;
+            keywordsMap["do"] = Tok.DO;
+            keywordsMap["for"] = Tok.FOR;
+            keywordsMap["to"] = Tok.TO;
+            keywordsMap["if"] = Tok.IF;
+            keywordsMap["then"] = Tok.THEN;
+            keywordsMap["else"] = Tok.ELSE;
         }
 
         public string FinishCurrentLine()
@@ -240,6 +256,16 @@ namespace SimpleLangLexer
                     NextCh();
                 }
                 NextCh();
+            }
+            else if (currentCh == '(')
+            {
+                NextCh();
+                LexKind = Tok.OPBRACKET;
+            }
+            else if (currentCh == ')')
+            {
+                NextCh();
+                LexKind = Tok.CLBRACKET;
             }
             else if (char.IsLetter(currentCh))
             {

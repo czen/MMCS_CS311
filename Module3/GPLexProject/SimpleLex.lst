@@ -1,5 +1,15 @@
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <SimpleLex.lex>
+// ==========================================================================
+//  Version:  1.1.3.301
+//  Machine:  USER-PC
+//  DateTime: 21.09.2018 21:55:08
+//  UserName: user
+// ==========================================================================
+
+
 %using ScannerHelper;
-%using System.Collections.Generic;
 %namespace SimpleScanner
 
 Alpha 	[a-zA-Z_]
@@ -10,17 +20,17 @@ REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
 DotChr [^\r\n]
 OneLineCmnt  \/\/{DotChr}*
-StrW [^']
-StrInAP \'{StrW}*\' //—трока в апострофах
+StrWith [^']
+StrInAP \'{StrW}*\'
+//---------^^^^
+// Error: Unknown lexical category <StrW> 
+// ---------------------------------------
 
 // «десь можно делать описани€ типов, переменных и методов - они попадают в класс Scanner
 %{
   public int LexValueInt;
   public double LexValueDouble;
-  public List<string> l = new List<string>();
 %}
-
-%x COMMENT
 
 %%
 {INTNUM} { 
@@ -52,9 +62,6 @@ cycle {
 {OneLineCmnt} {
 	return (int)Tok.COMMENT;
 }
-{StrInAP} {
-	return (int)Tok.STRINGAP;
-}
 
 ":" { 
   return (int)Tok.COLON;
@@ -68,21 +75,6 @@ cycle {
   return (int)Tok.SEMICOLON;
 }
 
-"{" { 
-  // переход в состо€ние COMMENT
-  BEGIN(COMMENT);
-}
-
-<COMMENT> "}" { 
-  // переход в состо€ние INITIAL
-  BEGIN(INITIAL);
-  return (int)Tok.LONGCOMMENT;
-}
-
-<COMMENT>{ID} {
-  // обрабатываетс€ ID внутри комментари€
-  l.Add(yytext);
-}
 
 [^ \r\n] {
 	LexError();
@@ -112,4 +104,6 @@ public string TokToString(Tok tok)
 			return tok + "";
 	}
 }
+
+// ==========================================================================
 

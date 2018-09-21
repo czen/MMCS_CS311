@@ -1,3 +1,8 @@
-begin ggg : ; :+= 7 99.9 5 
-1 
-ppp end
+begin ggg : ; := 7 99.9 5 
+1 := 24.5; //ertyd - dhdgsj
+a := 234;
+'Hello, World! 12345 id' {1223$$$5566 ' a12s aw
+ppp ers 12
+./
+} id := '@@34';
+end
