@@ -38,12 +38,15 @@ id23 := 24;
 end";
 
             string file2 = @"begin
-wow = 2 <> 17 // something happening
-int x := 42;
-a += 4;
-a + 5 - 4
-boo /= 1;
-42 / a * p *= e";
+            wow = 2 <> 17 // something happening
+            int x := 42;
+            a += 4;
+            a + 5 - 4
+            boo /= 1;
+            42 / a * p *= e
+            //";
+
+
 
             // незакрытый до конца файла комментарий
             string file3 = @"meow := 14;
@@ -52,6 +55,8 @@ end
 not b
 cycle x";
 
+            string file4 = @"<<>++=*/**/";
+
 
             Console.WriteLine("\n --- Test 1 --- ");
             test(file1);
@@ -59,7 +64,8 @@ cycle x";
             test(file2);
             Console.WriteLine("\n --- Test 3 --- ");
             test(file3);
-
+            Console.WriteLine("\n --- Test 4 --- ");
+            test(file4);
         }
     }
 }
