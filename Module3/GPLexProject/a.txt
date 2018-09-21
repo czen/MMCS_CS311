@@ -1,3 +1,14 @@
-begin ggg : ; :+= 7 99.9 5 
+begin ggg : ; := 7 99.9 5 
+hklloph
 1 
-ppp end
+ppp
+10.89
+7
+19.11
+900
+//lucky 100000
+100 'goiisd'
+{hfgfghghffgh 7889 := hyyy}
+end
+
+
