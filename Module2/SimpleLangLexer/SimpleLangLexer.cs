@@ -188,7 +188,6 @@ namespace SimpleLangLexer
                 }
                 else
                 {
-                    NextCh();
                     LexKind = Tok.LESS;
                 }
             }
@@ -202,8 +201,7 @@ namespace SimpleLangLexer
                 }
                 else
                 {
-                    NextCh();
-                    LexKind = Tok.LESS;
+                    LexKind = Tok.GREATER;
                 }
             }
             else if (currentCh == '+')
@@ -216,7 +214,6 @@ namespace SimpleLangLexer
                 }
                 else
                 {
-                    NextCh();
                     LexKind = Tok.PLUS;
                 }
             }
@@ -230,7 +227,6 @@ namespace SimpleLangLexer
                 }
                 else
                 {
-                    NextCh();
                     LexKind = Tok.MINUS;
                 }
             }
@@ -244,7 +240,6 @@ namespace SimpleLangLexer
                 }
                 else
                 {
-                    NextCh();
                     LexKind = Tok.MULTIPLY;
                 }
             }
@@ -258,13 +253,16 @@ namespace SimpleLangLexer
                 }
                 else if (currentCh == '/')
                 {
-                    while (currentCh != '\n')
-                        NextCh();
+                    NextCh();
+                    if ((int)currentCh != 0)
+                        while (currentCh != '\n')
+                        {
+                            NextCh();
+                        }
                     LexKind = Tok.COMMENT;
                 }
                 else
                 {
-                    NextCh();
                     LexKind = Tok.DIVIDE;
                 }
             }
@@ -278,10 +276,10 @@ namespace SimpleLangLexer
                 }
                 NextCh();
                 LexKind = Tok.COMMENT;
-                
+
             }
             else if (currentCh == ':')
-            {
+            { 
                 NextCh();
                 if (currentCh == ' ')
                 {
