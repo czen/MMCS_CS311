@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -25,7 +25,28 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        ADDITION_ASSIGNMENT,
+        SUBTRACTION_ASSIGNMENT,
+        MULTIPLICATION_ASSIGNMENT,
+        DIVISION_ASSIGNMENT,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        GREATER,
+        LESS,
+        GREATER_OR_EQUAL,
+        LESS_OR_EQUAL,
+        EQUAL,
+        NOT_EQUAL,
+        COMMENT
     }
 
     public class Lexer
@@ -41,7 +62,7 @@ namespace SimpleLangLexer
         public int LexValue;                        // Целое значение, связанное с лексемой LexNum
 
         private string CurrentLineText;  // Накапливает символы текущей строки для сообщений об ошибках
-        
+
 
         public Lexer(TextReader input)
         {
@@ -54,7 +75,8 @@ namespace SimpleLangLexer
             NextLexem();    // Считать первую лексему, заполнив LexText, LexKind и, возможно, LexValue
         }
 
-        public void Init() {
+        public void Init()
+        {
 
         }
 
@@ -71,6 +93,13 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
+
+
         }
 
         public string FinishCurrentLine()
@@ -134,15 +163,137 @@ namespace SimpleLangLexer
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
-            else if (currentCh == ':')
+            else if (currentCh == ',')
             {
                 NextCh();
-                if (currentCh != '=')
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOT_EQUAL;
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESS_OR_EQUAL;
+                }
+                else
+                {
+                    LexKind = Tok.LESS;
+                }
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATER_OR_EQUAL;
+                }
+                else
+                {
+                    LexKind = Tok.GREATER;
+                }
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ADDITION_ASSIGNMENT;
+                }
+                else
+                {
+                    LexKind = Tok.PLUS;
+                }
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.SUBTRACTION_ASSIGNMENT;
+                }
+                else
+                {
+                    LexKind = Tok.MINUS;
+                }
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTIPLICATION_ASSIGNMENT;
+                }
+                else
+                {
+                    LexKind = Tok.MULTIPLY;
+                }
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVISION_ASSIGNMENT;
+                }
+                else if (currentCh == '/')
+                {
+                    NextCh();
+                    if ((int)currentCh != 0)
+                        while (currentCh != '\n')
+                        {
+                            NextCh();
+                        }
+                    LexKind = Tok.COMMENT;
+                }
+                else
+                {
+                    LexKind = Tok.DIVIDE;
+                }
+            }
+            else if (currentCh == '{')
+            {
+                while (currentCh != '}' && (int)currentCh != 0)
+                    NextCh();
+                if ((int)currentCh == 0)
+                {
+                    LexError("} was expected");
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
+
+            }
+            else if (currentCh == ':')
+            { 
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    LexKind = Tok.COLON;
+                }
+                else if (currentCh == '=')
+                {
+                    LexKind = Tok.ASSIGN;
+                }
+                else
                 {
                     LexError("= was expected");
                 }
                 NextCh();
-                LexKind = Tok.ASSIGN;
             }
             else if (char.IsLetter(currentCh))
             {
@@ -192,9 +343,11 @@ namespace SimpleLangLexer
             var result = t.ToString();
             switch (t)
             {
-                case Tok.ID: result += ' ' + LexText;
+                case Tok.ID:
+                    result += ' ' + LexText;
                     break;
-                case Tok.INUM: result += ' ' + LexValue.ToString();
+                case Tok.INUM:
+                    result += ' ' + LexValue.ToString();
                     break;
             }
             return result;
