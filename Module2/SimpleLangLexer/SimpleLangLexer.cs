@@ -56,7 +56,8 @@ namespace SimpleLangLexer
         THEN,
         ELSE,
         OPENBRACKET,
-        CLOSEBRACKET
+        CLOSEBRACKET,
+        EXPR
     }
 
     public class Lexer
@@ -114,6 +115,7 @@ namespace SimpleLangLexer
             keywordsMap["if"] = Tok.IF;
             keywordsMap["then"] = Tok.THEN;
             keywordsMap["else"] = Tok.ELSE;
+            keywordsMap["Expr"] = Tok.EXPR;
         }
 
         public string FinishCurrentLine()

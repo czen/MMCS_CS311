@@ -98,6 +98,11 @@ namespace SimpleLangParser
                         Assign();
                         break;
                     }
+                case Tok.EXPR:
+                    {
+                        ExprGram();
+                        break;
+                    }
                 default:
                     {
                         SyntaxError("Operator expected");
@@ -139,7 +144,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("do expected");
             }
 
             Statement();
@@ -155,7 +160,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("ID expected");
             }
 
             if (l.LexKind == Tok.ASSIGN)
@@ -164,7 +169,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("'=' expected");
             }
 
             Expr();
@@ -175,7 +180,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("to expected");
             }
 
             Expr();
@@ -186,7 +191,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("do expected");
             }
 
             Statement();
@@ -203,7 +208,7 @@ namespace SimpleLangParser
             }
             else
             {
-                SyntaxError("end expected");
+                SyntaxError("then expected");
             }
 
             Statement();
@@ -215,21 +220,32 @@ namespace SimpleLangParser
             }         
         }
 
+        public void ExprGram()
+        {
+            l.NextLexem();  // пропуск Expr
+            E();
+        }
+
         public void E()
         {
             T();
             A();
+
+            //StatementList();
         }
 
         public void A()
         {
             if (l.LexKind == Tok.PLUS)
             {
+                l.NextLexem();
                 T();
                 A();
             }
+                     
             if (l.LexKind == Tok.MINUS)
             {
+                l.NextLexem();
                 T();
                 A();
             }
@@ -245,39 +261,49 @@ namespace SimpleLangParser
         {
             if (l.LexKind == Tok.MULTIPLE)
             {
+                l.NextLexem();
                 M();
                 B();
             }
+
             if (l.LexKind == Tok.DIVISION)
             {
+                l.NextLexem();
                 M();
                 B();
             }
         }
-
+        
         public void M()
         {
             if (l.LexKind == Tok.ID)
             {
                 l.NextLexem();
             }
-
-            if (l.LexKind == Tok.INUM)
+            else
             {
-                l.NextLexem();
-            }
-
-            if (l.LexKind == Tok.OPENBRACKET)
-            {
-                E();
-                if (l.LexKind == Tok.CLOSEBRACKET)
+                if (l.LexKind == Tok.INUM)
                 {
                     l.NextLexem();
                 }
+                else
+                {
+                    if (l.LexKind == Tok.OPENBRACKET)
+                    {
+                        l.NextLexem();
+                        E();
+                        if (l.LexKind == Tok.CLOSEBRACKET)
+                        {
+                            l.NextLexem();
+                        }
+                    }
+                    else
+                        SyntaxError("Expr: type M expected");
+                }
             }
+
+            
         }
-
-
 
 
         public void SyntaxError(string message) 
