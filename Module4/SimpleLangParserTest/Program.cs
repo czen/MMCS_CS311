@@ -20,7 +20,7 @@ namespace SimpleLangParserTest
         c := 234
     end;
 
-    while (12+4)/a do 
+    while (12+4)/a*(3-1) do 
     begin
         b := 1;
         c := 21
@@ -62,3 +62,10 @@ end";
         }
     }
 }
+
+/*
+ lexer error: Syntax error in line 21:
+    if b*(1+) then a := b else a := 2;
+            ^
+Incorrect M
+ */

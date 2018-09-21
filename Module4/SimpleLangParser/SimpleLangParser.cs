@@ -158,7 +158,7 @@ namespace SimpleLangParser
             }
 
             Statement();
-            if (l.LexKind == Tok.ELSE)
+            if (l.LexKind == Tok.ELSE) //возможная ветка else
             {
                 l.NextLexem();
                 Statement();
