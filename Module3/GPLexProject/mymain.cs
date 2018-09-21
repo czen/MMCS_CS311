@@ -59,6 +59,16 @@ namespace Main
                     Console.WriteLine();
                     Console.WriteLine("sum of int: {0:D}", sum_int);
                     Console.WriteLine("sum of double: {0:N}", sum_d);
+
+                    Console.WriteLine();
+                    if (scanner.l.Capacity != 0)
+                    {
+                        Console.WriteLine("ID in LONGCOMMENT: ");
+                        foreach (string s in scanner.l)
+                            Console.Write(s + " ");
+                        Console.WriteLine();
+                    }
+
                     break;
                 }
 
