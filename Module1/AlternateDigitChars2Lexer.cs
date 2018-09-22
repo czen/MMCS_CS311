@@ -77,7 +77,7 @@ namespace LexerTasks
                 try
                 {
                     L.Parse();
-                    passed = L.numberString.Equals(t.Value);
+                    passed = L.message.Equals(t.Value);
                 }
                 catch (LexerException e)
                 {

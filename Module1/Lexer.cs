@@ -58,8 +58,10 @@ public class Program
         IntZeroLexer.Testing();
         AlternateCharDigitLexer.Testing();
         SeparatedCharsLexer.Testing();
-        
 
-        Console.ReadLine();
+        DigitsSpacesLexer.Testing();
+        AlternateDigitChars2Lexer.Testing();
+
+        //Console.ReadLine();
     }
 }

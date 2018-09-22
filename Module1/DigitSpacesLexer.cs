@@ -21,7 +21,7 @@ namespace LexerTasks
         public override void Parse()
         {
             NextCh();
-            if (char.IsLetter(currentCh))
+            if (char.IsDigit(currentCh))
             {
                 message += currentCh;
                 NextCh();
@@ -30,26 +30,26 @@ namespace LexerTasks
             {
                 Error();
             }
-
-            while (true)
+            while (char.IsDigit(currentCh))
             {
-                if (char.IsLetter(currentCh))
-                {
-                    message += currentCh;
-                    NextCh();
-                }
-                else if (currentCh == ',' || currentCh == ';')
-                {
-                    NextCh();
-                    break;
-                }
-                else
-                {
-                    Error();
-                }
+                message += currentCh;
+                NextCh();
             }
 
-            if (char.IsLetter(currentCh))
+            if (currentCh == ' ')
+            {
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
+            while (currentCh == ' ')
+            {
+                NextCh();
+            }
+
+            if (char.IsDigit(currentCh))
             {
                 message += currentCh;
                 NextCh();
@@ -58,8 +58,7 @@ namespace LexerTasks
             {
                 Error();
             }
-
-            while (char.IsLetter(currentCh))
+            while (char.IsDigit(currentCh))
             {
                 message += currentCh;
                 NextCh();
@@ -70,20 +69,21 @@ namespace LexerTasks
                 Error();
             }
 
-            System.Console.WriteLine("string with separated chars by ; or , is recognised " + message);
+            System.Console.WriteLine("string with separated chars spaces recognised " + message);
         }
 
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "a;", "error" },
-                { "a,h", "ah"},
-                { ";fr", "error"},
-                { "abg,abg", "abgabg"},
-                { "abg;;", "error"},
-                { ",,", "error"},
-                { "tl;dr", "tldr"},
-                { ",glO", "error"}
+                { "1 23", "123" },
+                { "12  567", "12567"},
+                { "32          222", "32222"},
+                { "32          1", "321"},
+                { "4", "error"},
+                { "42 ", "error"},
+                { "1131 ;", "error"},
+                { "12, 45", "error"},
+                { "56     S", "error"}
             };
 
             int passedTest = 0;

@@ -44,12 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlternateCharDigitLexer.cs" />
+    <Compile Include="AlternateDigitChars2Lexer.cs" />
+    <Compile Include="CommentLexer.cs" />
+    <Compile Include="DigitSpacesLexer.cs" />
     <Compile Include="IdLexer.cs" />
     <Compile Include="IntLexer.cs" />
     <Compile Include="IntZeroLexer.cs" />
+    <Compile Include="RealDotLexer.cs" />
     <Compile Include="SeparatedCharLexer.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringLexer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
