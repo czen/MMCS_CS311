@@ -25,6 +25,9 @@ namespace Main
                     break;
                 Console.WriteLine(scanner.TokToString((Tok)tok));
             } while (true);
+            Console.WriteLine("\nInfo about Id: \n" + scanner.IdInfo());
+            Console.WriteLine("\nInfo about numbers: \n" + scanner.NumsInfo());
+            Console.WriteLine("\nInfo about Id in multiline comments: \n" + scanner.IdInCommentsInfo());
 
             Console.ReadKey();
         }

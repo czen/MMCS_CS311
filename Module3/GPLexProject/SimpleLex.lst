@@ -1,7 +1,20 @@
-%using ScannerHelper;
-%namespace SimpleScanner
 
-%x COMMENT
+// ==========================================================================
+//  GPLEX error listing for lex source file <SimpleLex.lex>
+// ==========================================================================
+//  Version:  1.1.3.301
+//  Machine:  DESKTOP-T5P0M2C
+//  DateTime: 21.09.2018 21:53:36
+//  UserName: Alex
+// ==========================================================================
+
+
+%using ScannerHelper;
+// Error: ???????? ?? ????? ???? ??????????????.
+   // ??? ?????????: stream
+// Error: GPLEX: output file <SimpleLex.cs> not opened
+// ---------------------------------------------------
+%namespace SimpleScanner
 
 Alpha 	[a-zA-Z_]
 Digit   [0-9] 
@@ -11,7 +24,6 @@ REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}*
 DotChr [^\r\n]
 OneLineCmnt  \/\/{DotChr}*
-StringInApostrophes \'[^']*\'
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
@@ -24,32 +36,11 @@ StringInApostrophes \'[^']*\'
   public int idMaxLength = 0;
   public int intsSum = 0;
   public double doublesSum = 0;
-  public string idInComments;
 %}
 
 %%
-<COMMENT>{ID} {
-  // обрабатывается ID внутри комментария
-  idInComments += yytext + "; ";
-}
-
-"{" { 
-  // переход в состояние COMMENT
-  BEGIN(COMMENT);
-}
-
-<COMMENT> "}" { 
-  // переход в состояние INITIAL
-  BEGIN(INITIAL);
-  return (int)Tok.MULTILINECOMMENT;
-}
-
 {OneLineCmnt} { 
   return (int)Tok.ONELINECMNT;
-}
-
-{StringInApostrophes} { 
-  return (int)Tok.STRINGINAPOSTROPHES;
 }
 
 {INTNUM} { 
@@ -138,9 +129,5 @@ public string IdInfo()
 public string NumsInfo()
 {
 	return "Sum ints = " + intsSum + "\nSum doubles = " + doublesSum + '\n';
-}
+}// ==========================================================================
 
-public string IdInCommentsInfo()
-{
-	return "List id = " + idInComments + '\n';
-}

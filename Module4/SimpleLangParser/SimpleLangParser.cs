@@ -78,9 +78,29 @@ namespace SimpleLangParser
                         Cycle(); 
                         break;
                     }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
+                        break;
+                    }
                 case Tok.ID:
                     {
                         Assign();
+                        break;
+                    }
+                case Tok.EXPR:
+                    {
+                        ExprGram();
                         break;
                     }
                 default:
@@ -112,6 +132,179 @@ namespace SimpleLangParser
             Expr();
             Statement();
         }
+
+        public void While()
+        {
+            l.NextLexem();  // пропуск while
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+
+            Statement();
+        }
+
+        public void For()
+        {
+            l.NextLexem();  // пропуск for
+            
+            if (l.LexKind == Tok.ID)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("ID expected");
+            }
+
+            if (l.LexKind == Tok.ASSIGN)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("'=' expected");
+            }
+
+            Expr();
+
+            if (l.LexKind == Tok.TO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("to expected");
+            }
+
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+
+            Statement();
+        }
+
+        public void If()
+        {
+            l.NextLexem();  // пропуск if
+            Expr();
+
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("then expected");
+            }
+
+            Statement();
+
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                Statement();
+            }         
+        }
+
+        public void ExprGram()
+        {
+            l.NextLexem();  // пропуск Expr
+            E();
+        }
+
+        public void E()
+        {
+            T();
+            A();
+
+            //StatementList();
+        }
+
+        public void A()
+        {
+            if (l.LexKind == Tok.PLUS)
+            {
+                l.NextLexem();
+                T();
+                A();
+            }
+                     
+            if (l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                T();
+                A();
+            }
+        }
+
+        public void T()
+        {
+            M();
+            B();
+        }
+
+        public void B()
+        {
+            if (l.LexKind == Tok.MULTIPLE)
+            {
+                l.NextLexem();
+                M();
+                B();
+            }
+
+            if (l.LexKind == Tok.DIVISION)
+            {
+                l.NextLexem();
+                M();
+                B();
+            }
+        }
+        
+        public void M()
+        {
+            if (l.LexKind == Tok.ID)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                if (l.LexKind == Tok.INUM)
+                {
+                    l.NextLexem();
+                }
+                else
+                {
+                    if (l.LexKind == Tok.OPENBRACKET)
+                    {
+                        l.NextLexem();
+                        E();
+                        if (l.LexKind == Tok.CLOSEBRACKET)
+                        {
+                            l.NextLexem();
+                        }
+                    }
+                    else
+                        SyntaxError("Expr: type M expected");
+                }
+            }
+
+            
+        }
+
 
         public void SyntaxError(string message) 
         {
