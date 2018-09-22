@@ -1,3 +1,14 @@
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <SimpleLex.lex>
+// ==========================================================================
+//  Version:  1.1.3.301
+//  Machine:  LAPTOP-GGETEDEO
+//  DateTime: 22.09.2018 20:05:51
+//  UserName: ???
+// ==========================================================================
+
+
 %using ScannerHelper;
 %namespace SimpleScanner
 
@@ -13,6 +24,7 @@ StrApostr  \'[^']*\'
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
+%x COMMENT
   public int LexValueInt;
   public double LexValueDouble;
   public int cntID = 0;
@@ -21,13 +33,28 @@ StrApostr  \'[^']*\'
   public int maxID = 0;
   public int sumInt = 0;
   public double sumDouble = 0;
-  public bool flag = true;
-  public List<string> lst = new List<string>();
 %}
 
-%x COMMENT
-
 %%
+
+"{" { 
+  // переход в состояние COMMENT
+  BEGIN(COMMENT);
+}
+
+<COMMENT> "}" { 
+//^^^^^^
+// Error: Start state <COMMENT> undefined
+// --------------------------------------
+  // переход в состояние INITIAL
+  BEGIN(INITIAL);
+  retrun (int)Tok.MULT_COMM;
+}
+
+{OneLineCmnt} {
+	return (int)Tok.COMM;
+}
+
 {INTNUM} { 
   LexValueInt = int.Parse(yytext);      // yytext - текстовое представление текущей лексемы	
   return (int)Tok.INUM;
@@ -66,29 +93,8 @@ cycle {
   return (int)Tok.SEMICOLON;
 }
 
-"{" { 
-  // переход в состояние COMMENT
-  BEGIN(COMMENT);
-  flag = false;
-  return (int)Tok.MULT_COMM;
-}
-
-<COMMENT> "}" { 
-  // переход в состояние INITIAL
-  BEGIN(INITIAL);
-  flag = true;
-}
-
-{OneLineCmnt} {
-	return (int)Tok.COMM;
-}
-
 {StrApostr} {
 	return (int)Tok.STR_IN_APOSTROPHES;
-}
-
-<COMMENT>{ID} {
-  lst.Add(yytext);
 }
 
 [^ \r\n] {
@@ -103,11 +109,6 @@ cycle {
 public void LexError()
 {
 	Console.WriteLine("({0},{1}): Неизвестный символ {2}", yyline, yycol, yytext);
-}
-
-public void SynError()
-{
-	Console.WriteLine("Syntax error");
 }
 
 public string TokToString(Tok tok)
@@ -145,4 +146,6 @@ public double AverageID(){
 	else
 		return 0;
 }
+
+// ==========================================================================
 
