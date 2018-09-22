@@ -20,16 +20,8 @@ namespace LexerTasks
         public override void Parse()
         {
             NextCh();
-            if (currentCh == '+' || currentCh == '-')
-            {
-                if (currentCh == '-')
-                {
-                    message += currentCh;
-                }
-                NextCh();
-            }
 
-            if (char.IsDigit(currentCh))
+            if (char.IsLetter(currentCh))
             {
                 message += currentCh;
                 NextCh();
@@ -38,33 +30,73 @@ namespace LexerTasks
             {
                 Error();
             }
-
-            while (char.IsDigit(currentCh))
+            if (char.IsLetter(currentCh))
             {
                 message += currentCh;
                 NextCh();
             }
+            
+            while (char.IsLetter(currentCh) || char.IsDigit(currentCh))
+            {
+                if (char.IsDigit(currentCh))
+                {
+                    message += currentCh;
+                    NextCh();
+                }
+                else
+                {
+                    Error();
+                }
+                if (currentCharValue == -1)
+                    break;
 
+                if (char.IsDigit(currentCh))
+                {
+                    message += currentCh;
+                    NextCh();
+                }
+                if (currentCharValue == -1)
+                    break;
+
+                if (char.IsLetter(currentCh))
+                {
+                    message += currentCh;
+                    NextCh();
+                }
+                else
+                {
+                    Error();
+                }
+                if (currentCharValue == -1)
+                    break;
+                if (char.IsLetter(currentCh))
+                {
+                    message += currentCh;
+                    NextCh();
+                }
+            }
 
             if (currentCharValue != -1) // StringReader вернет -1 в конце строки
             {
                 Error();
             }
             
-            System.Console.WriteLine("Integer is recognized " + message);
+            System.Console.WriteLine("Alternate Digits and Chars with groups no more than 2 recognized " + message);
 
         }
 
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "+1234", "1234" },
-                { "105", "105"},
-                { "-6", "-6"},
-                { "990", "990"},
-                { "94172", "94172"},
-                { "tl3;dr", "error"},
-                { "12tt", "error"},
+                { "aa12c23dd1", "aa12c23dd1" },
+                { "a", "a"},
+                { "a2a", "a2a"},
+                { "af45", "af45"},
+                { "a6ar5t12", "a6ar5t12"},
+                { "a88hye", "error"},
+                { "ar123", "error"},
+                { "12gh", "error" },
+                { "t2gh;", "error" },
                 { "", "error"}
             };
 

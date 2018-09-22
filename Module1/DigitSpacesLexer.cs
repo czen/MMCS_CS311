@@ -83,7 +83,8 @@ namespace LexerTasks
                 { "42 ", "error"},
                 { "1131 ;", "error"},
                 { "12, 45", "error"},
-                { "56     S", "error"}
+                { "56     S", "error"},
+                { "", "error" }
             };
 
             int passedTest = 0;
