@@ -1,6 +1,7 @@
 begin ggg : ; := 7 99.9 5 
 hklloph
 1 
+{qwerty 545454 poiuyt}
 ppp
 10.89
 7
@@ -8,7 +9,7 @@ ppp
 900
 //lucky 100000
 100 'goiisd'
-{hfgfghghffgh 7889 := hyyy}
+{hkfgf 7889 := hyyy}
 end
 
 

@@ -24,9 +24,15 @@ StringInApostrophes \'[^']*\'
   public int idMaxLength = 0;
   public int intsSum = 0;
   public double doublesSum = 0;
+  public string idInComments;
 %}
 
 %%
+<COMMENT>{ID} {
+  // обрабатывается ID внутри комментария
+  idInComments += yytext + "; ";
+}
+
 "{" { 
   // переход в состояние COMMENT
   BEGIN(COMMENT);
@@ -132,4 +138,9 @@ public string IdInfo()
 public string NumsInfo()
 {
 	return "Sum ints = " + intsSum + "\nSum doubles = " + doublesSum + '\n';
+}
+
+public string IdInCommentsInfo()
+{
+	return "List id = " + idInComments + '\n';
 }
