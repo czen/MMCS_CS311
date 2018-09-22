@@ -23,10 +23,7 @@ namespace LexerTasks
             NextCh();
             if (currentCh == '+' || currentCh == '-')
             {
-                if (currentCh == '-')
-                {
-                    message += currentCh;
-                }
+                message += currentCh;
                 NextCh();
             }
 
@@ -39,35 +36,59 @@ namespace LexerTasks
             {
                 Error();
             }
-
             while (char.IsDigit(currentCh))
             {
                 message += currentCh;
                 NextCh();
             }
 
-
-            if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+            if (currentCh == '.')
+            {
+                message += currentCh;
+                NextCh();
+            }
+            else
             {
                 Error();
             }
 
-            number = Convert.ToDouble(message);
-            System.Console.WriteLine("Integer is recognized " + number);
+            if (char.IsDigit(currentCh))
+            {
+                message += currentCh;
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
+            while (char.IsDigit(currentCh))
+            {
+                message += currentCh;
+                NextCh();
+            }
+
+            if (currentCharValue != -1) 
+            {
+                Error();
+            }
+            
+            System.Console.WriteLine("Real numbers with dot is recognized " + message);
 
         }
 
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "+1234", "1234" },
-                { "105", "105"},
-                { "-6", "-6"},
-                { "990", "990"},
-                { "94172", "94172"},
-                { "tl3;dr", "error"},
-                { "12tt", "error"},
-                { "", "error"}
+                { "+1.4", "+1.4" },
+                { "-4.3", "-4.3"},
+                { "234.0", "234.0"},
+                { "0.46", "0.46"},
+                { "90424.12300", "90424.12300"},
+                { "", "error"},
+                { ".89", "error"},
+                { "123.", "error"},
+                { "f12.4", "error"},
+                { "123.44;", "error"}
             };
 
             int passedTest = 0;

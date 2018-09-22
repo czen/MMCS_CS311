@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LexerTasks
 {
-    class AlternateDigitChars2Lexer : Lexer
+    class AlternateDigitLetters2Lexer : Lexer
     {
         protected System.Text.StringBuilder intString;
         public String message;
 
-        public AlternateDigitChars2Lexer(string input)
+        public AlternateDigitLetters2Lexer(string input)
             : base(input)
         {
             intString = new System.Text.StringBuilder();
@@ -104,7 +104,7 @@ namespace LexerTasks
 
             foreach (var t in tests)
             {
-                var L = new AlternateDigitChars2Lexer(t.Key);
+                var L = new AlternateDigitLetters2Lexer(t.Key);
                 bool passed = false;
                 try
                 {

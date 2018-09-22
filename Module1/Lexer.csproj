@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlternateCharDigitLexer.cs" />
-    <Compile Include="AlternateDigitChars2Lexer.cs" />
+    <Compile Include="AlternateDigitLetters2Lexer.cs" />
     <Compile Include="CommentLexer.cs" />
     <Compile Include="DigitSpacesLexer.cs" />
     <Compile Include="IdLexer.cs" />

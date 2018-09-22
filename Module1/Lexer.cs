@@ -60,7 +60,8 @@ public class Program
         SeparatedCharsLexer.Testing();
 
         DigitsSpacesLexer.Testing();
-        AlternateDigitChars2Lexer.Testing();
+        AlternateDigitLetters2Lexer.Testing();
+        RealDotLexer.Testing();
 
         //Console.ReadLine();
     }
