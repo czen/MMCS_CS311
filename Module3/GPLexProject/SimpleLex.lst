@@ -1,3 +1,14 @@
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <SimpleLex.lex>
+// ==========================================================================
+//  Version:  1.1.3.301
+//  Machine:  DESKTOP-OG8I045
+//  DateTime: 9/22/2018 11:36:25 PM
+//  UserName: velmisov
+// ==========================================================================
+
+
 %using ScannerHelper;
 %namespace SimpleScanner
 
@@ -15,10 +26,31 @@ Str \'[^']*\'
 %{
   public int LexValueInt;
   public double LexValueDouble;
-  public string ids;
 %}
 
 %x COMMENT
+
+"{" { 
+// Error: Illegal character in this context
+// Error: Illegal character in this context
+// Error: Illegal character in this context
+// ----------------------------------------
+  // ??????? ? ????????? COMMENT
+  BEGIN(COMMENT);
+}
+// Error: Illegal character in this context
+// ----------------------------------------
+ 
+<COMMENT> "}" { 
+// Error: Illegal character in this context
+// Error: Illegal character in this context
+// Error: Illegal character in this context
+// ----------------------------------------
+  // ??????? ? ????????? INITIAL
+  BEGIN(INITIAL);
+}
+// Error: Illegal character in this context
+// ----------------------------------------
 
 %%
 {INTNUM} { 
@@ -67,22 +99,6 @@ cycle {
 	return (int)Tok.STRING;
 }
 
-"{" {
-	BEGIN(COMMENT);
-	return (int)Tok.START_COMMENT;
-}
-
-<COMMENT> {ID} {
-	ids += yytext + " ";
-}
-
-<COMMENT> "}" {
-	BEGIN(INITIAL);
-	Console.WriteLine(ids);
-	ids = "";
-	return (int)Tok.END_COMMENT;
-}
-
 [^ \r\n] {
 	LexError();
 	return 0; // конец разбора
@@ -111,4 +127,6 @@ public string TokToString(Tok tok)
 			return tok + "";
 	}
 }
+
+// ==========================================================================
 

@@ -1,4 +1,4 @@
 ﻿namespace ScannerHelper
 {
-    public enum Tok { EOF = 0, ID, INUM, RNUM, COLON, SEMICOLON, ASSIGN, BEGIN, END, CYCLE };
+    public enum Tok { EOF = 0, ID, INUM, RNUM, COLON, SEMICOLON, ASSIGN, BEGIN, END, CYCLE, ONE_LINE_COMMENT, STRING, START_COMMENT, END_COMMENT };
 }
