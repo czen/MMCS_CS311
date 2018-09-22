@@ -20,12 +20,32 @@ namespace SimpleLangLexer
         EOF,
         ID,
         INUM,
-        COLON,
-        SEMICOLON,
-        ASSIGN,
+        COLON,           // :
+        SEMICOLON,       // ;
+        ASSIGN,          // :=
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,           // ,
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVISION,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        ADDASSIGN,
+        DECASSIGN,
+        MULTASSIGN,
+        DIVASSIGN,
+        GREATER,
+        LESS,
+        GE,
+        LE,
+        EQUAL,
+        NOTEQUAL
     }
 
     public class Lexer
@@ -34,7 +54,7 @@ namespace SimpleLangLexer
         private char currentCh;                      // Текущий символ
         public int LexRow, LexCol;                  // Строка-столбец начала лексемы. Конец лексемы = LexCol+LexText.Length
         private int row, col;                        // текущие строка и столбец в файле
-        private TextReader inputReader;
+        private TextReader inputReader;              // Текущий поток ввода
         private Dictionary<string, Tok> keywordsMap; // Словарь, сопоставляющий ключевым словам константы типа TLex. Инициализируется процедурой InitKeywords 
         public Tok LexKind;                         // Тип лексемы
         public string LexText;                      // Текст лексемы
@@ -71,11 +91,23 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
         {
             return CurrentLineText + inputReader.ReadLine();
+        }
+
+        private void SynError()
+        {
+            System.Text.StringBuilder errorDescription = new System.Text.StringBuilder();
+            errorDescription.AppendFormat("Syntax error in line {0}", row);
+            throw new LexerException(errorDescription.ToString());
         }
 
         private void LexError(string message)
@@ -120,6 +152,7 @@ namespace SimpleLangLexer
             }
         }
 
+
         public void NextLexem()
         {
             PassSpaces();
@@ -137,13 +170,120 @@ namespace SimpleLangLexer
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                    LexKind = Tok.COLON; 
             }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if(currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ADDASSIGN;
+                }
+                else
+                    LexKind = Tok.PLUS;
+            }
+
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DECASSIGN;
+                }
+                else
+                    LexKind = Tok.MINUS;
+            }
+
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTASSIGN;
+                }
+                else
+                    LexKind = Tok.MULTIPLY;
+            }
+
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DECASSIGN;
+                }
+                else if (currentCh == '/')
+                {
+                    while (LexRow == row && (int)currentCh != 0)
+                        NextCh();
+                    if ((int)currentCh == 0)
+                        LexKind = Tok.EOF;
+                    NextLexem();
+                }
+                else
+                    LexKind = Tok.DIVISION;
+            }
+
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GE;
+                }
+                else
+                    LexKind = Tok.GREATER;
+            }
+
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LE;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+                else
+                    LexKind = Tok.LESS;
+            }
+
+            else if(currentCh == '{')
+            {
+                while (currentCh != '}' && (int)currentCh != 0)
+                    NextCh();
+                if ((int)currentCh == 0)
+                    SynError();
+                NextCh();
+                NextLexem();
+            }
+
             else if (char.IsLetter(currentCh))
             {
                 while (char.IsLetterOrDigit(currentCh))
