@@ -13,8 +13,15 @@ namespace SimpleLangLexerTest
         {
             string fileContents = @"begin 
 id23 := 24;  
-cycle ; 2 id258 id29 ; 
-end";
+cycle ; 2 id258 id29 ;  ,  : + - * / 
+div mod and or not
++= -= *= /=
+{ asd asd sad as
+werf23
+} 1
+id1 + // qwe + -
+> < >= <= = <> 
+end {";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
             try

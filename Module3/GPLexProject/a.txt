@@ -1,3 +1,12 @@
-begin ggg : ; :+= 7 99.9 5 
-1 
+begin ggg : ; : 7 99.9 5 
+1 a bc 0.15
+// eqwdfsf 'qwe'
+'qwe'
+{ dsasa
+ sadsad
+} a
+{ 123
+sf fdsfsdgsdg
+s w
+qw } 'q'
 ppp end

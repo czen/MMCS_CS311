@@ -25,7 +25,29 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MUL,
+        DIVIDE,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        PLUS_ASSIGN,
+        MINUS_ASSIGN,
+        MUL_ASSIGN,
+        DIVIDE_ASSIGN,
+        MORE,
+        LESS,
+        MORE_OR_EQUAL,
+        LESS_OR_EQUAL,
+        EQUAL,
+        NOT_EQUAL,
+        ONE_LINE_COMMENT,
+        COMMENT
     }
 
     public class Lexer
@@ -71,6 +93,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -137,12 +164,15 @@ namespace SimpleLangLexer
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                {
+                    LexKind = Tok.COLON;
+                }
             }
             else if (char.IsLetter(currentCh))
             {
@@ -167,6 +197,119 @@ namespace SimpleLangLexer
                 }
                 LexValue = Int32.Parse(LexText);
                 LexKind = Tok.INUM;
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUS_ASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.PLUS;
+                }
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUS_ASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MINUS;
+                }
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MUL_ASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MUL;
+                }
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVIDE_ASSIGN;
+                }
+                else if (currentCh == '/')
+                {
+                    FinishCurrentLine();
+                    NextCh();
+                    LexKind = Tok.ONE_LINE_COMMENT;
+                }
+                else
+                {
+                    LexKind = Tok.DIVIDE;
+                }
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESS_OR_EQUAL;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOT_EQUAL;
+                }
+                else
+                {
+                    LexKind = Tok.LESS;
+                }
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MORE_OR_EQUAL;
+                }
+                else
+                {
+                    LexKind = Tok.MORE;
+                }
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                    {
+                        LexError("Expected end of comment");
+                    }
+                    NextCh();
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
             }
             else if ((int)currentCh == 0)
             {
