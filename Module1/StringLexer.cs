@@ -20,16 +20,8 @@ namespace LexerTasks
         public override void Parse()
         {
             NextCh();
-            if (currentCh == '+' || currentCh == '-')
-            {
-                if (currentCh == '-')
-                {
-                    message += currentCh;
-                }
-                NextCh();
-            }
 
-            if (char.IsDigit(currentCh))
+            if (currentCh == '\'')
             {
                 message += currentCh;
                 NextCh();
@@ -39,32 +31,42 @@ namespace LexerTasks
                 Error();
             }
 
-            while (char.IsDigit(currentCh))
+            while (currentCharValue != -1 && currentCh != '\'')
             {
                 message += currentCh;
                 NextCh();
             }
 
+            if (currentCh == '\'')
+            {
+                message += currentCh;
+                NextCh();
+            }
+            else
+            {
+                Error();
+            }
 
-            if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+            if (currentCharValue != -1)
             {
                 Error();
             }
             
-            System.Console.WriteLine("Integer is recognized " + message);
+            System.Console.WriteLine("string is recognized " + message);
 
         }
 
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "+1234", "1234" },
-                { "105", "105"},
-                { "-6", "-6"},
-                { "990", "990"},
-                { "94172", "94172"},
-                { "tl3;dr", "error"},
-                { "12tt", "error"},
+                { "''", "''" },
+                { "'1'", "'1'"},
+                { "'g '", "'g '"},
+                { "'abra768\"'", "'abra768\"'"},
+                { "'tl;dr'", "'tl;dr'"},
+                { "tl3;dr'", "error"},
+                { "'12tt", "error"},
+                { "'12t't", "error"},
                 { "", "error"}
             };
 
@@ -94,9 +96,7 @@ namespace LexerTasks
                     System.Console.WriteLine("Test is not passed");
                 }
             }
-
             System.Console.WriteLine("{0} / {1} tests passed", passedTest, tests.Count);
-
         }
     }
 }

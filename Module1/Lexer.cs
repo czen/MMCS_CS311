@@ -62,6 +62,7 @@ public class Program
         DigitsSpacesLexer.Testing();
         AlternateDigitLetters2Lexer.Testing();
         RealDotLexer.Testing();
+        StringLexer.Testing();
 
         //Console.ReadLine();
     }
