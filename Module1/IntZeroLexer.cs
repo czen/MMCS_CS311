@@ -64,7 +64,8 @@ namespace LexerTasks
                 { "-505", "-505"},
                 { "-012", "error"},
                 { "0123", "error"},
-                { "1,glO", "error"}
+                { "1,glO", "error"},
+                { "", "error" }
             };
 
             int passedTest = 0;

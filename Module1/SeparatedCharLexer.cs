@@ -83,7 +83,8 @@ namespace LexerTasks
                 { "abg;;", "error"},
                 { ",,", "error"},
                 { "tl;dr", "tldr"},
-                { ",glO", "error"}
+                { ",glO", "error"},
+                { "", "error"}
             };
 
             int passedTest = 0;
