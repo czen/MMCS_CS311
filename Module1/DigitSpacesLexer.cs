@@ -69,7 +69,7 @@ namespace LexerTasks
                 Error();
             }
 
-            System.Console.WriteLine("string with separated chars spaces recognised " + message);
+            System.Console.WriteLine("string with separated chars by spaces recognised " + message);
         }
 
         public static void Testing()

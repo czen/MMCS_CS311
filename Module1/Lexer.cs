@@ -63,6 +63,7 @@ public class Program
         AlternateDigitLetters2Lexer.Testing();
         RealDotLexer.Testing();
         StringLexer.Testing();
+        CommentLexer.Testing();
 
         //Console.ReadLine();
     }

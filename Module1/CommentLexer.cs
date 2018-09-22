@@ -20,16 +20,16 @@ namespace LexerTasks
         public override void Parse()
         {
             NextCh();
-            if (currentCh == '+' || currentCh == '-')
+            if (currentCh == '/' )
             {
-                if (currentCh == '-')
-                {
-                    message += currentCh;
-                }
+                message += currentCh;
                 NextCh();
             }
-
-            if (char.IsDigit(currentCh))
+            else
+            {
+                Error();
+            }
+            if (currentCh == '*')
             {
                 message += currentCh;
                 NextCh();
@@ -39,33 +39,45 @@ namespace LexerTasks
                 Error();
             }
 
-            while (char.IsDigit(currentCh))
+            bool prevIsStar = false;
+            bool commentEnd = false;
+            while (currentCharValue != -1)
             {
                 message += currentCh;
+                if (prevIsStar && currentCh == '/')
+                {
+                    NextCh();
+                    commentEnd = true;
+                    break;
+                }
+                prevIsStar = currentCh == '*';                
                 NextCh();
             }
 
-
-            if (currentCharValue != -1) // StringReader вернет -1 в конце строки
+            if (currentCharValue != -1 || !commentEnd) // StringReader вернет -1 в конце строки
             {
                 Error();
             }
 
-            System.Console.WriteLine("Integer is recognized " + message);
+            System.Console.WriteLine("comment is recognized " + message);
 
         }
 
         public static void Testing()
         {
             var tests = new Dictionary<string, string>{
-                { "+1234", "1234" },
-                { "105", "105"},
-                { "-6", "-6"},
-                { "990", "990"},
-                { "94172", "94172"},
-                { "tl3;dr", "error"},
-                { "12tt", "error"},
-                { "", "error"}
+                { "/**/", "/**/" },
+                { "/*1*/", "/*1*/"},
+                { "/****/", "/****/"},
+                { "/* ;89**/", "/* ;89**/"},
+                { "/* g;,1.w&^*/", "/* g;,1.w&^*/"},
+                { "", "error"},
+                { "*/", "error"},
+                { "/ /", "error"},
+                { "/ * */", "error"},
+                { "/* * /", "error"},
+                { "/*", "error"},
+                { "/*/", "error"}
             };
 
             int passedTest = 0;
