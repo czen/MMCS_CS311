@@ -19,13 +19,35 @@ namespace SimpleLangLexer
     {
         EOF,
         ID,
-        INUM,
-        COLON,
-        SEMICOLON,
-        ASSIGN,
+        INUM,               //number
+        COLON,           //  :
+        SEMICOLON,      //   ;
+        ASSIGN,          // =
         BEGIN,
         END,
-        CYCLE
+        CYCLE, 
+        COMMA,  //task1 -> ,
+        PLUS,       // +
+        MINUS,
+        MULTIPLICATION, //*
+        DIVISION,       // /
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        ADDASSIGNMENT, // task2 ->  +=
+        SUBASSIGNMENT,          //-=
+        MULTASSIGNMENT,         //*=
+        DIVASSIGNMENT,           // /=
+        GREATER,//task3   -> >
+        LESS,    //   <
+        GREATEROREQ, // >=
+        LESSOREQ, // <=
+        EQUAL,  // =
+        NOTEQUAL, // <>
+        DOUBLESlASH,   //task4
+        COMMENT //task5
     }
 
     public class Lexer
@@ -71,6 +93,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -129,7 +156,112 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
+
+            //task1  , : + - * / div mod and or not
+            //task2 += -= *= /=
+            //task3  > < >= <= = <>
+            //task4 пропуск комментариев // - до конца строки
+            //task5 пропуск комментариев { комментарий до закрывающей фигурной скобки }. 
+            //Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
+            if (currentCh == '{')
+            {
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                    {
+                        LexError("'}' was expected");
+                    }
+                    NextCh();
+                }
+                NextCh();
+                LexKind = Tok.COMMENT;
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATEROREQ;
+                }
+                else
+                    LexKind = Tok.GREATER;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSOREQ;
+                }
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+                else  LexKind = Tok.LESS;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ADDASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.PLUS;
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.SUBASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.MINUS;
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULTASSIGNMENT;
+                }
+                else
+                    LexKind = Tok.MULTIPLICATION;
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVASSIGNMENT;
+                }
+                else if (currentCh == '/')
+                {
+                    while (currentCh != '\n')
+                        NextCh();
+                    LexKind = Tok.DOUBLESlASH;
+                }
+                else LexKind = Tok.DIVISION;
+            }
+            else if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
@@ -137,12 +269,13 @@ namespace SimpleLangLexer
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                    LexKind = Tok.COLON;
             }
             else if (char.IsLetter(currentCh))
             {
