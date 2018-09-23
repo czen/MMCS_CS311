@@ -46,7 +46,8 @@ namespace SimpleLangLexer
         LESSOREQUAL,
         EQUAL,
         NOTEQUAL,
-        SINGLECOMMENT
+        SINGLECOMMENT,
+        COMPLEXCOMMENT
     }
 
     //, : + - * / div mod and or not 
@@ -168,8 +169,7 @@ namespace SimpleLangLexer
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
 
-
-            // - до конца строки
+            
             if (currentCh == ';')
             {
                 NextCh();
@@ -178,6 +178,23 @@ namespace SimpleLangLexer
             {
                 NextCh();                
                 LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while ((int)currentCh != 0 && currentCh != '}')
+                {
+                    NextCh();
+                }
+                if ((int)currentCh == 0)
+                {
+                    LexError("Expected end of comment '}'");
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.COMPLEXCOMMENT;
+                }
             }
             else if (currentCh == '>')
             {

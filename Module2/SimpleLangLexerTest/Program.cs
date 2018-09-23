@@ -18,6 +18,8 @@ cycle ; 2 id258 id29 div mod ; : + ;
 89 -= /= / <> < > <= >= =
 // += dkfkdf
 //
+{ += *= 09 ju243 }
+{
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
