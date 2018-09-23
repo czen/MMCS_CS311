@@ -39,11 +39,18 @@ namespace SimpleLangLexer
         PLUSASSIGN,
         MINUSASSIGN,
         MULASSIGN,
-        DIVIDEASSIGN
+        DIVIDEASSIGN,
+        GREATER,
+        LESS,
+        GREATEROREQUAL,
+        LESSOREQUAL,
+        EQUAL,
+        NOTEQUAL
     }
 
     //, : + - * / div mod and or not 
     // += -= *= /=
+    // > < >= <= = <>
 
     public class Lexer
     {
@@ -160,15 +167,47 @@ namespace SimpleLangLexer
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
 
-            // += -= *= /=
+           
+            // > < >= <= = <>
             if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }else if (currentCh == ',')
             {
-                NextCh();
+                NextCh();                
                 LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATEROREQUAL;
+                }
+                else
+                    LexKind = Tok.GREATER;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSOREQUAL;
+                }else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+                else
+                    LexKind = Tok.LESS;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
             }
             else if (currentCh == '+')
             {

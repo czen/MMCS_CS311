@@ -15,7 +15,7 @@ namespace SimpleLangLexerTest
 id23 := 24;  
 cycle ; 2 id258 id29 div mod ; : + ;
 - * / not ; and or id45 *= 12 ID45 += 0
-89 -= /= / 
+89 -= /= / <> < > <= >= =
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
