@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using SimpleScanner;
 using ScannerHelper;
+using System.Collections.Generic;
 
 namespace Main
 {
@@ -17,10 +18,11 @@ namespace Main
             Console.WriteLine("-------------------------");
 
             Scanner scanner = new Scanner(new FileStream(fname, FileMode.Open));
-
+            scanner.IdList = new List<string>();
             int tok = 0;
             do {
                 tok = scanner.yylex();
+                
                 if (tok == (int)Tok.EOF)
                     break;
                 Console.WriteLine(scanner.TokToString((Tok)tok));
