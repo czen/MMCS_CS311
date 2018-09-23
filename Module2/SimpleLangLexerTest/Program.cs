@@ -74,9 +74,10 @@ end";
             }
 
             //-------------------------------------------------
-            fileContents = @"begin 
-&ui
-end";
+            fileContents = @"begin
+& //";
+
+
             inputReader = new StringReader(fileContents);
             l = new Lexer(inputReader);
             try

@@ -231,7 +231,7 @@ namespace SimpleLangLexer
                 NextCh();
                 if (currentCh == '/')
                 {
-                    while (currentCh != '\n')
+                    while (currentCh != '\n' && currentCh != '\0')
                         NextCh();
                     LexKind = Tok.COMMENT;
                 }
