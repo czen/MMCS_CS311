@@ -50,10 +50,6 @@ namespace SimpleLangLexer
         COMPLEXCOMMENT
     }
 
-    //, : + - * / div mod and or not 
-    // += -= *= /=
-    // > < >= <= = <>
-
     public class Lexer
     {
         private int position;
@@ -166,10 +162,9 @@ namespace SimpleLangLexer
             LexText = "";
             LexRow = row;
             LexCol = col;
-            // Тип лексемы определяется по ее первому символу
-            // Для каждой лексемы строится синтаксическая диаграмма
 
-            
+            // Тип лексемы определяется по ее первому символу
+            // Для каждой лексемы строится синтаксическая диаграмма            
             if (currentCh == ';')
             {
                 NextCh();
