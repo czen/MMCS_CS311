@@ -25,8 +25,20 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLICATE,
+        DIVIDE,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT
     }
+
+    //, : + - * / div mod and or not
 
     public class Lexer
     {
@@ -71,6 +83,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -120,6 +137,14 @@ namespace SimpleLangLexer
             }
         }
 
+        /*
+         * 1. Добавить распознавание лексем , : + - * / div mod and or not
+           2. Добавить распознавание лексем += -= *= /=. Тщательно продумать, как совместить распознавание лексем с одинаковым префиксом: например, + и +=
+           3. Добавить распознавание лексем > < >= <= = <>
+           4. Добавить пропуск комментариев // - до конца строки
+           5. Добавить пропуск комментариев { комментарий до закрывающей фигурной скобки }. Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
+         */
+
         public void NextLexem()
         {
             PassSpaces();
@@ -133,16 +158,46 @@ namespace SimpleLangLexer
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
+            }else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                LexKind = Tok.PLUS;
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                LexKind = Tok.MINUS;
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                LexKind = Tok.DIVIDE;
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                LexKind = Tok.MULTIPLICATE;
             }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    // LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                {
+                    LexKind = Tok.COLON;
+                }
+                //NextCh();
+                //LexKind = Tok.ASSIGN;
             }
             else if (char.IsLetter(currentCh))
             {
