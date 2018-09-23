@@ -35,10 +35,15 @@ namespace SimpleLangLexer
         MOD,
         AND,
         OR,
-        NOT
+        NOT,
+        PLUSASSIGN,
+        MINUSASSIGN,
+        MULASSIGN,
+        DIVIDEASSIGN
     }
 
-    //, : + - * / div mod and or not
+    //, : + - * / div mod and or not 
+    // += -= *= /=
 
     public class Lexer
     {
@@ -154,6 +159,8 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
+
+            // += -= *= /=
             if (currentCh == ';')
             {
                 NextCh();
@@ -166,22 +173,54 @@ namespace SimpleLangLexer
             else if (currentCh == '+')
             {
                 NextCh();
-                LexKind = Tok.PLUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUSASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.PLUS;
+                }
             }
             else if (currentCh == '-')
             {
                 NextCh();
-                LexKind = Tok.MINUS;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUSASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MINUS;
+                }
             }
             else if (currentCh == '/')
             {
                 NextCh();
-                LexKind = Tok.DIVIDE;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.DIVIDEASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.DIVIDE;
+                }
             }
             else if (currentCh == '*')
             {
                 NextCh();
-                LexKind = Tok.MULTIPLICATE;
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MULTIPLICATE;
+                }
             }
             else if (currentCh == ':')
             {

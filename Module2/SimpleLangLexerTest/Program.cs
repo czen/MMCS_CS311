@@ -14,7 +14,8 @@ namespace SimpleLangLexerTest
             string fileContents = @"begin 
 id23 := 24;  
 cycle ; 2 id258 id29 div mod ; : + ;
-- * / not ; and or
+- * / not ; and or id45 *= 12 ID45 += 0
+89 -= /= / 
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
