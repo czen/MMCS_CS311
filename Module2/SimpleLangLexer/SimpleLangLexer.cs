@@ -45,7 +45,8 @@ namespace SimpleLangLexer
         GREATEROREQUAL,
         LESSOREQUAL,
         EQUAL,
-        NOTEQUAL
+        NOTEQUAL,
+        SINGLECOMMENT
     }
 
     //, : + - * / div mod and or not 
@@ -167,8 +168,8 @@ namespace SimpleLangLexer
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
 
-           
-            // > < >= <= = <>
+
+            // - до конца строки
             if (currentCh == ';')
             {
                 NextCh();
@@ -240,8 +241,18 @@ namespace SimpleLangLexer
                 NextCh();
                 if (currentCh == '=')
                 {
-                    NextCh();
+                    NextCh();                    
                     LexKind = Tok.DIVIDEASSIGN;
+                }
+                else if (currentCh == '/')
+                {
+                    int commentRow = row;
+                    NextCh();                    
+                    while (commentRow == row)
+                    {
+                        NextCh();
+                    }
+                    LexKind = Tok.SINGLECOMMENT;
                 }
                 else
                 {
@@ -266,7 +277,6 @@ namespace SimpleLangLexer
                 NextCh();
                 if (currentCh == '=')
                 {
-                    // LexError("= was expected");
                     NextCh();
                     LexKind = Tok.ASSIGN;
                 }
@@ -274,8 +284,6 @@ namespace SimpleLangLexer
                 {
                     LexKind = Tok.COLON;
                 }
-                //NextCh();
-                //LexKind = Tok.ASSIGN;
             }
             else if (char.IsLetter(currentCh))
             {

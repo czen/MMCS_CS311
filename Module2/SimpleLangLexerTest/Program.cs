@@ -16,6 +16,8 @@ id23 := 24;
 cycle ; 2 id258 id29 div mod ; : + ;
 - * / not ; and or id45 *= 12 ID45 += 0
 89 -= /= / <> < > <= >= =
+// += dkfkdf
+//
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
@@ -31,8 +33,6 @@ end";
             {
                 Console.WriteLine("lexer error: " + e.Message);
             }
-
-            //Console.ReadKey();
         }
     }
 }
