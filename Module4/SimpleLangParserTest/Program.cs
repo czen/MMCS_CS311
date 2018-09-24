@@ -17,7 +17,12 @@ namespace SimpleLangParserTest
     cycle a
     begin
         b := a;
-        c := 234
+        c := 234;
+        while c do
+            c := 1;
+        b := c;
+        for a := 3 to 4 do
+            k := a
     end
 end";
             TextReader inputReader = new StringReader(fileContents);

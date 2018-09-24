@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SimpleLangLexer.cs" />
     <Compile Include="SimpleLangParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

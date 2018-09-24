@@ -83,6 +83,16 @@ namespace SimpleLangParser
                         Assign();
                         break;
                     }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
                 default:
                     {
                         SyntaxError("Operator expected");
@@ -110,6 +120,40 @@ namespace SimpleLangParser
         {
             l.NextLexem();  // пропуск cycle
             Expr();
+            Statement();
+        }
+
+        // TASK 1
+        public void While()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.DO)
+                SyntaxError("do expected");
+            l.NextLexem();
+            Statement();
+        }
+
+        // TASK 2
+        public void For()
+        {
+            l.NextLexem();
+
+            if (l.LexKind != Tok.ID)
+                SyntaxError("id expected");
+
+            Assign();
+
+            if (l.LexKind != Tok.TO)
+                SyntaxError("to expected");
+            l.NextLexem();
+
+            Expr();
+
+            if (l.LexKind != Tok.DO)
+                SyntaxError("do expected");
+            l.NextLexem();
+
             Statement();
         }
 
