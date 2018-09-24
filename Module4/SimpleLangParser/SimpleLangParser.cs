@@ -29,15 +29,52 @@ namespace SimpleLangParser
             Block();
         }
 
+        // EXTRA TASK 2
         public void Expr() 
         {
-            if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
+            T();
+            A();
+        }
+
+        public void T()
+        {
+            M();
+            B();
+        }
+
+        public void A()
+        {
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
             {
                 l.NextLexem();
+                T();
+                A();
+            }
+        }
+
+        public void M()
+        {
+            if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
+                l.NextLexem();
+            else if (l.LexKind == Tok.OPEN_BRACKET)
+            {
+                Expr();
+                if (l.LexKind == Tok.CLOSE_BRACKET)
+                    l.NextLexem();
+                else
+                    SyntaxError("bracket expected");
             }
             else
+                SyntaxError("incorrect expression");
+        }
+
+        public void B()
+        {
+            if (l.LexKind == Tok.MULTIPLICATION || l.LexKind == Tok.DIVISION)
             {
-                SyntaxError("expression expected");
+                l.NextLexem();
+                T();
+                A();
             }
         }
 
@@ -83,6 +120,21 @@ namespace SimpleLangParser
                         Assign();
                         break;
                     }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
+                        break;
+                    }
                 default:
                     {
                         SyntaxError("Operator expected");
@@ -111,6 +163,57 @@ namespace SimpleLangParser
             l.NextLexem();  // пропуск cycle
             Expr();
             Statement();
+        }
+
+        // TASK 1
+        public void While()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.DO)
+                SyntaxError("do expected");
+            l.NextLexem();
+            Statement();
+        }
+
+        // TASK 2
+        public void For()
+        {
+            l.NextLexem();
+
+            if (l.LexKind != Tok.ID)
+                SyntaxError("id expected");
+
+            Assign();
+
+            if (l.LexKind != Tok.TO)
+                SyntaxError("to expected");
+            l.NextLexem();
+
+            Expr();
+
+            if (l.LexKind != Tok.DO)
+                SyntaxError("do expected");
+            l.NextLexem();
+
+            Statement();
+        }
+
+        // EXTRA TASK 1
+        public void If()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.THEN)
+                SyntaxError("then expected");
+            l.NextLexem();
+            Statement();
+
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                Statement();
+            }
         }
 
         public void SyntaxError(string message) 

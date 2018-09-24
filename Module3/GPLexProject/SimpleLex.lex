@@ -7,12 +7,18 @@ AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
+DotChr [^\r\n]
+OneLineCmnt \/\/{DotChr}*
+Str \'[^']*\'
 
 // «десь можно делать описани€ типов, переменных и методов - они попадают в класс Scanner
 %{
   public int LexValueInt;
   public double LexValueDouble;
+  public string IDs;
 %}
+
+%x COMMENT
 
 %%
 {INTNUM} { 
@@ -39,6 +45,30 @@ cycle {
 
 {ID}  { 
   return (int)Tok.ID;
+}
+
+// ƒополнительные задани€
+
+{OneLineCmnt} {
+  return (int)Tok.ONELINECOMMENT;
+}
+
+"{" {
+  BEGIN(COMMENT);
+  IDs = "";
+}
+
+<COMMENT> {ID} {
+  IDs += yytext + " ";
+}
+
+<COMMENT> "}" {
+  BEGIN(INITIAL);
+  return (int)Tok.MULTILINECOMMENT;
+}
+
+{Str} {
+  return (int)Tok.STRING;
 }
 
 ":" { 
@@ -77,6 +107,8 @@ public string TokToString(Tok tok)
 			return tok + " " + LexValueInt;
 		case Tok.RNUM:
 			return tok + " " + LexValueDouble;
+		case Tok.MULTILINECOMMENT:
+			return tok + " " + IDs;
 		default:
 			return tok + "";
 	}
