@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+
+using LexerTasks;
+
 public class LexerException : System.Exception
 {
     public LexerException(string msg)
@@ -44,65 +49,22 @@ public class Lexer
     }
 }
 
-public class IntLexer : Lexer
-{
-
-    protected System.Text.StringBuilder intString;
-
-    public IntLexer(string input)
-        : base(input)
-    {
-        intString = new System.Text.StringBuilder();
-    }
-
-    public override void Parse()
-    {
-        NextCh();
-        if (currentCh == '+' || currentCh == '-')
-        {
-            NextCh();
-        }
-
-        if (char.IsDigit(currentCh))
-        {
-            NextCh();
-        }
-        else
-        {
-            Error();
-        }
-
-        while (char.IsDigit(currentCh))
-        {
-            NextCh();
-        }
-
-
-        if (currentCharValue != -1) // StringReader вернет -1 в конце строки
-        {
-            Error();
-        }
-
-        System.Console.WriteLine("Integer is recognized");
-
-    }
-}
-
-
 public class Program
 {
     public static void Main()
     {
-        string input = "154216";
-        Lexer L = new IntLexer(input);
-        try
-        {
-            L.Parse();
-        }
-        catch (LexerException e)
-        {
-            System.Console.WriteLine(e.Message);
-        }
+        IntLexer.Testing();
+        IdLexer.Testing();
+        IntZeroLexer.Testing();
+        AlternateCharDigitLexer.Testing();
+        SeparatedCharsLexer.Testing();
 
+        DigitsSpacesLexer.Testing();
+        AlternateDigitLetters2Lexer.Testing();
+        RealDotLexer.Testing();
+        StringLexer.Testing();
+        CommentLexer.Testing();
+
+        //Console.ReadLine();
     }
 }

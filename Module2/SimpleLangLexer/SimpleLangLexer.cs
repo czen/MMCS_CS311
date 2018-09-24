@@ -25,7 +25,29 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTIPLICATE,
+        DIVIDE,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        PLUSASSIGN,
+        MINUSASSIGN,
+        MULASSIGN,
+        DIVIDEASSIGN,
+        GREATER,
+        LESS,
+        GREATEROREQUAL,
+        LESSOREQUAL,
+        EQUAL,
+        NOTEQUAL,
+        SINGLECOMMENT,
+        COMPLEXCOMMENT
     }
 
     public class Lexer
@@ -71,6 +93,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -120,6 +147,14 @@ namespace SimpleLangLexer
             }
         }
 
+        /*
+         * 1. Добавить распознавание лексем , : + - * / div mod and or not
+           2. Добавить распознавание лексем += -= *= /=. Тщательно продумать, как совместить распознавание лексем с одинаковым префиксом: например, + и +=
+           3. Добавить распознавание лексем > < >= <= = <>
+           4. Добавить пропуск комментариев // - до конца строки
+           5. Добавить пропуск комментариев { комментарий до закрывающей фигурной скобки }. Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
+         */
+
         public void NextLexem()
         {
             PassSpaces();
@@ -127,22 +162,140 @@ namespace SimpleLangLexer
             LexText = "";
             LexRow = row;
             LexCol = col;
+
             // Тип лексемы определяется по ее первому символу
-            // Для каждой лексемы строится синтаксическая диаграмма
+            // Для каждой лексемы строится синтаксическая диаграмма            
             if (currentCh == ';')
             {
                 NextCh();
                 LexKind = Tok.SEMICOLON;
+            }else if (currentCh == ',')
+            {
+                NextCh();                
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while ((int)currentCh != 0 && currentCh != '}')
+                {
+                    NextCh();
+                }
+                if ((int)currentCh == 0)
+                {
+                    LexError("Expected end of comment '}'");
+                }
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.COMPLEXCOMMENT;
+                }
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.GREATEROREQUAL;
+                }
+                else
+                    LexKind = Tok.GREATER;
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESSOREQUAL;
+                }else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOTEQUAL;
+                }
+                else
+                    LexKind = Tok.LESS;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            else if (currentCh == '+')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.PLUSASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.PLUS;
+                }
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MINUSASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MINUS;
+                }
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();                    
+                    LexKind = Tok.DIVIDEASSIGN;
+                }
+                else if (currentCh == '/')
+                {
+                    int commentRow = row;
+                    NextCh();                    
+                    while (commentRow == row)
+                    {
+                        NextCh();
+                    }
+                    LexKind = Tok.SINGLECOMMENT;
+                }
+                else
+                {
+                    LexKind = Tok.DIVIDE;
+                }
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.MULASSIGN;
+                }
+                else
+                {
+                    LexKind = Tok.MULTIPLICATE;
+                }
             }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
                 }
-                NextCh();
-                LexKind = Tok.ASSIGN;
+                else
+                {
+                    LexKind = Tok.COLON;
+                }
             }
             else if (char.IsLetter(currentCh))
             {
