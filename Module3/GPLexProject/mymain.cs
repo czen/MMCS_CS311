@@ -27,7 +27,8 @@ namespace Main
             int int_sum = 0;
             double d_sum = 0d;
 
-            do {
+            do
+            {
                 tok = scanner.yylex();
                 if (tok == (int)Tok.ID)
                 {
@@ -37,7 +38,7 @@ namespace Main
                     if (len > max_len)
                         max_len = len;
                     if (len < min_len)
-                        min_len = len;                  
+                        min_len = len;
                 }
                 if (tok == (int)Tok.INUM)
                 {
