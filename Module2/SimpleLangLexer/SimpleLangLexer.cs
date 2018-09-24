@@ -167,60 +167,40 @@ namespace SimpleLangLexer
             else if (currentCh == '+')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.PLUS;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.PLUS_ASSIGN;
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.PLUS;
             }
             else if (currentCh == '-')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.MINUS;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.MINUS_ASSIGN;
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.MINUS;
             }
             else if (currentCh == '*')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.MULTIPLICATION;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.MULT_ASSIGN;
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.MULTIPLICATION;
             }
             else if (currentCh == '/')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.DIVISION;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.DIV_ASSIGN;
@@ -234,33 +214,23 @@ namespace SimpleLangLexer
                     NextLexem();
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.DIVISION;
             }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.COLON;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.ASSIGN;
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.COLON;
             }
             else if (currentCh == '<')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.LESS;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.LESS_EQUAL;
@@ -271,23 +241,18 @@ namespace SimpleLangLexer
                     LexKind = Tok.NOT_EQUAL;
                 }
                 else
-                    LexError("= or < or <space> was expected");
+                    LexKind = Tok.LESS;
             }
             else if (currentCh == '>')
             {
                 NextCh();
-                if (currentCh == ' ')
-                {
-                    NextCh();
-                    LexKind = Tok.GREATER;
-                }
-                else if (currentCh == '=')
+                if (currentCh == '=')
                 {
                     NextCh();
                     LexKind = Tok.GREATER_EQUAL;
                 }
                 else
-                    LexError("= or <space> was expected");
+                    LexKind = Tok.GREATER;
             }
             else if (currentCh == '=')
             {
