@@ -16,9 +16,22 @@ namespace SimpleLangParserTest
     a := 2;
     cycle a
     begin
-        b := a;
-        c := 234
-    end
+        b:=a
+    end;
+
+    while a do
+    begin
+       b:=1;
+       c:=b
+    end;
+
+    for i := 1 to 5 do
+    begin
+        c:=i
+    end;
+
+    if (a+1)/b then c:=z+b else c:=44+2;
+    if z then c:=z*z
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);

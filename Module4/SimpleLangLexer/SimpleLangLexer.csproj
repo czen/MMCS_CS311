@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{837BC9FE-DAA9-416E-BCCE-0235E5C38D4B}</ProjectGuid>
+    <ProjectGuid>{28C0284B-2F43-45D6-A77F-AB08F919717D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimpleLangParser</RootNamespace>
-    <AssemblyName>SimpleLangParser</AssemblyName>
+    <RootNamespace>SimpleLangLexer</RootNamespace>
+    <AssemblyName>SimpleLangLexer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,14 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SimpleLangParser.cs" />
+    <Compile Include="SimpleLangLexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleLangLexer\SimpleLangLexer.csproj">
-      <Project>{28c0284b-2f43-45d6-a77f-ab08f919717d}</Project>
-      <Name>SimpleLangLexer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
