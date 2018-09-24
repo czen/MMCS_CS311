@@ -121,6 +121,7 @@ public string TokToString(Tok tok)
 	{
 		case Tok.ID:
 			LexCount++;
+			LexAllLength+=yyleng;
 			LexMaxLength = yyleng > LexMaxLength ? yyleng  : LexMaxLength;
 			LexMinLength = (yyleng < LexMinLength || LexMinLength == 0)? yyleng  : LexMinLength;
 			return tok + " " + yytext;
