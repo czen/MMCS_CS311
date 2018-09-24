@@ -1,6 +1,5 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SimpleLangLexer;
 
@@ -17,9 +16,9 @@ namespace SimpleLangParser
 
     public class Parser
     {
-        private SimpleLangLexer.Lexer l;
+        private Lexer l;
 
-        public Parser(SimpleLangLexer.Lexer lexer)
+        public Parser(Lexer lexer)
         {
             l = lexer;
         }
@@ -31,13 +30,53 @@ namespace SimpleLangParser
 
         public void Expr() 
         {
+            Term2();
+            Term1();
+        }
+
+        private void Term1()
+        {
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                Term2();
+                Term1();
+            }
+        }
+        
+        private void Term2()
+        {
+            Factor();
+            Term3();
+        }
+        
+        private void Term3()
+        {
+            if (l.LexKind == Tok.MULT || l.LexKind == Tok.DIVISION)
+            {
+                l.NextLexem();
+                Factor();
+                Term3();
+            }
+        }
+
+        private void Factor()
+        {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
             {
                 l.NextLexem();
-            }
-            else
+            } else if (l.LexKind == Tok.LEFT_BRACKET)
             {
-                SyntaxError("expression expected");
+                l.NextLexem();
+                Expr();
+                if (l.LexKind != Tok.RIGHT_BRACKET)
+                {
+                    SyntaxError("expected: RIGHT_BRACKET");
+                }
+                l.NextLexem();
+            } else
+            {
+                SyntaxError("expected: ID, INUM, LEFT_BRACKET");
             }
         }
 
@@ -69,25 +108,40 @@ namespace SimpleLangParser
             switch (l.LexKind)
             {
                 case Tok.BEGIN:
-                    {
-                        Block(); 
-                        break;
-                    }
+                {
+                    Block();
+                    break;
+                }
                 case Tok.CYCLE:
-                    {
-                        Cycle(); 
-                        break;
-                    }
+                {
+                    Cycle();
+                    break;
+                }
                 case Tok.ID:
-                    {
-                        Assign();
-                        break;
-                    }
+                {
+                    Assign();
+                    break;
+                }
+                case Tok.WHILE:
+                {
+                    While();
+                    break;
+                }
+                case Tok.FOR:
+                {
+                    For();
+                    break;
+                }
+                case Tok.IF:
+                {
+                    Condition();
+                    break;
+                }
                 default:
-                    {
-                        SyntaxError("Operator expected");
-                        break;
-                    }
+                {
+                    SyntaxError("Operator expected");
+                    break;
+                }
             }
         }
 
@@ -113,6 +167,57 @@ namespace SimpleLangParser
             Statement();
         }
 
+        public void While()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.DO)
+            {
+                SyntaxError("keyword 'do' expected");
+            }
+            l.NextLexem();
+            Statement();
+        }
+
+        public void For()
+        {
+            l.NextLexem();
+            if (l.LexKind != Tok.ID)
+            {
+                SyntaxError("ID expected");
+            }
+            Assign();
+            if (l.LexKind != Tok.TO)
+            {
+                SyntaxError("keyword 'to' expected");
+            }
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.DO)
+            {
+                SyntaxError("keyword 'do' expected");
+            }
+            l.NextLexem();
+            Statement();
+        }
+
+        public void Condition()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind != Tok.THEN)
+            {
+                SyntaxError("keyword 'then' expected");
+            }
+            l.NextLexem();
+            Statement();
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                Statement();
+            }
+        }
+        
         public void SyntaxError(string message) 
         {
             var errorMessage = "Syntax error in line " + l.LexRow.ToString() + ":\n";

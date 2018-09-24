@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleLangLexer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\192.168.0.110\work\SFedU\Курсы2017\Методы_построения_компиляторов\Тема2\SimpleLangLexer\bin\Debug\SimpleLangLexer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Module2\SimpleLangLexer\SimpleLangLexer.csproj">
+      <Project>{28c0284b-2f43-45d6-a77f-ab08f919717d}</Project>
+      <Name>SimpleLangLexer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleLangParser\SimpleLangParser.csproj">
       <Project>{837bc9fe-daa9-416e-bcce-0235e5c38d4b}</Project>
       <Name>SimpleLangParser</Name>
