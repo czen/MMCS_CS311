@@ -50,7 +50,12 @@ namespace SimpleLangLexer
         WHILE,
         DO,
         FOR,
-        TO
+        TO,
+        IF,
+        THEN,
+        ELSE,
+        OPEN_BRACKET,
+        CLOSE_BRACKET
     }
 
     public class Lexer
@@ -106,6 +111,9 @@ namespace SimpleLangLexer
             keywordsMap["do"] = Tok.DO;
             keywordsMap["for"] = Tok.FOR;
             keywordsMap["to"] = Tok.TO;
+            keywordsMap["if"] = Tok.IF;
+            keywordsMap["then"] = Tok.THEN;
+            keywordsMap["else"] = Tok.ELSE;
         }
 
         public string FinishCurrentLine()
@@ -173,6 +181,16 @@ namespace SimpleLangLexer
             {
                 NextCh();
                 LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '(')
+            {
+                NextCh();
+                LexKind = Tok.OPEN_BRACKET;
+            }
+            else if (currentCh == ')')
+            {
+                NextCh();
+                LexKind = Tok.CLOSE_BRACKET;
             }
             else if (currentCh == '+')
             {
