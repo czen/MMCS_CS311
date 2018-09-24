@@ -25,7 +25,27 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULT,
+        DIV,
+        INTDIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        MULTASSIGN,
+        PLUSASSIGN,
+        DIVASSIGN,
+        MINUSASSIGN,
+        LESS,
+        GREATER,
+        GREATEREQUAL,
+        LESSEQUAL,
+        EQUAL,
+        NOTEQUAL
     }
 
     public class Lexer
@@ -70,7 +90,11 @@ namespace SimpleLangLexer
         {
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
-            keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.INTDIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -134,15 +158,134 @@ namespace SimpleLangLexer
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
+            else if (currentCh == '{')
+            {
+                while (currentCh != '}' && (int)currentCh != 0)
+                    NextCh();
+                if ((int)currentCh == 0)
+                    LexError("Incorrect symbol " + currentCh);
+                NextCh();
+                NextLexem();
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
             else if (currentCh == ':')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == '=')
                 {
-                    LexError("= was expected");
+                    LexKind = Tok.ASSIGN;
+                    NextCh();
                 }
+                else {
+                    LexKind = Tok.COLON;
+                }           
+                
+            }
+            else if (currentCh == '+')
+            {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.PLUSASSIGN;
+                    NextCh();
+                }
+                else
+                {
+                    LexKind = Tok.PLUS;
+                }
+
+            }
+            else if (currentCh == '-')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.MINUSASSIGN;
+                    NextCh();
+                }
+                else
+                {
+                    LexKind = Tok.MINUS;
+                }
+
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.MULTASSIGN;
+                    NextCh();
+                }
+                else
+                {
+                    LexKind = Tok.MULT;
+                }
+
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.DIVASSIGN;
+                    NextCh();
+                }
+                else if (currentCh == '/') {
+                    while (LexRow == row && (int)currentCh != 0)
+                        NextCh();
+                    if ((int)currentCh == 0)
+                        LexKind = Tok.EOF;
+                    NextLexem();
+                }
+                else
+                {
+                    LexKind = Tok.DIV;
+                }
+                
+
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.GREATEREQUAL;
+                    NextCh();
+                }
+                else
+                {
+                    LexKind = Tok.GREATER;
+                }
+
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                if (currentCh == '=')
+                {
+                    LexKind = Tok.LESSEQUAL;
+                    NextCh();
+                }
+                else if (currentCh == '>')
+                {
+                    LexKind = Tok.NOTEQUAL;
+                    NextCh();
+                }
+                else
+                {
+                    LexKind = Tok.LESS;
+                }
+
             }
             else if (char.IsLetter(currentCh))
             {
