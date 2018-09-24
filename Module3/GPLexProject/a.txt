@@ -2,4 +2,8 @@ begin
 a225; abc; agagagaga := 3
 13.75 : 7 : 22; kb:=0.03
 cycle f1000 := 1 end
+abc := 5.25; //a b c
+'abcdefghijklmn' 'cycle'
+a15 := 222; { a 1 5 
+a b c d e f g} 1 { bbb }
 end
