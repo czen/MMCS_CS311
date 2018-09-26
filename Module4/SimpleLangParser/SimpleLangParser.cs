@@ -29,6 +29,68 @@ namespace SimpleLangParser
             Block();
         }
 
+
+        public void While()
+        {
+            l.NextLexem();  // пропуск while
+            Expr();
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+        }
+
+        public void For()
+        {
+            l.NextLexem();  // пропуск for
+            if (l.LexKind == Tok.ID)
+                Assign();
+            else
+                SyntaxError("ID expected");
+
+            if (l.LexKind == Tok.TO)
+            {
+                l.NextLexem();
+                Expr();
+            }
+            else
+                SyntaxError("to expected");
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+        }
+
+        public void If()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("then expected");
+            }
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+        }
+
         public void Expr() 
         {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
@@ -81,6 +143,21 @@ namespace SimpleLangParser
                 case Tok.ID:
                     {
                         Assign();
+                        break;
+                    }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
                         break;
                     }
                 default:
