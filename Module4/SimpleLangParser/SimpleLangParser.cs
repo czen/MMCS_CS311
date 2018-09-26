@@ -35,20 +35,26 @@ namespace SimpleLangParser
             {
                 l.NextLexem();
             }
+            else if (l.LexKind == Tok.OPENPAR)
+            {
+                l.NextLexem();
+                Expr();
+                if (l.LexKind == Tok.CLOSEPAR)
+                    l.NextLexem();
+                else SyntaxError("closing parenthesis was expected");
+            }
             else
             {
-                Expr();
+                SyntaxError("id / number / (expression) expected");
             }
         }
 
         private void Expr_B()
         {
-
-            Expr_M();
             if (l.LexKind == Tok.MULTIPLY || l.LexKind == Tok.DIVIDE)
             {
                 l.NextLexem();
-                Expr_B();
+                partT();
             }
         }
 
@@ -60,7 +66,12 @@ namespace SimpleLangParser
 
         private void partA()
         {
-
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                partT();
+                partA();
+            }
         }
 
 
@@ -68,6 +79,7 @@ namespace SimpleLangParser
         {
             partT();
             partA();
+            
         }
 
         public void Assign()

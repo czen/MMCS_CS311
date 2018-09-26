@@ -27,6 +27,7 @@ namespace SimpleLangLexer
         END,
         CYCLE,
         COMMA,
+
         PLUS,
         MINUS,
         MULTIPLY,
@@ -57,7 +58,10 @@ namespace SimpleLangLexer
         TO,
         IF,
         THEN,
-        ELSE
+        ELSE,
+
+        OPENPAR,
+        CLOSEPAR
     }
 
     public class Lexer
@@ -175,8 +179,17 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
-
-            if (currentCh == '{')
+            if (currentCh == '(')
+            {
+                NextCh();
+                LexKind = Tok.OPENPAR;
+            }
+            else if (currentCh == ')')
+            {
+                NextCh();
+                LexKind = Tok.CLOSEPAR;
+            }
+            else if (currentCh == '{')
             {
                 while (currentCh != '}' && (int)currentCh != 0)
                 {

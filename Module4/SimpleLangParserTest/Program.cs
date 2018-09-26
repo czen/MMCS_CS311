@@ -162,6 +162,7 @@ end";
             string fileContents = @"begin
     a := 2+3;
     a := a * 2 + 1;
+    a := ((2 - 1) / 5) * 7;
 end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
@@ -190,10 +191,11 @@ end";
 
         static void Main(string[] args)
         {
-          //  Test0(args);
-           // Test1(args);
-          //  Test2(args);
-           // Test3(args);
+            Test0(args);
+            Test1(args);
+            Test2(args);
+            Test3(args);
+            Test4(args);
         }
     }
 }
