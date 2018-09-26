@@ -1,0 +1,9 @@
+begin
+  a := 2;
+  repeat
+  begin
+   c := 1;
+   a := c
+  end
+  until c
+end
