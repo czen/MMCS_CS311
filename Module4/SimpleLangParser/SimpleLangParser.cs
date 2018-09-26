@@ -29,7 +29,126 @@ namespace SimpleLangParser
             Block();
         }
 
-        public void Expr() 
+        public void Expr()
+        {
+            T();
+            A();
+        }
+
+        public void T()
+        {
+            M();
+            B();
+        }
+
+        public void A()
+        {
+            // eps or +TA or -TA
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                T();
+                A();
+            }
+            //eps correct
+        }
+
+        public void M()
+        {
+            //id or num or (Expr)
+            if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
+            {
+                l.NextLexem();
+            }
+            else if (l.LexKind == Tok.LEFTROUNDBRACKET)
+            {
+                l.NextLexem();
+                Expr();
+                if (l.LexKind == Tok.RIGHTROUNDBRACKET)
+                    l.NextLexem();
+                else
+                    SyntaxError("')' expected");
+            }
+            else
+            {
+                SyntaxError("id or num or '(' expected");
+            }
+        }
+
+        public void B()
+        {
+            //eps or *MB or /MB
+            if (l.LexKind == Tok.MULTIPLICATION || l.LexKind == Tok.DIVISION)
+            {
+                l.NextLexem();
+                M();
+                B();
+            }
+            //eps correct
+        }
+
+        public void While()
+        {
+            l.NextLexem();  // пропуск while
+            Expr();
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+        }
+
+        public void For()
+        {
+            l.NextLexem();  // пропуск for
+            if (l.LexKind == Tok.ID)
+                Assign();
+            else
+                SyntaxError("ID expected");
+
+            if (l.LexKind == Tok.TO)
+            {
+                l.NextLexem();
+                Expr();
+            }
+            else
+                SyntaxError("to expected");
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+        }
+
+        public void If()
+        {
+            l.NextLexem();
+            Expr();
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("then expected");
+            }
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+        }
+
+        /*public void Expr() 
         {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
             {
@@ -39,7 +158,7 @@ namespace SimpleLangParser
             {
                 SyntaxError("expression expected");
             }
-        }
+        }*/
 
         public void Assign() 
         {
@@ -81,6 +200,21 @@ namespace SimpleLangParser
                 case Tok.ID:
                     {
                         Assign();
+                        break;
+                    }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
                         break;
                     }
                 default:

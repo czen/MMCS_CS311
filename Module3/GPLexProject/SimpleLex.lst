@@ -1,3 +1,14 @@
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <SimpleLex.lex>
+// ==========================================================================
+//  Version:  1.1.3.301
+//  Machine:  PC
+//  DateTime: 21.09.2018 13:10:46
+//  UserName: ?????
+// ==========================================================================
+
+
 %using ScannerHelper;
 %namespace SimpleScanner
 
@@ -76,11 +87,19 @@ cycle {
   BEGIN(INITIAL);
 }
 
-<COMMENT>{ID} {
+ <COMMENT>{ID} {
+// Warning: Code between rules, ignored
+// ------------------------------------
   // обрабатывается ID внутри комментария
   All_IDs += yytext + " ";
 }
+// Error: Parser error <Syntax error, unexpected lxEndIndent> 
+// Error: Missing matching construct <'}'> 
+// Error: Expected space here
+// -----------------------------------------------------------
 
+// Error: Empty semantic action, must be at least a comment
+// --------------------------------------------------------
 [^ \r\n] {
 	LexError();
 	return 0; // конец разбора
@@ -113,4 +132,6 @@ public string TokToString(Tok tok)
 			return tok + "";
 	}
 }
+
+// ==========================================================================
 
