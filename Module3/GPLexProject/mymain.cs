@@ -23,6 +23,7 @@ namespace Main
             double avg_len = 0d;
             int max_len = Int32.MinValue;
             int min_len = Int32.MaxValue;
+            scanner.Ids = new System.Collections.Generic.List<String>();
 
             int int_sum = 0;
             double d_sum = 0d;
@@ -57,6 +58,11 @@ namespace Main
             Console.WriteLine(@"count of ids = {0}, average lenght = {1},
 max lenght = {2}, min lenght = {3}", cnt_id, avg_len, max_len, min_len);
             Console.WriteLine("sum of inum = {0}, sum of rnum = {1}", int_sum, d_sum);
+
+            Console.WriteLine("IDs in comments: ");
+            foreach (String s in scanner.Ids)
+                Console.WriteLine(s);
+
             Console.ReadKey();
         }
     }

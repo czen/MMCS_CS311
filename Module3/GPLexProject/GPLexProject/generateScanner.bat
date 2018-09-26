@@ -1,1 +1,0 @@
-gplex.exe /noparser SimpleLex.lex 
