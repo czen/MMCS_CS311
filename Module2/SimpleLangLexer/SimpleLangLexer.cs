@@ -56,7 +56,9 @@ namespace SimpleLangLexer
         TO,
         IF,
         THEN,
-        ELSE
+        ELSE,
+        LEFTROUNDBRACKET,
+        RIGHTROUNDBRACKET
     }
 
     public class Lexer
@@ -179,7 +181,17 @@ namespace SimpleLangLexer
             //task4 пропуск комментариев // - до конца строки
             //task5 пропуск комментариев { комментарий до закрывающей фигурной скобки }. 
             //Обратить внимание, что незакрытый до конца файла комментарий - это синтаксическая ошибка
-            if (currentCh == '{')
+            if (currentCh == '(')
+            {
+                NextCh();
+                LexKind = Tok.LEFTROUNDBRACKET;
+            }
+            else if (currentCh == ')')
+            {
+                NextCh();
+                LexKind = Tok.RIGHTROUNDBRACKET;
+            }
+            else if (currentCh == '{')
             {
                 while (currentCh != '}')
                 {

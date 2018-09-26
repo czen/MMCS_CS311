@@ -145,7 +145,35 @@ namespace SimpleLangParserTest
             }
         }
 
-
+        static void extratest2()
+        {
+            string fileContents = @"begin
+                                    a := z * 2 / 5 + 5 - ( 4 * a )
+                                    end";
+            TextReader inputReader = new StringReader(fileContents);
+            Lexer l = new Lexer(inputReader);
+            Parser p = new Parser(l);
+            try
+            {
+                p.Progr();
+                if (l.LexKind == Tok.EOF)
+                {
+                    Console.WriteLine("Program successfully recognized");
+                }
+                else
+                {
+                    p.SyntaxError("end of file was expected");
+                }
+            }
+            catch (ParserException e)
+            {
+                Console.WriteLine("lexer error: " + e.Message);
+            }
+            catch (LexerException le)
+            {
+                Console.WriteLine("parser error: " + le.Message);
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -157,6 +185,8 @@ namespace SimpleLangParserTest
             test2();
             Console.WriteLine("==================\nextra test1\n");
             extratest1();
+            Console.WriteLine("==================\nextra test2\n");
+            extratest2();
         }
     }
 }

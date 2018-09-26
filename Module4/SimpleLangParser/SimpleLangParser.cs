@@ -29,6 +29,63 @@ namespace SimpleLangParser
             Block();
         }
 
+        public void Expr()
+        {
+            T();
+            A();
+        }
+
+        public void T()
+        {
+            M();
+            B();
+        }
+
+        public void A()
+        {
+            // eps or +TA or -TA
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                T();
+                A();
+            }
+            //eps correct
+        }
+
+        public void M()
+        {
+            //id or num or (Expr)
+            if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
+            {
+                l.NextLexem();
+            }
+            else if (l.LexKind == Tok.LEFTROUNDBRACKET)
+            {
+                l.NextLexem();
+                Expr();
+                if (l.LexKind == Tok.RIGHTROUNDBRACKET)
+                    l.NextLexem();
+                else
+                    SyntaxError("')' expected");
+            }
+            else
+            {
+                SyntaxError("id or num or '(' expected");
+            }
+        }
+
+        public void B()
+        {
+            //eps or *MB or /MB
+            if (l.LexKind == Tok.MULTIPLICATION || l.LexKind == Tok.DIVISION)
+            {
+                l.NextLexem();
+                M();
+                B();
+            }
+            //eps correct
+        }
 
         public void While()
         {
@@ -91,7 +148,7 @@ namespace SimpleLangParser
             }
         }
 
-        public void Expr() 
+        /*public void Expr() 
         {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
             {
@@ -101,7 +158,7 @@ namespace SimpleLangParser
             {
                 SyntaxError("expression expected");
             }
-        }
+        }*/
 
         public void Assign() 
         {
