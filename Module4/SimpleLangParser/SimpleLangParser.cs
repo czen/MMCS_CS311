@@ -17,9 +17,9 @@ namespace SimpleLangParser
 
     public class Parser
     {
-        private SimpleLangLexer.Lexer l;
+        private Lexer l;
 
-        public Parser(SimpleLangLexer.Lexer lexer)
+        public Parser(Lexer lexer)
         {
             l = lexer;
         }
@@ -29,32 +29,141 @@ namespace SimpleLangParser
             Block();
         }
 
-        public void Expr() 
+        public void Expr_M()
         {
             if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
             {
                 l.NextLexem();
             }
+            else if (l.LexKind == Tok.OPENPAR)
+            {
+                l.NextLexem();
+                Expr();
+                if (l.LexKind == Tok.CLOSEPAR)
+                    l.NextLexem();
+                else SyntaxError("closing parenthesis was expected");
+            }
             else
             {
-                SyntaxError("expression expected");
+                SyntaxError("id / number / (expression) expected");
             }
         }
 
-        public void Assign() 
+        private void Expr_B()
+        {
+            if (l.LexKind == Tok.MULTIPLY || l.LexKind == Tok.DIVIDE)
+            {
+                l.NextLexem();
+                partT();
+            }
+        }
+
+        private void partT()
+        {
+            Expr_M();
+            Expr_B();
+        }
+
+        private void partA()
+        {
+            if (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                partT();
+                partA();
+            }
+        }
+
+
+        public void Expr()
+        {
+            partT();
+            partA();
+            
+        }
+
+        public void Assign()
         {
             l.NextLexem();  // пропуск id
             if (l.LexKind == Tok.ASSIGN)
             {
                 l.NextLexem();
             }
-            else {
+            else
+            {
                 SyntaxError(":= expected");
             }
             Expr();
         }
 
-        public void StatementList() 
+        public void WhileDo()
+        {
+            l.NextLexem();      // skip while
+            Expr();
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+                StatementList();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+        }
+
+        public void ForToDo()
+        {
+            l.NextLexem();      // skip for
+            if (l.LexKind == Tok.ID)
+            {
+                Assign();
+                if (l.LexKind == Tok.TO)
+                {
+                    l.NextLexem();
+                    Expr();
+                    if (l.LexKind == Tok.DO)
+                    {
+                        l.NextLexem();
+                        StatementList();
+                    }
+                    else
+                    {
+                        SyntaxError("do expected");
+                    }
+                }
+                else
+                {
+                    SyntaxError("to expected");
+                }
+
+            }
+            else
+            {
+                SyntaxError("assign expected");
+            }
+        }
+
+        public void IfThenElse()
+        {
+            l.NextLexem();      // skip IF
+            Expr();
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+                Statement();
+                if (l.LexKind == Tok.ELSE)
+                {
+                    l.NextLexem();
+                    Statement();
+                }
+            }
+            else
+            {
+                SyntaxError("then expected");
+            }
+        }
+
+        public void StatementList()
         {
             Statement();
             while (l.LexKind == Tok.SEMICOLON)
@@ -64,23 +173,38 @@ namespace SimpleLangParser
             }
         }
 
-        public void Statement() 
+        public void Statement()
         {
             switch (l.LexKind)
             {
                 case Tok.BEGIN:
                     {
-                        Block(); 
+                        Block();
                         break;
                     }
                 case Tok.CYCLE:
                     {
-                        Cycle(); 
+                        Cycle();
                         break;
                     }
                 case Tok.ID:
                     {
                         Assign();
+                        break;
+                    }
+                case Tok.WHILE:
+                    {
+                        WhileDo();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        ForToDo();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        IfThenElse();
                         break;
                     }
                 default:
@@ -91,7 +215,7 @@ namespace SimpleLangParser
             }
         }
 
-        public void Block() 
+        public void Block()
         {
             l.NextLexem();    // пропуск begin
             StatementList();
@@ -106,14 +230,14 @@ namespace SimpleLangParser
 
         }
 
-        public void Cycle() 
+        public void Cycle()
         {
             l.NextLexem();  // пропуск cycle
             Expr();
             Statement();
         }
 
-        public void SyntaxError(string message) 
+        public void SyntaxError(string message)
         {
             var errorMessage = "Syntax error in line " + l.LexRow.ToString() + ":\n";
             errorMessage += l.FinishCurrentLine() + "\n";
@@ -124,6 +248,6 @@ namespace SimpleLangParser
             }
             throw new ParserException(errorMessage);
         }
-   
+
     }
 }

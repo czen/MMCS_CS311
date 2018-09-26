@@ -1,3 +1,11 @@
-begin ggg : ; :+= 7 99.9 5 
-1 
+begin ggg ; 
+// 1 abc
+s := 'abc'
+{ aaa
+ sss
+}
+fff
+{
+ ab
+}
 ppp end

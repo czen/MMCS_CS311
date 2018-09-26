@@ -8,21 +8,20 @@ namespace SimpleCompiler
 {
     public class SimpleCompilerMain
     {
-        public static void Main()
+        public static void Test(string FileName)
         {
-            string FileName = @"..\..\a.txt";
             try
             {
                 string Text = File.ReadAllText(FileName);
 
                 Scanner scanner = new Scanner();
                 scanner.SetSource(Text, 0);
-            
+
                 Parser parser = new Parser(scanner);
-                      
+
                 var b = parser.Parse();
                 if (!b)
-		            Console.WriteLine("Ошибка");
+                    Console.WriteLine("Ошибка");
                 else Console.WriteLine("Программа распознана");
             }
             catch (FileNotFoundException)
@@ -37,6 +36,18 @@ namespace SimpleCompiler
             {
                 Console.WriteLine("Синтаксическая ошибка. " + e.Message);
             }
+        }
+
+        public static void Main()
+        {
+            int tests_cnt = 4;
+            for (int i = 0; i < tests_cnt; ++i)
+            {
+                Test(@"..\..\" + i.ToString() + ".txt");
+            }
+              
+
+         //   Test(@"..\..\2.txt");
 
             Console.ReadLine();
         }
