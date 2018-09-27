@@ -1,3 +1,4 @@
-begin ggg : ; :+= 7 99.9 5 
-1 
-ppp end
+begin
+89 0 
++=
+end

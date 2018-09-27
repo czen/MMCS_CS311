@@ -1,0 +1,12 @@
+begin
+    a := 666; b := 49;
+    c := 666.666;
+    d := 192.168;
+    f := 0;
+    str := 'allo';
+    //this is some crutch code
+    { 
+	aLLLLo : = 666
+	allo
+    }
+end
