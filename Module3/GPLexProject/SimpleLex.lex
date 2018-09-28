@@ -6,22 +6,63 @@ Digit   [0-9]
 AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
-ID {Alpha}{AlphaDigit}* 
+ID {Alpha}{AlphaDigit}*
+DotChr [^\r\n]
+OneLineCmnt  \/\/{DotChr}*
+InApostrophies \'[^']*\'
+%x COMMENT
 
-// Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
+// Г‡Г¤ГҐГ±Гј Г¬Г®Г¦Г­Г® Г¤ГҐГ«Г ГІГј Г®ГЇГЁГ±Г Г­ГЁГї ГІГЁГЇГ®Гў, ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г»Гµ ГЁ Г¬ГҐГІГ®Г¤Г®Гў - Г®Г­ГЁ ГЇГ®ГЇГ Г¤Г ГѕГІ Гў ГЄГ«Г Г±Г± Scanner
 %{
   public int LexValueInt;
   public double LexValueDouble;
+  public int IdsCount;
+  public int MaxIdLength;
+  private int TotalIdsLength;
+  public int MinIdLength = int.MaxValue;
+  public double AverageIdsLength { get {return (double)TotalIdsLength / IdsCount;}}
+  public int IntSum;
+  public double RealSum;
+  public List<string> CommentsIds = new List<string>();
 %}
 
 %%
+"{" { 
+  // РїРµСЂРµС…РѕРґ РІ СЃРѕСЃС‚РѕСЏРЅРёРµ COMMENT
+  BEGIN(COMMENT);
+}
+
+<COMMENT> "}" { 
+  // РїРµСЂРµС…РѕРґ РІ СЃРѕСЃС‚РѕСЏРЅРёРµ INITIAL
+  Console.WriteLine("IDs in multiline comment: ");
+  foreach (var comment in CommentsIds)
+    Console.WriteLine("{0}, ", comment);
+  Console.WriteLine("end of IDs from multiline comment. Next are usual tokens");
+  BEGIN(INITIAL);
+}
+
+<COMMENT>{ID} {
+  // РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ ID РІРЅСѓС‚СЂРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
+  CommentsIds.Add(yytext);
+}
+
+{InApostrophies} {
+    return (int)Tok.INAPOSTROPHIES;
+}
+
+{OneLineCmnt} {
+    return (int)Tok.ONELINECOMMENT;
+}
+
 {INTNUM} { 
   LexValueInt = int.Parse(yytext);
+  IntSum += LexValueInt;
   return (int)Tok.INUM;
 }
 
 {REALNUM} { 
   LexValueDouble = double.Parse(yytext);
+  RealSum += LexValueDouble;
   return (int)Tok.RNUM;
 }
 
@@ -38,6 +79,12 @@ cycle {
 }
 
 {ID}  { 
+  ++IdsCount;
+  if (yytext.Length < MinIdLength)
+    MinIdLength = yytext.Length;
+  if (yytext.Length > MaxIdLength)
+    MaxIdLength = yytext.Length;
+  TotalIdsLength += yytext.Length;
   return (int)Tok.ID;
 }
 
@@ -55,16 +102,16 @@ cycle {
 
 [^ \r\n] {
 	LexError();
-	return 0; // конец разбора
+	return 0; // ГЄГ®Г­ГҐГ¶ Г°Г Г§ГЎГ®Г°Г 
 }
 
 %%
 
-// Здесь можно делать описания переменных и методов - они тоже попадают в класс Scanner
+// Г‡Г¤ГҐГ±Гј Г¬Г®Г¦Г­Г® Г¤ГҐГ«Г ГІГј Г®ГЇГЁГ±Г Г­ГЁГї ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г»Гµ ГЁ Г¬ГҐГІГ®Г¤Г®Гў - Г®Г­ГЁ ГІГ®Г¦ГҐ ГЇГ®ГЇГ Г¤Г ГѕГІ Гў ГЄГ«Г Г±Г± Scanner
 
 public void LexError()
 {
-	Console.WriteLine("({0},{1}): Неизвестный символ {2}", yyline, yycol, yytext);
+	Console.WriteLine("({0},{1}): ГЌГҐГЁГ§ГўГҐГ±ГІГ­Г»Г© Г±ГЁГ¬ГўГ®Г« {2}", yyline, yycol, yytext);
 }
 
 public string TokToString(Tok tok)
@@ -77,6 +124,8 @@ public string TokToString(Tok tok)
 			return tok + " " + LexValueInt;
 		case Tok.RNUM:
 			return tok + " " + LexValueDouble;
+        case Tok.INAPOSTROPHIES:
+            return tok + " " + yytext;
 		default:
 			return tok + "";
 	}
