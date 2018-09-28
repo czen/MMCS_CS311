@@ -434,7 +434,6 @@ public class Task8 : Lexer
         double res;
 
         NextCh();
-
         if (char.IsDigit(currentCh))
         {
             str += currentCh;
@@ -444,7 +443,6 @@ public class Task8 : Lexer
         {
             Error();
         }
-
 
         while (currentCharValue != '.')
         {
@@ -459,8 +457,6 @@ public class Task8 : Lexer
             }
         }
         str += ',';
-        NextCh();
-
         if (char.IsDigit(currentCh))
         {
             str += currentCh;
@@ -470,7 +466,7 @@ public class Task8 : Lexer
         {
             Error();
         }
-
+        NextCh();
         while (currentCharValue != -1)
         {
             if (char.IsDigit(currentCh))
@@ -558,12 +554,25 @@ public class Task10 : Lexer
             Error();
         }
         NextCh();
+        if (currentCharValue == -1) // StringReader вернет -1 в конце строки
+        {
+            Error();
+        }
         while (currentCh != '/')
         {
+            if (currentCharValue == -1) // StringReader вернет -1 в конце строки
+            {
+                Error();
+            }
             while (currentCh != '*')
             {
+
                 str += currentCh;
                 NextCh();
+                if (currentCharValue == -1) // StringReader вернет -1 в конце строки
+                {
+                    Error();
+                }
             }
             NextCh();
             if (currentCh != '/')
@@ -593,7 +602,7 @@ public class Program
     }
     public static void Main()
     {
-        /*----------1 задание-------------------*/
+        /*----------1 задание------------------*/
         string input = "154216";
         Lexer L = new IntLexer(input);
         try
@@ -605,8 +614,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "5.9";
+        L = new IntLexer(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         /*----------2 задание------------------*/
         input = "hggasasa";
+        L = new Task2(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "23hggasasa";
         L = new Task2(input);
         try
         {
@@ -629,8 +660,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "09976";
+        L = new Task3(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         /*----------4 задание------------------*/
         input = "d4f5g6h7j8";
+        L = new Task4(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "78d4f5";
         L = new Task4(input);
         try
         {
@@ -653,8 +706,30 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "dd;u;b,j";
+        L = new Task5(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         /*----------6 задание------------------*/
         input = "2 4 5 6";
+        L = new Task6(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "2 4      57 6";
         L = new Task6(input);
         try
         {
@@ -678,9 +753,53 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "aaa11b124cc";
+        L = new Task7(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
 
         /*----------8 задание------------------*/
-        input = "1.456";
+        input = "3.1456";
+        L = new Task8(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "3.14.56";
+        L = new Task8(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "31456.";
+        L = new Task8(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = ".31456";
         L = new Task8(input);
         try
         {
@@ -703,6 +822,28 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "jijijij'";
+        L = new Task9(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "'jijijij";
+        L = new Task9(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
         /*----------10 задание------------------*/
         input = "/*789876*/";
         L = new Task10(input);
@@ -715,6 +856,27 @@ public class Program
             System.Console.WriteLine(e.Message);
         }
 
+        input = "/*";
+        L = new Task10(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        input = "/*89";
+        L = new Task10(input);
+        try
+        {
+            L.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
 
         Console.ReadKey();
     }
