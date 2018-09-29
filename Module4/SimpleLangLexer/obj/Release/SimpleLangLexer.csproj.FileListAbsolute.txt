@@ -1,0 +1,5 @@
+C:\Users\Ита\Documents\MMCS_CS311-master\Module2\SimpleLangLexer\bin\Release\SimpleLangLexer.dll
+C:\Users\Ита\Documents\MMCS_CS311-master\Module2\SimpleLangLexer\bin\Release\SimpleLangLexer.pdb
+C:\Users\Ита\Documents\MMCS_CS311-master\Module2\SimpleLangLexer\obj\Release\SimpleLangLexer.csproj.CoreCompileInputs.cache
+C:\Users\Ита\Documents\MMCS_CS311-master\Module2\SimpleLangLexer\obj\Release\SimpleLangLexer.dll
+C:\Users\Ита\Documents\MMCS_CS311-master\Module2\SimpleLangLexer\obj\Release\SimpleLangLexer.pdb
