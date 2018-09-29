@@ -268,6 +268,252 @@ public class StringWithSymbolsLexer : Lexer // task 5
 
     }
 }
+
+
+public class NumbersWithSpaces : Lexer // extra task 1
+{
+    protected System.Text.StringBuilder intString;
+    public NumbersWithSpaces(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        string numbers = "";
+        bool prev = false;
+
+        NextCh();
+        if (char.IsDigit(currentCh))
+        {
+            numbers += currentCh;
+            NextCh();
+            prev = true;
+        }
+        else
+            Error();
+
+        while (currentCharValue != -1)
+            if (prev)
+            {
+                while (currentCh == ' ')
+                    NextCh();
+                prev = false;
+            }
+            else
+            {
+                if (!char.IsDigit(currentCh))
+                    Error();
+                prev = true;
+                numbers += currentCh;
+                NextCh();
+            }
+
+        if (!prev)
+            Error();
+
+        System.Console.WriteLine("String is recognized");
+        System.Console.WriteLine("Your numbers = " + numbers);
+
+    }
+}
+
+public class NumbersWordsLexer : Lexer //extra task2
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public NumbersWordsLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        string res = "";
+        int numbers = 0, words = 0;
+
+        if (char.IsDigit(currentCh))
+            numbers++;
+        else if (char.IsLetter(currentCh))
+            words++;
+
+        res += currentCh;
+        NextCh();
+
+        while (currentCharValue != -1)
+        {
+            if (char.IsDigit(currentCh))
+            {
+                if (numbers < 2)
+                {
+                    numbers++;
+                    words = 0;
+                }
+                else
+                {
+                    Error();
+                }
+            }
+            else if (char.IsLetter(currentCh))
+            {
+                if (words < 2)
+                {
+                    words++;
+                    numbers = 0;
+                }
+                else
+                {
+                    Error();
+                }
+            }
+
+            res += currentCh;
+            NextCh();
+        }
+
+        System.Console.WriteLine("String is recognized");
+        System.Console.WriteLine("Your string = " + res);
+    }
+}
+
+public class FloatNumbersLexer : Lexer //extra task 3
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public FloatNumbersLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        bool dot = false;
+        bool after = false;
+        bool end = false;
+        string res = "";
+
+        if (currentCh == '-')
+            res += "-";
+        NextCh();
+
+        while (currentCharValue != -1)
+        {
+            if (currentCh == '.')
+            {
+                if (dot || !after)
+                    Error();
+                dot = true;
+                res += '.';
+                NextCh();
+                end = true;
+            }
+            else if (char.IsDigit(currentCh))
+            {
+                after = true;
+                res += currentCh;
+                NextCh();
+                end = false;
+            }
+            else
+                Error();
+        }
+        if (!dot || end)
+            Error();
+
+        System.Console.WriteLine("String is recognized");
+        System.Console.WriteLine("Your numbers = " + res);
+    }
+}
+
+public class WithoutApLexer : Lexer //extra task 4
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public WithoutApLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        char ap = '\'';
+
+        NextCh();
+        if (currentCh == ap)
+            NextCh();
+        else
+            Error();
+
+        while (currentCharValue != -1)
+        {
+            if (currentCh != ap)
+                NextCh();
+            else
+            {
+                NextCh();
+                break;
+            }
+        }
+
+        if (currentCharValue != -1)
+            Error();
+
+        System.Console.WriteLine("String is recognized");
+    }
+}
+
+public class CommLexer : Lexer //extra task 5
+{
+
+    protected System.Text.StringBuilder intString;
+
+    public CommLexer(string input)
+        : base(input)
+    {
+        intString = new System.Text.StringBuilder();
+    }
+
+    public override void Parse()
+    {
+        NextCh();
+        if (currentCh == '/')
+        {
+            NextCh();
+            if (currentCh == '*')
+                NextCh();
+            else
+                Error();
+        }
+        else
+            Error();
+
+        while (currentCharValue != -1)
+        {
+            if (currentCh == '*' )
+            {
+                NextCh();
+                if (currentCh == '/')
+                {
+                    NextCh();
+                    break;
+                }
+            }
+            NextCh();
+        }
+
+        if (currentCharValue != -1)
+            Error();
+
+        System.Console.WriteLine("String is recognized");
+    }
+}
 public class Program
 {
     public static void Main()
@@ -540,5 +786,137 @@ public class Program
         {
             System.Console.WriteLine(e.Message);
         }
+
+        System.Console.WriteLine("----------");
+
+        NumbersWithSpaces NWS = new NumbersWithSpaces("1 2 33 4");
+        try
+        {
+             NWS.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
+        NumbersWordsLexer NWL = new NumbersWordsLexer("11aa2b33b4");
+        try
+        {
+            NWL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
+        FloatNumbersLexer FNL = new FloatNumbersLexer("1.");
+        try
+        {
+            FNL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+        FNL = new FloatNumbersLexer("1.2");
+        try
+        {
+            FNL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+        FNL = new FloatNumbersLexer(".1");
+        try
+        {
+            FNL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+        FNL = new FloatNumbersLexer(".");
+        try
+        {
+            FNL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+        
+
+        WithoutApLexer WAPL = new WithoutApLexer("\'sdsds2dssdsd\'");
+        try
+        {
+            WAPL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
+        WAPL = new WithoutApLexer("\'sdsds2\'dssdsd\'");
+        try
+        {
+            WAPL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+        CommLexer CL = new CommLexer("/* dsddssd */");
+        try
+        {
+            CL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
+        CL = new CommLexer("/* dsdds*sd */");
+        try
+        {
+            CL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
+        CL = new CommLexer("/* dsdds*/ sd */");
+        try
+        {
+            CL.Parse();
+        }
+        catch (LexerException e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
+
+        System.Console.WriteLine("----------");
+
     }
 }
