@@ -45,7 +45,16 @@ namespace SimpleLangLexer
         GE,
         LE,
         EQUAL,
-        NOTEQUAL
+        NOTEQUAL,
+        WHILE,
+        DO,
+        FOR,
+        TO,
+        IF,
+        THEN,
+        ELSE,
+        OPEN_BRACKET,
+        CLOS_BRACKET
     }
 
     public class Lexer
@@ -96,6 +105,13 @@ namespace SimpleLangLexer
             keywordsMap["and"] = Tok.AND;
             keywordsMap["or"] = Tok.OR;
             keywordsMap["not"] = Tok.NOT;
+            keywordsMap["while"] = Tok.WHILE;
+            keywordsMap["do"] = Tok.DO;
+            keywordsMap["for"] = Tok.FOR;
+            keywordsMap["to"] = Tok.TO;
+            keywordsMap["if"] = Tok.IF;
+            keywordsMap["then"] = Tok.THEN;
+            keywordsMap["else"] = Tok.ELSE;
         }
 
         public string FinishCurrentLine()
@@ -282,6 +298,18 @@ namespace SimpleLangLexer
                     SynError();
                 NextCh();
                 NextLexem();
+            }
+
+            else if(currentCh == '(')
+            {
+                NextCh();
+                LexKind = Tok.OPEN_BRACKET;
+            }
+
+            else if(currentCh == ')')
+            {
+                NextCh();
+                LexKind = Tok.CLOS_BRACKET;
             }
 
             else if (char.IsLetter(currentCh))

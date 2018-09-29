@@ -1,0 +1,6 @@
+begin
+var := 42;   { / var = 42}
+counts := 2;   { c = 2 
+k3 += 666; comm}
+'  length  ' abc : 7.1 
+end
