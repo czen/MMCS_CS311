@@ -14,17 +14,72 @@ namespace Main
 
             var fname = @"..\..\a.txt";
             Console.WriteLine(File.ReadAllText(fname));
-            Console.WriteLine("-------------------------");
+            Console.WriteLine("-----------  task 1 --------------");
 
+            
             Scanner scanner = new Scanner(new FileStream(fname, FileMode.Open));
 
+            //task 1
             int tok = 0;
-            do {
+            do
+            {
                 tok = scanner.yylex();
                 if (tok == (int)Tok.EOF)
                     break;
                 Console.WriteLine(scanner.TokToString((Tok)tok));
             } while (true);
+
+            //task 2
+            Console.WriteLine("------------ task 2 -------------");
+
+            Console.WriteLine("Count = " + scanner.Count + " MaxLen = " + scanner.MaxLen +" MinLen = " + scanner.MinLen + " AvgLen = " + scanner.AvgLen);
+
+            //task3
+            Console.WriteLine("------------ task 3 -------------");
+
+            Console.WriteLine("Int Sum = " + scanner.ISum + " Double Sum = " + scanner.DSum);
+
+            Console.WriteLine("----------- extra task 1 (comment) extra task 2 (appostr) --------------");
+
+            fname = @"..\..\b.txt";
+            Console.WriteLine(File.ReadAllText(fname));
+
+
+            scanner = new Scanner(new FileStream(fname, FileMode.Open));
+
+            //extra task 1, 2
+            tok = 0;
+            do
+            {
+                tok = scanner.yylex();
+                if (tok == (int)Tok.EOF)
+                    break;
+                Console.WriteLine(scanner.TokToString((Tok)tok));
+            } while (true);
+
+
+            Console.WriteLine("----------- extra task 3 --------------");
+
+            fname = @"..\..\c.txt";
+            Console.WriteLine(File.ReadAllText(fname));
+
+
+            scanner = new Scanner(new FileStream(fname, FileMode.Open));
+
+            //extra task 3
+            tok = 0;
+            do
+            {
+                tok = scanner.yylex();
+                if (tok == (int)Tok.EOF)
+                    break;
+                Console.WriteLine(scanner.TokToString((Tok)tok));
+            } while (true);
+
+            Console.WriteLine("----------- extra task 4 --------------");
+
+            foreach (var x in scanner.IDS)
+                Console.WriteLine(x);
 
             Console.ReadKey();
         }

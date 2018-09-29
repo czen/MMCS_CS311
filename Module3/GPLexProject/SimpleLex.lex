@@ -7,21 +7,57 @@ AlphaDigit {Alpha}|{Digit}
 INTNUM  {Digit}+
 REALNUM {INTNUM}\.{INTNUM}
 ID {Alpha}{AlphaDigit}* 
+DotChr [^\r\n]
+OneLineCmnt  \/\/{DotChr}*
+Apostr \'[^']*\'
+%x COMMENT
 
 // Здесь можно делать описания типов, переменных и методов - они попадают в класс Scanner
 %{
   public int LexValueInt;
   public double LexValueDouble;
+
+  public int Count;
+  public int MinLen = int.MaxValue;
+  public int MaxLen = int.MinValue;
+  public double SumLen;
+  public double AvgLen  => SumLen / Count;
+  public double DSum;
+  public int ISum;
+  public List<String> IDS = new List<String>();
 %}
 
 %%
+
+<COMMENT>{ID} {IDS.Add(yytext);}
+
+"{" { 
+  // переход в состояние COMMENT
+  BEGIN(COMMENT);
+}
+
+<COMMENT> "}" { 
+  // переход в состояние INITIAL
+  BEGIN(INITIAL);
+}
+
+{Apostr} {
+    return (int)Tok.APOSTR;
+}
+
+{OneLineCmnt} {
+    return (int)Tok.ONELINECOMMENT;
+}
+
 {INTNUM} { 
   LexValueInt = int.Parse(yytext);
+  ISum += LexValueInt;
   return (int)Tok.INUM;
 }
 
 {REALNUM} { 
   LexValueDouble = double.Parse(yytext);
+  DSum += LexValueDouble;
   return (int)Tok.RNUM;
 }
 
@@ -38,6 +74,12 @@ cycle {
 }
 
 {ID}  { 
+  SumLen += yytext.Length;
+  Count++;
+  if (yytext.Length < MinLen)
+    MinLen = yytext.Length;
+  if (yytext.Length > MaxLen)
+    MaxLen = yytext.Length;
   return (int)Tok.ID;
 }
 
