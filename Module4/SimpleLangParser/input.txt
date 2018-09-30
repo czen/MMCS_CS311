@@ -1,0 +1,37 @@
+begin
+    a := 2;
+
+    cycle a
+    begin
+        b := a; 
+        c := 234
+    end;
+
+    while 78
+    do
+        b := a;
+
+    for a:=5 to 10 do
+    begin
+        b := a;
+        hkjhi := 99
+    end;
+
+    for a:=5 to 10 do
+        jojo:=89;
+
+    if exp 
+    then 
+        a:=9; 
+
+    if reas
+    then 
+        buf:=90
+    else
+        begin
+            k:=89
+        end;
+
+    a := z * 2 / 5 + 5 - ( 4 * a )
+    
+end

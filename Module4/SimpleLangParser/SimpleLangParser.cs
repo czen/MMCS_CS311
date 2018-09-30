@@ -31,14 +31,7 @@ namespace SimpleLangParser
 
         public void Expr() 
         {
-            if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
-            {
-                l.NextLexem();
-            }
-            else
-            {
-                SyntaxError("expression expected");
-            }
+            sum();
         }
 
         public void Assign() 
@@ -83,6 +76,21 @@ namespace SimpleLangParser
                         Assign();
                         break;
                     }
+                case Tok.WHILE:
+                    {
+                        While();
+                        break;
+                    }
+                case Tok.FOR:
+                    {
+                        For();
+                        break;
+                    }
+                case Tok.IF:
+                    {
+                        If();
+                        break;
+                    }
                 default:
                     {
                         SyntaxError("Operator expected");
@@ -113,6 +121,71 @@ namespace SimpleLangParser
             Statement();
         }
 
+        public void While()
+        {
+            l.NextLexem();
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+
+            Statement();
+        }
+
+        public void For()
+        {
+            l.NextLexem();
+            Assign();
+
+            if (l.LexKind == Tok.TO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("to expected");
+            }
+
+            Expr();
+
+            if (l.LexKind == Tok.DO)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("do expected");
+            }
+            Statement();
+        }
+
+        public void If()
+        {
+            l.NextLexem();
+            Expr();
+
+            if (l.LexKind == Tok.THEN)
+            {
+                l.NextLexem();
+            }
+            else
+            {
+                SyntaxError("then expected");
+            }
+            Statement();
+            if (l.LexKind == Tok.ELSE)
+            {
+                l.NextLexem();
+                Statement();
+            }
+        }
+
         public void SyntaxError(string message) 
         {
             var errorMessage = "Syntax error in line " + l.LexRow.ToString() + ":\n";
@@ -124,6 +197,51 @@ namespace SimpleLangParser
             }
             throw new ParserException(errorMessage);
         }
-   
+
+        public void brackets()
+        {
+            if (l.LexKind == Tok.LEFT_BRACKET)
+            {
+                l.NextLexem();
+                Expr();
+                if (l.LexKind != Tok.RIGHT_BRACKET)
+                {
+                    SyntaxError(") expected");
+                }
+                l.NextLexem();
+            }
+            else
+            {
+                if (l.LexKind == Tok.ID || l.LexKind == Tok.INUM)
+                {
+                    l.NextLexem();
+                }
+                else
+                {
+                    SyntaxError("expr expected");
+                }
+            }
+        }
+
+        public void prod()
+        {
+            brackets();
+            while (l.LexKind == Tok.MULTIPLY || l.LexKind == Tok.DIVIDE) 
+            {
+                l.NextLexem();
+                brackets();
+            }
+        }
+
+        public void sum()
+        {
+            prod();
+            while (l.LexKind == Tok.PLUS || l.LexKind == Tok.MINUS)
+            {
+                l.NextLexem();
+                prod();
+            }
+        }
+
     }
 }
