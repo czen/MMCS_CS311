@@ -11,10 +11,13 @@ namespace SimpleLangLexerTest
     {
         public static void Main()
         {
-            string fileContents = @"begin 
-id23 := 24;  
-cycle ; 2 id258 id29 ; 
+            string fileContents = @"begin
+id23 := 24; , id666 div mod and or not +=  + -= - *= /= -
+cycle ;  +  - : 2 id258 id29 ; 
 end";
+
+            //добавить корректную работу - при последующим символе перевода строки 
+
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
             try

@@ -5,7 +5,6 @@ using System.IO;
 
 namespace SimpleLangLexer
 {
-
     public class LexerException : System.Exception
     {
         public LexerException(string msg)
@@ -25,7 +24,22 @@ namespace SimpleLangLexer
         ASSIGN,
         BEGIN,
         END,
-        CYCLE
+        CYCLE,
+        COMMA,
+        PLUS,
+        MINUS,
+        MULTI,
+        DOUBLE_COLON,
+        SLASH,
+        DIV,
+        MOD,
+        AND,
+        OR,
+        NOT,
+        PLUS_ASSIGN,
+        MINUS_ASSIGN,
+        MULTI_ASSIGN,
+        DIVISION_ASSIGN
     }
 
     public class Lexer
@@ -71,6 +85,11 @@ namespace SimpleLangLexer
             keywordsMap["begin"] = Tok.BEGIN;
             keywordsMap["end"] = Tok.END;
             keywordsMap["cycle"] = Tok.CYCLE;
+            keywordsMap["div"] = Tok.DIV;
+            keywordsMap["mod"] = Tok.MOD;
+            keywordsMap["and"] = Tok.AND;
+            keywordsMap["or"] = Tok.OR;
+            keywordsMap["not"] = Tok.NOT;
         }
 
         public string FinishCurrentLine()
@@ -134,15 +153,100 @@ namespace SimpleLangLexer
                 NextCh();
                 LexKind = Tok.SEMICOLON;
             }
-            else if (currentCh == ':')
+            else if (currentCh == '+')
             {
                 NextCh();
-                if (currentCh != '=')
+                if (currentCh == ' ')
+                {
+                    LexKind = Tok.PLUS;
+                    NextCh();
+                }
+                else if (currentCh != '=')
                 {
                     LexError("= was expected");
                 }
+                else if (currentCh == '=')
+                {
+                    LexKind = Tok.PLUS_ASSIGN;
+                    NextCh();
+                }
+            }
+            else if (currentCh == '-')
+            {
                 NextCh();
-                LexKind = Tok.ASSIGN;
+                if (currentCh == ' ' || currentCh == -1)
+                {
+                    LexKind = Tok.MINUS;
+                    NextCh();
+                }
+                else if (currentCh != '=')
+                {
+                    LexError("= was expected");
+                }
+                else if (currentCh == '=')
+                {
+                    LexKind = Tok.MINUS_ASSIGN;
+                    NextCh();
+                }
+            }
+            else if (currentCh == '*')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    LexKind = Tok.MULTI;
+                    NextCh();
+                }
+                else if (currentCh != '=')
+                {
+                    LexError("= was expected");
+                }
+                else if (currentCh == '=')
+                {
+                    LexKind = Tok.MULTI_ASSIGN;
+                    NextCh();
+                }
+            }
+            else if (currentCh == ',')
+            {
+                NextCh();
+                LexKind = Tok.COMMA;
+            }
+            else if (currentCh == '/')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    LexKind = Tok.SLASH;
+                    NextCh();
+                }
+                else if (currentCh != '=')
+                {
+                    LexError("= was expected");
+                }
+                else if (currentCh == '=')
+                {
+                    LexKind = Tok.DIVISION_ASSIGN;
+                    NextCh();
+                }
+            }
+            else if (currentCh == ':')
+            {
+                NextCh();
+                if (currentCh == ' ')
+                {
+                    LexKind = Tok.DOUBLE_COLON;
+                    NextCh();
+                }
+                else if (currentCh != '=')
+                {
+                    LexError("= was expected");
+                }
+                else if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.ASSIGN;
+                }
             }
             else if (char.IsLetter(currentCh))
             {
