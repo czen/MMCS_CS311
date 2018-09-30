@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using SimpleLangParser;
-using SimpleLangLexer;
+using SimpleLexer;
 
 namespace SimpleLangParserTest
 {
@@ -16,6 +16,9 @@ namespace SimpleLangParserTest
     a := 2;
     cycle a
     begin
+        while 2 do begin
+           a:=2
+end;
         b := a;
         c := 234
     end

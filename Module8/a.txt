@@ -1,0 +1,21 @@
+begin
+  var a,b,c,d;
+  b := 14 / 5; write(b);
+  c := 14 % 5; write(c);
+  a := 3;
+  a := a * 4 + b;
+  cycle 3
+  begin
+    a := a + 1;
+    write(a)
+  end;
+  b := 0;
+  a := 1;
+  if a then b := 1;
+  if a then c := 1 else c := 0;
+  a := 0;
+  if a then d := 0 else d := 1;
+  write(b);
+  write(c);
+  write(d);
+end

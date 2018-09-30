@@ -1,9 +1,7 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using SimpleLangLexer;
-
+using SimpleLexer;
 namespace SimpleLangParser
 {
     public class ParserException : System.Exception
@@ -17,9 +15,9 @@ namespace SimpleLangParser
 
     public class Parser
     {
-        private SimpleLangLexer.Lexer l;
+        private SimpleLexer.Lexer l;
 
-        public Parser(SimpleLangLexer.Lexer lexer)
+        public Parser(SimpleLexer.Lexer lexer)
         {
             l = lexer;
         }

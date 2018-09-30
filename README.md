@@ -1,3 +1,8 @@
+### Как использовать этот репозиторий
+
+git clone --recurse-submodules <репозиторий> 
+
+
 ### Учебная карта дисциплины
 
 [См. страничку в Moodle](http://edu.mmcs.sfedu.ru/course/view.php?id=194)
