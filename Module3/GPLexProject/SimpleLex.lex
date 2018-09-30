@@ -16,6 +16,7 @@ Str \'[^']*\'
 %{
   public int LexValueInt;
   public double LexValueDouble;
+ 
 %}
 
 %x COMMENT
@@ -28,7 +29,10 @@ Str \'[^']*\'
 }
  
 <COMMENT>{ID2} {
-  return (int)Tok.ID2;
+	if (yytext!= "begin" && yytext!= "end" && yytext!= "cycle")
+		{
+		return (int)Tok.ID2;
+		}
 }
 
 <COMMENT> "}" { 

@@ -8,5 +8,7 @@ begin
     { 
 	aLLLLo : = 666
 	allo
+	begin
+	end cycle
     }
 end
