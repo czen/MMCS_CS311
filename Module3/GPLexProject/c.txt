@@ -1,4 +1,4 @@
 begin 
 // begin cycle 1.23 23
-{ id123 id245t6 , isg}
+{ id123 id245t6 begin , isg}
 'string'

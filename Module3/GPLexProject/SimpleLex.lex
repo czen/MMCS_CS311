@@ -95,6 +95,16 @@ cycle {
 }
 <COMMENT>{
   <<EOF>>   {LexError(); return 0;}          
+  begin { 
+}
+
+end { 
+  
+}
+
+cycle { 
+  
+}
   {ID} { IdList.Add(yytext); }
 }
 
