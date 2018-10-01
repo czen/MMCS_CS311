@@ -1,0 +1,19 @@
+language: csharp
+solution: Compilers.sln
+mono:
+ - latest
+ 
+install:
+  - sudo apt-get install nunit-console
+  - nuget restore Compilers.sln
+ 
+script:
+ - xbuild /p:TargetFrameworkVersion="v4.0"
+ - nunit-console -labels TestSimpleLexer/bin/Debug/TestSimpleLexer.dll
+ - nunit-console -labels TestLexer/bin/Debug/TestLexer.dll
+ - nunit-console -labels TestGeneratedLexer/bin/Debug/TestGeneratedLexer.dll
+ - nunit-console -labels TestDescentParser/bin/Debug/TestDescentParser.dll
+ - nunit-console -labels TestGeneratedParser/bin/Debug/TestGeneratedParser.dll
+ - nunit-console -labels TestASTParser/bin/Debug/TestASTParser.dll
+ - nunit-console -labels TestVisitors/bin/Debug/TestVisitors.dll
+ - nunit-console -labels TestCodeGenerator/bin/Debug/TestCodeGenerator.dll
