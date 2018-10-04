@@ -13,7 +13,7 @@ namespace SimpleLangLexerTest
         {
             string fileContents = @"begin 
                                     id23 := +24;  
-                                    cycle ; 2 id258 id29 :+ - / * and mod div or not ; >= = <= <> += -= *= /= + += 
+                                    cycle ; 2 id258 id29 :+ - / * and mod div or not ; >= = <= <> += -= *= /= + += 2 + 3 3 > 2;
                                     end";
             TextReader inputReader = new StringReader(fileContents);
             Lexer l = new Lexer(inputReader);
