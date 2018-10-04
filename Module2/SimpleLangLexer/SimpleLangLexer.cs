@@ -35,7 +35,17 @@ namespace SimpleLangLexer
         MOD,
         AND,
         OR,
-        NOT
+        NOT,
+        PLUS_EQUAL,
+        MINUS_EQUAL,
+        MULTIPLY_EQUAL,
+        DIVIDE_EQUAL,
+        MORE,
+        LESS,
+        MORE_EQUAL,
+        LESS_EQUAL,
+        EQUAL,
+        NOT_EQUAL
     }
 
     public class Lexer
@@ -144,6 +154,8 @@ namespace SimpleLangLexer
             LexCol = col;
             // Тип лексемы определяется по ее первому символу
             // Для каждой лексемы строится синтаксическая диаграмма
+
+            //Определяем лексему ;
             if (currentCh == ';')
             {
                 NextCh();
@@ -152,16 +164,19 @@ namespace SimpleLangLexer
             else if (currentCh == ':')
             {
                 NextCh();
+                //Определяем лексему :
                 if (currentCh != '=')
                 {
                     LexKind = Tok.COLON;
                 }
+                //Определяем лексему :=
                 else
                 {
                     NextCh();
                     LexKind = Tok.ASSIGN;
                 }
             }
+            //Определяем лексему ,
             else if (currentCh == ',')
             {
                 NextCh();
@@ -170,22 +185,126 @@ namespace SimpleLangLexer
             else if(currentCh == '+')
             {
                 NextCh();
-                LexKind = Tok.PLUS;
+                //Определяем лексему +
+                if (currentCh != '=')
+                {
+                    LexKind = Tok.PLUS;
+                }
+                //Определяем лексему +=
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.PLUS_EQUAL;
+                }
             }
             else if (currentCh == '-')
             {
                 NextCh();
-                LexKind = Tok.MINUS;
+                //Определяем лексему -
+                if (currentCh != '=')
+                {
+                    LexKind = Tok.MINUS;
+                }
+                //Определяем лексему -=
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MINUS_EQUAL;
+                }
             }
             else if (currentCh == '*')
             {
                 NextCh();
-                LexKind = Tok.MULTIPLY;
+                //Определяем лексему *
+                if (currentCh != '=')
+                {
+                    LexKind = Tok.MULTIPLY;
+                }
+                //Определяем лексему *=
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MULTIPLY_EQUAL;
+                }
             }
             else if (currentCh == '/')
             {
                 NextCh();
-                LexKind = Tok.DIVIDE;
+                //Определяем лексему /
+                if (currentCh != '=')
+                {
+                    LexKind = Tok.DIVIDE;
+                }
+                //Пропускаем комментарии
+                else if (currentCh == '/')
+                {
+                    NextCh();
+                    while (currentCh != '\n')
+                        NextCh();
+                    NextCh();
+                    NextLexem();
+                }
+                //Определяем лексему /=
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.DIVIDE_EQUAL;
+                }
+            }
+            else if (currentCh == '<')
+            {
+                NextCh();
+                //Определяем лексему <=
+                if (currentCh == '=')
+                {
+                    NextCh();
+                    LexKind = Tok.LESS_EQUAL;
+                }
+                //Определяем лексему <>
+                else if (currentCh == '>')
+                {
+                    NextCh();
+                    LexKind = Tok.NOT_EQUAL;
+                }
+                //Определяем лексему <
+                else
+                {
+                    LexKind = Tok.LESS;
+                }
+            }
+            else if (currentCh == '>')
+            {
+                NextCh();
+                //Определяем лексему >
+                if (currentCh != '=')
+                {
+                    LexKind = Tok.MORE;
+                }
+                //Определяем лексему >=
+                else
+                {
+                    NextCh();
+                    LexKind = Tok.MORE_EQUAL;
+                }
+            }
+            //Определяем лексему =
+            else if (currentCh == '=')
+            {
+                NextCh();
+                LexKind = Tok.EQUAL;
+            }
+            //Определяем комментарии вида {}
+            else if (currentCh == '{')
+            {
+                NextCh();
+                while (currentCh != '}')
+                {
+                    if ((int)currentCh == 0)
+                        LexError("not found closing }");
+                    NextCh();
+                }
+                NextCh();
+                NextLexem();
             }
             else if (char.IsLetter(currentCh))
             {
