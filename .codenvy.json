@@ -1,9 +1,29 @@
 {
-  "v": "4.0",
-  "name": "compilers",
-  "workspace": {
+  "name": ".NET with mono",
+  "components": [
+    {
+      "version": "1.0.0-preview1-002702",
+      "name": ".NET Core SDK"
+    },
+    {
+      "version": "16.04",
+      "name": "Ubuntu"
+    },
+    {
+      "version": "---",
+      "name": "Mono"
+    }
+  ],
+  "tags": [
+    "UBUNTU",
+    "DOTNET",
+    "GIT",
+    "MONO"
+  ],
+  "id": "stack5k2mqjwu7ze7ewvm",
+  "workspaceConfig": {
     "environments": {
-      "compilers": {
+      "default": {
         "machines": {
           "dev-machine": {
             "attributes": {
@@ -11,102 +31,52 @@
             },
             "servers": {},
             "agents": [
-              "org.eclipse.che.ls.csharp",
-              "org.eclipse.che.ssh",
               "org.eclipse.che.ws-agent",
+              "org.eclipse.che.ssh",
               "org.eclipse.che.terminal",
               "org.eclipse.che.exec"
             ]
           }
         },
         "recipe": {
-          "location": "eclipse/dotnet_core",
-          "type": "dockerimage"
+          "type": "dockerfile",
+          "content": "# Copyright (c) 2012-2017 Codenvy, S.A.\n# All rights reserved. This program and the accompanying materials\n# are made available under the terms of the Eclipse Public License v1.0\n# which accompanies this distribution, and is available at\n# http://www.eclipse.org/legal/epl-v10.html\n# Contributors:\n# Codenvy, S.A. - initial API and implementation\n\nFROM eclipse/stack-base:ubuntu\nENV OMISHARP_VERSION 1.31.1\nENV OMNISHARP_DOWNLOAD_URL https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v${OMISHARP_VERSION}/omnisharp-linux-x64.tar.gz\nENV CSHARP_LS_DIR ${HOME}/che/ls-csharp\nRUN sudo apt-get update && sudo apt-get install apt-transport-https -y && \\\n    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > ~/microsoft.gpg && \\\n    sudo mv ~/microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && \\\n    sudo sh -c 'echo \"deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main\" > /etc/apt/sources.list.d/dotnetdev.list' && \\\n    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \\\n    sudo apt-get update && \\\n    sudo apt-get install -y \\\n    dotnet-sdk-2.0.0 && \\\n    sudo apt-get -y clean && \\\n    sudo rm -rf /var/lib/apt/lists/* && \\\n    mkdir -p ${CSHARP_LS_DIR}\n\nRUN cd ${CSHARP_LS_DIR} && wget https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.31.1/omnisharp-linux-x64.tar.gz && \\\n    tar -xvf omnisharp-linux-x64.tar.gz --strip 1 && \\\n    sudo chgrp -R 0 ${CSHARP_LS_DIR} && \\\n    sudo chmod -R g+rwX ${CSHARP_LS_DIR}\n\nRUN sudo apt-get update && \\\n    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \\\n    sudo apt install -y apt-transport-https && \\\n    echo \"deb https://download.mono-project.com/repo/ubuntu stable-xenial main\" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list && \\\n    sudo apt update && \\\n    sudo apt install -y mono-devel && \\\n    sudo apt install -y nuget\n\nEXPOSE 5000 9000\nCMD tail -f /dev/null\n",
+          "contentType": "text/x-dockerfile"
         }
       }
     },
-    "defaultEnv": "compilers",
-    "projects": [
+    "defaultEnv": "default",
+    "projects": [],
+    "name": "default",
+    "commands": [
       {
-        "links": [],
-        "name": "compilers",
-        "attributes": {
-          "commands": [
-            "{\"commandLine\":\"cd ${current.project.path} && ./run_tests.sh\", \"name\":\"run all tests\", \"attributes\":{\"previewUrl\":\"\", \"goal\":\"Test\"}, \"type\":\"custom\"}",
-            "{\"commandLine\":\"cd ${current.project.path} && mono NUnit.3.10.1/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestSimpleLexer/bin/Debug/TestSimpleLexer.dll\", \"name\":\"run tests\", \"attributes\":{\"previewUrl\":\"\", \"goal\":\"Test\"}, \"type\":\"custom\"}",
-            "{\"commandLine\":\"cd ${current.project.path} && xbuild /p:TargetFrameworkVersion=\\\"v4.0\\\"\", \"name\":\"build with xbuild\", \"attributes\":{\"previewUrl\":\"\", \"goal\":\"Build\"}, \"type\":\"custom\"}",
-            "{\"commandLine\":\"cd ${current.project.path} && nuget restore\", \"name\":\"update dependencies\", \"attributes\":{\"goal\":\"Build\", \"previewUrl\":\"\"}, \"type\":\"custom\"}"
-          ]
-        },
-        "type": "blank",
-        "source": {
-          "location": "https://github.com/czen/MMCS_CS311.git",
-          "parameters": {}
-        },
-        "path": "/compilers",
-        "problems": [],
-        "mixins": [
-          "git"
-        ]
+        "commandLine": "cd ${current.project.path} && xbuild /p:TargetFrameworkVersion=\"v4.0\"",
+        "name": "build with xbuild",
+        "attributes": {},
+        "type": "custom"
+      },
+      {
+        "commandLine": "cd ${current.project.path} && nuget restore",
+        "name": "restore nuget packages",
+        "attributes": {},
+        "type": "custom"
+      },
+      {
+        "commandLine": "cd ${current.project.path} && ./run_tests.sh",
+        "name": "run all tests",
+        "attributes": {},
+        "type": "custom"
+      },
+      {
+        "commandLine": "cd ${current.project.path} && mono NUnit.3.10.1/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestSimpleLexer/bin/Debug/TestSimpleLexer.dll",
+        "name": "simple lexer tests",
+        "attributes": {},
+        "type": "custom"
       }
     ],
-    "name": "compilers",
-    "commands": [],
     "links": []
   },
-  "id": "factory1pjjluomr1i06z82",
-  "ide": {
-    "onProjectsLoaded": {
-      "actions": [
-        {
-          "properties": {
-            "name": "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "sudo apt install apt-transport-https"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "echo \"deb https://download.mono-project.com/repo/ubuntu stable-xenial main\" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "sudo apt update"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "sudo apt install mono-devel"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "sudo apt install nuget"
-          },
-          "id": "runCommand"
-        },
-        {
-          "properties": {
-            "name": "nuget install NUnit.Runners"
-          },
-          "id": "runCommand"
-        }
-      ]
-    }
-  },
-  "creator": {
-    "name": "taccessviolation",
-    "email": "taccessviolation@gmail.com",
-    "created": 1538409179332,
-    "userId": "userq0aq1fdi7ksr4m6u"
-  }
+  "description": "Default .NET Stack with mon",
+  "creator": "userq0aq1fdi7ksr4m6u",
+  "scope": "advanced"
 }
