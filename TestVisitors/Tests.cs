@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using NUnit.Framework;
 using SimpleScanner;
 using SimpleParser;
@@ -6,7 +7,7 @@ using SimpleLang.Visitors;
 
 namespace TestVisitors
 {
-    public class TestHelpers
+    public class ParserTest
     {
         public static Parser Parse(string text)
         {
@@ -19,12 +20,12 @@ namespace TestVisitors
     }
     
     [TestFixture]
-    public class TestAvgOpCount
+    public class TestAvgOpCount: ParserTest
     {
         [Test]
         public void NoLoopTest()
         {
-            Parser p = TestHelpers.Parse(@"begin end ");
+            Parser p = Parse(@"begin end ");
             Assert.IsTrue(p.Parse());
             var avgCounter = new CountCyclesOpVisitor();
             p.root.Visit(avgCounter);
@@ -34,7 +35,7 @@ namespace TestVisitors
         [Test]
         public void ThreeLoopsTest()
         {
-            Parser p = TestHelpers.Parse(@"begin
+            Parser p = Parse(@"begin
        var a,b,d;
        b := 2;
        a := 3;
@@ -70,36 +71,36 @@ namespace TestVisitors
     }
     
     [TestFixture]
-    public class TestCommonVariable
+    public class TestCommonVariable: ParserTest
     {
         [Test]
         public void OneVarTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a; a:=2; a:=a+2*a-3; a:=3; end ");
+            Parser p = Parse(@"begin var a0; a0:=2; a0:=a0+2*a0-3; a0:=3; end ");
             Assert.IsTrue(p.Parse());
             var varCounter = new CommonlyUsedVarVisitor();
             p.root.Visit(varCounter);
-            Assert.AreEqual("a", varCounter.mostCommonlyUsedVar());            
+            Assert.AreEqual("a0", varCounter.mostCommonlyUsedVar());            
         }
         
         [Test]
         public void ManyVarTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a,b,c; a:=2+c-b; b:=a+2*a-3-b+b-b+b+b; b:=c-3+b-3; end ");
+            Parser p = Parse(@"begin var a1,b1,c1; a1:=2+c1-b1; b1:=a1+2*a1-3-b1+b1-b1+b1+b1; b1:=c1-3+b1-3; end ");
             Assert.IsTrue(p.Parse());
             var varCounter = new CommonlyUsedVarVisitor();
             p.root.Visit(varCounter);
-            Assert.AreEqual("b", varCounter.mostCommonlyUsedVar());            
+            Assert.AreEqual("b1", varCounter.mostCommonlyUsedVar());            
         }
     }
     
     [TestFixture]
-    public class TestExprComplexity
+    public class TestExprComplexity: ParserTest
     {
         [Test]
         public void AssignTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a; a:=2+2; a:=a+2*a-3; a:=3; end ");
+            Parser p = Parse(@"begin var a2; a2:=2+2; a2:=a2+2*a2-3; a2:=3; end ");
             Assert.IsTrue(p.Parse());
             var exprMeter = new ExprComplexityVisitor();
             p.root.Visit(exprMeter);
@@ -110,7 +111,7 @@ namespace TestVisitors
         [Test]
         public void CycleTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a; cycle 2+2/3 a:=2-2 end ");
+            Parser p = Parse(@"begin var a3; cycle 2+2/3 a3:=2-2 end ");
             Assert.IsTrue(p.Parse());
             var exprMeter = new ExprComplexityVisitor();
             p.root.Visit(exprMeter);
@@ -121,7 +122,7 @@ namespace TestVisitors
         [Test]
         public void WriteTest()
         {
-            Parser p = TestHelpers.Parse(@"begin write(2+2-3) end ");
+            Parser p = Parse(@"begin write(2+2-3) end ");
             Assert.IsTrue(p.Parse());
             var exprMeter = new ExprComplexityVisitor();
             p.root.Visit(exprMeter);
@@ -135,7 +136,7 @@ namespace TestVisitors
             [Test]
             public void OneLoopTest()
             {
-                Parser p = TestHelpers.Parse(@"begin cycle 2 write(2) end");
+                Parser p = Parse(@"begin cycle 2 write(2) end");
                 Assert.IsTrue(p.Parse());
                 var loopCounter = new MaxNestCyclesVisitor();
                 p.root.Visit(loopCounter);
@@ -145,7 +146,7 @@ namespace TestVisitors
             [Test]
             public void ThreeLoopsTest()
             {
-                Parser p = TestHelpers.Parse(@"begin cycle 2 cycle 3 cycle 4 write(5) end");
+                Parser p = Parse(@"begin cycle 2 cycle 3 cycle 4 write(5) end");
                 Assert.IsTrue(p.Parse());
                 var loopCounter = new MaxNestCyclesVisitor();
                 p.root.Visit(loopCounter);
@@ -155,14 +156,14 @@ namespace TestVisitors
             [Test]
             public void LoopTreeTest()
             {
-                Parser p = TestHelpers.Parse(@"begin var a; 
+                Parser p = Parse(@"begin var a6; 
                                                     cycle 2 
                                                         cycle 1 
-                                                            a:=2; 
+                                                            a6:=2; 
                                                         cycle 3 
                                                             cycle 5 
                                                                 cycle 6 
-                                                                    a:=5; 
+                                                                    a6:=5; 
                                                                 cycle 4 
                                                                     write(5) 
                                               end");
@@ -177,14 +178,14 @@ namespace TestVisitors
     }
 
     [TestFixture]
-    public class TestVariableRenamer 
+    public class TestVariableRenamer: ParserTest 
     {
         [Test]
         public void SimpleTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a; a:=2; a:=a+2*a-3; a:=3; end ");
+            Parser p = Parse(@"begin var a4; a4:=2; a4:=a4+2*a4-3; a4:=3; end ");
             Assert.IsTrue(p.Parse());
-            var varRenamer = new ChangeVarIdVisitor("a", "z");
+            var varRenamer = new ChangeVarIdVisitor("a4", "z");
             p.root.Visit(varRenamer);
             
             var varCounter = new CommonlyUsedVarVisitor();
@@ -194,12 +195,12 @@ namespace TestVisitors
     }
     
     [TestFixture]
-    public class TestIfCycleNest 
+    public class TestIfCycleNest: ParserTest
     {
         [Test]
         public void FirstTest()
         {
-            Parser p = TestHelpers.Parse(@"begin var a; cycle 3 if 1 then cycle 4 a := 1 end ");
+            Parser p = Parse(@"begin var a5; cycle 3 if 1 then cycle 4 a5 := 1 end ");
             Assert.IsTrue(p.Parse());
             var nestWalker = new MaxIfCycleNestVisitor();
             p.root.Visit(nestWalker);
