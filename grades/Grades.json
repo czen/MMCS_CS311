@@ -1,0 +1,57 @@
+{
+  "Tasks": [  
+      { "name": "TestSimpleLexer",
+        "grades": {
+        "TestId": 1,
+        "TestOps": 1,
+        "TestKeywords": 1,
+        "TestOpsFail": 1,
+        "TestAssigns": 1,
+        "TestComparisons": 1,
+        "TestComparisonsAndOps": 1,
+        "TestComment": 1,
+        "TestCommentFileEnd": 1,
+        "TestCommentNextLine": 1,
+        "TestMultLineComment": 1,
+        "TestCommentFileEnd": 1,
+        "TestCommentNextLine": 1,
+        "TestCommentNotClosed": 1
+      }
+      },
+      { "name": "TestLexer",
+         "grades": {
+           "TestIntParse": 1,
+           "TestIntFailDot": 1,
+           "TestIntFailSymbol": 1,
+           "TestIntFailEpty": 1,
+           "TestIntCollectNumber": 1,
+           "TestIdParse": 1,
+           "TestIdEmpty": 1,
+           "TestIdCaps": 1,
+           "TestIdNumbers": 1,
+           "TestIdUnderscore" : 1,
+           "TestIdDot": 1,
+           "TestIdDollar": 1,
+           "TestIntNotZeroParse": 1,
+           "TestIntNotZeroFail": 1,
+           "TestIntNotZeroPass": 1,
+           "TestLetterDigitParse": 1,
+           "TestLetterDigitFail": 1,
+           "TestLetterListParse": 1,
+           "TestLetterListFail": 1,
+           "TestDigitListParse": 1,
+           "TestDigitListFail": 1,
+           "TestLetterDigitGroupParse": 1,
+           "TestLetterDigitGroupFail": 1,
+           "TestDoubleParse": 1,
+           "TestDoubleFail": 1,
+           "TestQuotedStringParse": 1,
+           "TestQuotedStringFail": 1,
+           "TestCommentParse": 1,
+           "TestCommentFail": 1,
+           "TestIdChainParse": 1,
+           "TestIdChainFail": 1
+         }
+      }
+    ]
+}

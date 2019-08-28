@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestVisitors", "TestVisitor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCodeGenerator", "TestCodeGenerator\TestCodeGenerator.csproj", "{186EE1C7-7F34-4428-8A82-F63C8D4368E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NunitReport", "NunitReportParser\NunitReport.csproj", "{88E96425-F1E4-4092-8524-9C13225D2214}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{186EE1C7-7F34-4428-8A82-F63C8D4368E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{186EE1C7-7F34-4428-8A82-F63C8D4368E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{186EE1C7-7F34-4428-8A82-F63C8D4368E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88E96425-F1E4-4092-8524-9C13225D2214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88E96425-F1E4-4092-8524-9C13225D2214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88E96425-F1E4-4092-8524-9C13225D2214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88E96425-F1E4-4092-8524-9C13225D2214}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
