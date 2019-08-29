@@ -10,18 +10,18 @@ install:
 script:
   - msbuild /p:TargetFrameworkVersion="v4.0"
   - nunit-console -labels TestSimpleLexer/bin/Debug/TestSimpleLexer.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestLexer/bin/Debug/TestLexer.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestGeneratedLexer/bin/Debug/TestGeneratedLexer.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestDescentParser/bin/Debug/TestDescentParser.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestGeneratedParser/bin/Debug/TestGeneratedParser.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestASTParser/bin/Debug/TestASTParser.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestVisitors/bin/Debug/TestVisitors.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}
   - nunit-console -labels TestCodeGenerator/bin/Debug/TestCodeGenerator.dll
-  - mono NunitReportParser/bin/Debug/NunitReportParser.exe
+  - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR}

@@ -73,8 +73,18 @@ namespace NunitReport
         
         static void Main(string[] args)
         {
+            string basePath = "";
             XmlDocument doc = new XmlDocument();
-            doc.Load(@"../../../TestResult.xml");
+            if(args.Length > 0) {
+                basePath = args[0];
+                doc.Load(basePath+@"/TestResult.xml");
+            }
+            else
+            {
+                doc.Load(@"../../../TestResult.xml");
+            }
+            
+            
 
             // XmlNodeList nodes = doc.DocumentElement.SelectNodes("test-run/test-suite"); 
             XmlNodeList nodes = doc.DocumentElement.ChildNodes;
