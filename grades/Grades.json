@@ -2,118 +2,145 @@
   "Tasks": [  
       { "name": "TestSimpleLexer",
         "grades": {
-        "TestId": 1,
-        "TestOps": 1,
-        "TestKeywords": 1,
+        "TestId": 0,
+        
+        "TestOps": 0.5,
+        "TestKeywords": 0.5,
         "TestOpsFail": 1,
-        "TestAssigns": 1,
+        
+        "TestAssigns": 2,
+        
         "TestComparisons": 1,
         "TestComparisonsAndOps": 1,
+        
         "TestComment": 1,
-        "TestCommentFileEnd": 1,
-        "TestCommentNextLine": 1,
-        "TestMultLineComment": 1,
-        "TestCommentFileEnd": 1,
-        "TestCommentNextLine": 1,
-        "TestCommentNotClosed": 1
+        "TestCommentFileEnd": 0.5,
+        "TestCommentNextLine": 0.5,
+        
+        "TestMultLineComment": 0.5,
+        "TestCommentFileEnd": 0.5,
+        "TestCommentNextLine": 0.5,
+        "TestCommentNotClosed": 0.5
       }
       },
       { "name": "TestLexer",
          "grades": {
-           "TestIntParse": 1,
-           "TestIntFailDot": 1,
-           "TestIntFailSymbol": 1,
-           "TestIntFailEpty": 1,
-           "TestIntCollectNumber": 1,
-           "TestIdParse": 1,
-           "TestIdEmpty": 1,
-           "TestIdCaps": 1,
-           "TestIdNumbers": 1,
-           "TestIdUnderscore" : 1,
-           "TestIdDot": 1,
-           "TestIdDollar": 1,
-           "TestIntNotZeroParse": 1,
-           "TestIntNotZeroFail": 1,
-           "TestIntNotZeroPass": 1,
-           "TestLetterDigitParse": 1,
-           "TestLetterDigitFail": 1,
-           "TestLetterListParse": 1,
-           "TestLetterListFail": 1,
-           "TestDigitListParse": 1,
-           "TestDigitListFail": 1,
-           "TestLetterDigitGroupParse": 1,
-           "TestLetterDigitGroupFail": 1,
-           "TestDoubleParse": 1,
-           "TestDoubleFail": 1,
-           "TestQuotedStringParse": 1,
-           "TestQuotedStringFail": 1,
-           "TestCommentParse": 1,
-           "TestCommentFail": 1,
-           "TestIdChainParse": 1,
-           "TestIdChainFail": 1
+           "TestIntParse": 0.2,
+           "TestIntFailDot": 0.2,
+           "TestIntFailSymbol": 0.2,
+           "TestIntFailEpty": 0.2,
+           "TestIntCollectNumber": 0.2,
+           
+           "TestIdParse": 0.1,
+           "TestIdEmpty": 0.15,
+           "TestIdCaps": 0.15,
+           "TestIdNumbers": 0.15,
+           "TestIdUnderscore" : 0.15,
+           "TestIdDot": 0.15,
+           "TestIdDollar": 0.15,
+           
+           "TestIntNotZeroParse": 0.33,
+           "TestIntNotZeroFail": 0.33,
+           "TestIntNotZeroPass": 0.34,
+           
+           "TestLetterDigitParse": 0.5,
+           "TestLetterDigitFail": 0.5,
+           
+           "TestLetterListParse": 0.5,
+           "TestLetterListFail": 0.5,
+           
+           "TestDigitListParse": 0.5,
+           "TestDigitListFail": 0.5,
+           
+           "TestLetterDigitGroupParse": 0.5,
+           "TestLetterDigitGroupFail": 0.5,
+           
+           "TestDoubleParse": 0.5,
+           "TestDoubleFail": 0.5,
+           
+           "TestQuotedStringParse": 0.5,
+           "TestQuotedStringFail": 0.5,
+           
+           "TestCommentParse": 0.5,
+           "TestCommentFail": 0.5,
+           
+           "TestIdChainParse": 0.5,
+           "TestIdChainFail": 0.5
          }
       },
       { "name": "TestGeneratedLexer",
         "grades": {
-           "TestIdCount": 1,
-           "TestIdInfo": 1,
-           "TestNumbers": 1,
+           "TestIdCount": 1.5,
+           "TestIdInfo": 2,
+           
+           "TestNumbers": 1.5,
+           
+           "TestString": 1,
            "TestSingleLineCmt": 1,
+           
            "TestMultiLineCmt": 1,
-           "TestMultiLineCmtIds": 1
+           "TestMultiLineCmtIds": 2
         }
       },
       { "name": "TestGeneratedParser",
         "grades": {
-           "TestWhile": 1,
-           "TestRepeat": 1,
-           "TestFor": 1,
-           "TestWrite": 1,
-           "TestIf": 1,
-           "TestVar": 1,
-           "TestExr": 1
+           "TestWhile": 2,
+           "TestRepeat": 2,
+           "TestFor": 2,
+           "TestWrite": 2,
+           "TestIf": 2,
+           "TestVar": 3,
+           "TestExr": 3
         }
       },
       { "name": "TestDescentParser",
         "grades": {
-           "TestWhile": 1,
-           "TestFor": 1,
-           "TestIf": 1,
-           "TestExpr": 1
+           "TestWhile": 3,
+           "TestFor": 4,
+           "TestIf": 3,
+           "TestExpr": 4
         }
       },
       { "name": "TestASTParser",
         "grades": {
-           "TestWhile": 1,
-           "TestRepeat": 1,
-           "TestFor": 1,
-           "TestWrite": 1
+           "TestWhile": 2,
+           "TestRepeat": 2,
+           "TestFor": 2,
+           "TestWrite": 2,
+           "TestIf": 2,
+           "TestVarDef": 3,
+           "TestBinary": 3,
         }
       },
       { "name": "TestCodeGenerator",
         "grades": {
-           "SmokeTest": 1,
-           "TestOutput": 1,
-           "TestIntDivMod": 1,
-           "TestIf": 1,
-           "TestWhile": 1,
-           "TestUntil": 1
+           "SmokeTest": 0,
+           "TestOutput": 0,
+           "TestIntDivMod": 8,
+           "TestIf": 3,
+           "TestWhile": 3,
+           "TestUntil": 2
         }
       },
       { "name": "TestVisitors",
         "grades": {
-           "NoLoopTest": 1,
-           "ThreeLoopsTest": 1,
-           "OneVarTest": 1,
-           "ManyVarTest": 1,
-           "AssignTest": 1,
-           "CycleTest": 1,
-           "WriteTest": 1,
-           "OneLoopTest": 1,
-           "ThreeLoopsTest1": 1,
-           "LoopTreeTest": 1,
+           "NoLoopTest": 0.5,
+           "ThreeLoopsTest": 0.5,
+           
+           "OneVarTest": 0.5,
+           "ManyVarTest": 0.5,
+           
+           "AssignTest": 0.33,
+           "CycleTest": 0.33,
+           "WriteTest": 0.34,
+           
+           "OneLoopTest": 0.33,
+           "ThreeLoopsTest1": 0.33,
+           "LoopTreeTest": 0.34,
+           
            "SimpleTest": 1,
-           "FirstTest": 1
+           
+           "FirstTest": 3
         }
       }
     ]
