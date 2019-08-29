@@ -81,7 +81,7 @@ namespace NunitReport
             }
             else
             {
-                doc.Load(@"../../../TestResult.xml");
+                doc.Load(@"./TestResult.xml");
             }
             
             
