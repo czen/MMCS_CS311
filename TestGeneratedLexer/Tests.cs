@@ -40,6 +40,15 @@ namespace TestGeneratedLexer
         }
         
         [Test]
+        public void TestString()
+        {
+            LexerAddon lexer = new LexerAddon(@"3 389 3 'ssfsf ' ");
+            lexer.Lex();
+            
+            // TODO: checks in this test
+        }
+        
+        [Test]
         public void TestSingleLineCmt()
         {
             LexerAddon lexer = new LexerAddon(@"i22d1 5.6  // i 32 id3
