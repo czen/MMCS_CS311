@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -79,16 +80,25 @@ namespace NunitReport
         static void Main(string[] args)
         {
             XmlDocument doc = new XmlDocument();
+            string filePath;
             if (args.Length > 0)
             {
                 basePath = args[0];
-                doc.Load(basePath + @"/TestResult.xml");
+                filePath = basePath + @"/TestResult.xml";
+                
             }
             else
             {
-                doc.Load(@"./TestResult.xml");
+                filePath = @"./TestResult.xml";
             }
-
+            doc.Load(filePath);
+            string[] XmlText = File.ReadAllLines(filePath);
+            System.Console.WriteLine("+++++++++++++++++++++++++");
+            foreach (string line in XmlText)
+            {
+                System.Console.WriteLine(line);
+            }
+            System.Console.WriteLine("+++++++++++++++++++++++++");
 
             // XmlNodeList nodes = doc.DocumentElement.SelectNodes("test-run/test-suite"); 
             XmlNodeList nodes = doc.DocumentElement.ChildNodes;
