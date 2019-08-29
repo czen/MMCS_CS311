@@ -25,6 +25,10 @@ namespace NunitReport
                 {
                     cases.Add(child);
                 }
+                else
+                {
+                    ParseTestSuite(child);   
+                }
             }
         }
 
@@ -43,8 +47,18 @@ namespace NunitReport
             var countedGrades = new Dictionary<string, double>();
             foreach (XmlNode testcase in cases)
             {
-                string caseClass = testcase.Attributes["classname"].Value.Split('.')[0];
-                string caseName = testcase.Attributes["name"].Value;
+                string caseClass;
+                string caseName;
+                try
+                {
+                    caseClass = testcase.Attributes["classname"].Value.Split('.')[0];
+                    caseName = testcase.Attributes["name"].Value;
+                } catch(Exception e)
+                {
+                    string[] fullName = testcase.Attributes["name"].Value.Split('.');
+                    caseClass = fullName[0];
+                    caseName = fullName[fullName.Length - 1];
+                }
 
                 foreach (JObject task in tasks)
                 {
@@ -93,12 +107,12 @@ namespace NunitReport
             }
             doc.Load(filePath);
             string[] XmlText = File.ReadAllLines(filePath);
-            System.Console.WriteLine("+++++++++++++++++++++++++");
-            foreach (string line in XmlText)
-            {
-                System.Console.WriteLine(line);
-            }
-            System.Console.WriteLine("+++++++++++++++++++++++++");
+//            System.Console.WriteLine("+++++++++++++++++++++++++");
+//            foreach (string line in XmlText)
+//            {
+//                System.Console.WriteLine(line);
+//            }
+//            System.Console.WriteLine("+++++++++++++++++++++++++");
 
             // XmlNodeList nodes = doc.DocumentElement.SelectNodes("test-run/test-suite"); 
             XmlNodeList nodes = doc.DocumentElement.ChildNodes;
