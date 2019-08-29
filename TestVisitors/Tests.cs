@@ -144,7 +144,7 @@ namespace TestVisitors
             }
             
             [Test]
-            public void ThreeLoopsTest()
+            public void ThreeLoopsTest1()
             {
                 Parser p = Parse(@"begin cycle 2 cycle 3 cycle 4 write(5) end");
                 Assert.IsTrue(p.Parse());

@@ -63,7 +63,9 @@ namespace NunitReport
             {
                 if (g.Value > 0)
                 {
-                    System.Console.Out.WriteLine(g.Key + " = " + g.Value.ToString());
+                    double grade = g.Value;
+                    grade *= 0.6;
+                    System.Console.Out.WriteLine(g.Key + " = " + grade.ToString());
                 }
             }
 
