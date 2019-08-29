@@ -87,4 +87,30 @@ namespace TestASTParser
             // TODO: проверить содержимое write
         }
     }
+    
+    [TestFixture]
+    public class ExtraTests
+    {
+        
+        [Test]
+        public void TestIf()
+        {
+            Assert.Fail();
+            // TODO: дописать тест
+        }
+        
+        [Test]
+        public void TestVarDef()
+        {
+            Assert.Fail();
+            // TODO: дописать тест
+        }
+        
+        [Test]
+        public void TestBinary()
+        {
+            Assert.Fail();
+            // TODO: дописать тест
+        }
+    }
 }
