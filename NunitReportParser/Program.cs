@@ -35,7 +35,7 @@ namespace NunitReport
 
             JArray tasks = (JArray) grades["Tasks"];
 
-            var countedGrades = new Dictionary<string, int>();
+            var countedGrades = new Dictionary<string, double>();
             foreach (XmlNode testcase in cases)
             {
                 string caseClass = testcase.Attributes["classname"].Value.Split('.')[0];
@@ -45,7 +45,7 @@ namespace NunitReport
                 {
                     if ((string) task["name"] == caseClass)
                     {
-                        int maxGrade = (int) task["grades"][caseName];
+                        double maxGrade = (double) task["grades"][caseName];
                         if (testcase.Attributes["result"].Value == "Passed")
                         {
                             if (!countedGrades.ContainsKey(caseClass))
@@ -59,7 +59,7 @@ namespace NunitReport
                 //System.Console.Out.WriteLine(countedGrades[caseClass]);
             }
 
-            foreach (KeyValuePair<string, int> g in countedGrades)
+            foreach (KeyValuePair<string, double> g in countedGrades)
             {
                 if (g.Value > 0)
                 {
