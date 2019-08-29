@@ -10,7 +10,8 @@ namespace NunitReport
     class ReportParser
     {
         private static List<XmlNode> cases = new List<XmlNode>();
-        
+        private static string basePath = "";
+
         static void ParseTestSuite(XmlNode node)
         {
             foreach (XmlNode child in node.ChildNodes)
@@ -28,9 +29,12 @@ namespace NunitReport
 
         static void CountGrades()
         {
+            string configPath = @"../../../grades/Grades.json"; 
+            if (basePath != "")
+            {
+                configPath = basePath + @"/grades/Grades.json";
+            }
             
-            string configPath = @"../../../grades/Grades.json";
-
             JObject grades = JObject.Parse(File.ReadAllText(configPath));
 
             JArray tasks = (JArray) grades["Tasks"];
@@ -40,7 +44,7 @@ namespace NunitReport
             {
                 string caseClass = testcase.Attributes["classname"].Value.Split('.')[0];
                 string caseName = testcase.Attributes["name"].Value;
-                    
+
                 foreach (JObject task in tasks)
                 {
                     if ((string) task["name"] == caseClass)
@@ -52,10 +56,12 @@ namespace NunitReport
                             {
                                 countedGrades[caseClass] = 0;
                             }
+
                             countedGrades[caseClass] += maxGrade;
                         }
                     }
-                } 
+                }
+
                 //System.Console.Out.WriteLine(countedGrades[caseClass]);
             }
 
@@ -68,23 +74,21 @@ namespace NunitReport
                     System.Console.Out.WriteLine(g.Key + " = " + grade.ToString());
                 }
             }
-
         }
-        
+
         static void Main(string[] args)
         {
-            string basePath = "";
             XmlDocument doc = new XmlDocument();
-            if(args.Length > 0) {
+            if (args.Length > 0)
+            {
                 basePath = args[0];
-                doc.Load(basePath+@"/TestResult.xml");
+                doc.Load(basePath + @"/TestResult.xml");
             }
             else
             {
                 doc.Load(@"./TestResult.xml");
             }
-            
-            
+
 
             // XmlNodeList nodes = doc.DocumentElement.SelectNodes("test-run/test-suite"); 
             XmlNodeList nodes = doc.DocumentElement.ChildNodes;
@@ -108,7 +112,7 @@ namespace NunitReport
     class ReportNode
     {
         public string id;
-         public string title;
+        public string title;
         public string author;
     }
-}  
+}
