@@ -5,6 +5,10 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.IO;
+using System.Net.Mime;
+using System.Runtime.InteropServices;
 
 namespace NunitReport
 {
@@ -32,7 +36,44 @@ namespace NunitReport
             }
         }
 
-        static void CountGrades()
+        static void SendGrades(JObject settings, int recordBookID, int submoduleID, int disciplineID, double value)
+        {
+            //System.Console.Out.WriteLine("{0}-{1}-{2}-{3}", RecordBookID, SubmoduleID, DisciplineID, value);
+            string gradeToken = (string) settings["GradeService"]["token"];
+            string gradeUrl = (string) settings["GradeService"]["url"];
+            string url = gradeUrl + "api/v0/sendGrades?token=" + gradeToken;
+            System.Console.Out.WriteLine(url);
+            WebRequest request;
+            request = WebRequest.Create(url);
+            request.Method = "PUT";
+            request.ContentType = "application/json charset=utf-8";
+            
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                string json = "{\"discipline\":"+ disciplineID.ToString() +"," +
+                               "\"recordbook\":"+ recordBookID.ToString() +"," +
+                               "\"submodules\": [" +
+                               "{" +
+                               "\"id\":" + submoduleID.ToString() + "," + 
+                               "\"value\":" + value.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                               "}" +
+                               "]" +
+                              "}";
+
+                System.Console.WriteLine(json);
+                streamWriter.Write(json);
+            }
+            
+            Stream objStream;
+            var httpResponse = (HttpWebResponse) request.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                System.Console.Out.WriteLine(result);
+            }
+        }
+
+        static void CountGrades(string userName)
         {
             string configPath = @"../../../grades/Grades.json"; 
             if (basePath != "")
@@ -80,29 +121,54 @@ namespace NunitReport
                 //System.Console.Out.WriteLine(countedGrades[caseClass]);
             }
 
+            int discipline = (int) grades["Discipline"]["ID"];
+            
             foreach (KeyValuePair<string, double> g in countedGrades)
             {
                 if (g.Value > 0)
                 {
                     double grade = g.Value;
                     grade *= 0.6;
+                    
                     System.Console.Out.WriteLine(g.Key + " = " + grade.ToString());
+
+                    int recordBook = (int) grades["RecordBooks"][userName];
+                    JArray allTasks = (JArray) grades["Tasks"];
+                    foreach (JObject task in allTasks)
+                    {
+                        if ((string) task["name"] == g.Key)
+                        {
+                            JArray modules = (JArray) task["modules"];
+                            foreach (JObject module in modules)
+                            {
+                                int moduleid = (int) module["id"];
+                                double w = (double) module["weight"];
+                                double v = w * grade;
+                                SendGrades(grades, recordBook, moduleid, discipline, v);            
+                            }
+                        }   
+                    }
+                    
                 }
             }
+            
+            
         }
 
         static void Main(string[] args)
         {
             XmlDocument doc = new XmlDocument();
             string filePath;
+            string userName;
             if (args.Length > 0)
             {
                 basePath = args[0];
                 filePath = basePath + @"/TestResult.xml";
-                
+                userName = args[1].Split('/')[0];
             }
             else
             {
+                userName = "czen";
                 filePath = @"./TestResult.xml";
             }
             doc.Load(filePath);
@@ -127,7 +193,7 @@ namespace NunitReport
                 }
             }
 
-            CountGrades();
+            CountGrades(userName);
 
             System.Console.WriteLine("number of running tests: " + cases.Count);
         }

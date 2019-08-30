@@ -1,6 +1,26 @@
 {
+  "RecordBooks": {
+       "czen": 148
+  },
+  "GradeService": {
+      "url": "http://grade/~dev_rating/",
+      "token": "39se9832fh3e78fl23ois33mhfdff34gbuj34896"
+  },
+  "Discipline": {
+      "ID": 3726
+  },
   "Tasks": [  
       { "name": "TestSimpleLexer",
+        "modules": [
+            {
+                "id": 35712,
+                "weight": 0.5
+            },
+            {
+                "id": 35713,
+                "weight": 0.5
+            },
+        ],
         "grades": {
         "TestId": 0,
         
@@ -24,6 +44,16 @@
       }
       },
       { "name": "TestLexer",
+        "modules": [
+            {
+                "id": 35710,
+                "weight": 0.5
+            },
+            {
+                "id": 35711,
+                "weight": 0.5
+            },
+        ],
          "grades": {
            "TestIntParse": 0.2,
            "TestIntFailDot": 0.2,
@@ -69,6 +99,16 @@
          }
       },
       { "name": "TestGeneratedLexer",
+        "modules": [
+            {
+                "id": 35714,
+                "weight": 0.5
+            },
+            {
+                "id": 35715,
+                "weight": 0.5
+            },
+        ],
         "grades": {
            "TestIdCount": 1.5,
            "TestIdInfo": 2,
@@ -83,6 +123,16 @@
         }
       },
       { "name": "TestGeneratedParser",
+        "modules": [
+            {
+                "id": 35721,
+                "weight": 0.5
+            },
+            {
+                "id": 35722,
+                "weight": 0.5
+            },
+        ],
         "grades": {
            "TestWhile": 2,
            "TestRepeat": 2,
@@ -94,6 +144,16 @@
         }
       },
       { "name": "TestDescentParser",
+        "modules": [
+            {
+                "id": 35719,
+                "weight": 0.5
+            },
+            {
+                "id": 35720,
+                "weight": 0.5
+            },
+        ],
         "grades": {
            "TestWhile": 3,
            "TestFor": 4,
@@ -102,6 +162,16 @@
         }
       },
       { "name": "TestASTParser",
+        "modules": [
+            {
+                "id": 35723,
+                "weight": 0.5
+            },
+            {
+                "id": 35724,
+                "weight": 0.5
+            },
+        ],
         "grades": {
            "TestWhile": 2,
            "TestRepeat": 2,
@@ -113,6 +183,16 @@
         }
       },
       { "name": "TestCodeGenerator",
+        "modules": [
+            {
+                "id": 35726,
+                "weight": 0.4444
+            },
+            {
+                "id": 35727,
+                "weight": 0.5555
+            },
+        ],
         "grades": {
            "SmokeTest": 0,
            "TestOutput": 0,
@@ -123,6 +203,12 @@
         }
       },
       { "name": "TestVisitors",
+        "modules": [
+            {
+                "id": 35725,
+                "weight": 0.5
+            }
+        ],
         "grades": {
            "NoLoopTest": 0.5,
            "ThreeLoopsTest": 0.5,
