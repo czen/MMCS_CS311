@@ -31,61 +31,64 @@ namespace NunitReport
                 }
                 else
                 {
-                    ParseTestSuite(child);   
+                    ParseTestSuite(child);
                 }
             }
         }
 
-        static void SendGrades(JObject settings, int recordBookID, int submoduleID, int disciplineID, double value)
+        static void SendGrades(JObject settings, string nickname, int submoduleNumber, int semester, string service,
+            string subject, double value)
         {
             //System.Console.Out.WriteLine("{0}-{1}-{2}-{3}", RecordBookID, SubmoduleID, DisciplineID, value);
             string gradeToken = (string) settings["GradeService"]["token"];
             string gradeUrl = (string) settings["GradeService"]["url"];
             string url = gradeUrl + "api/v0/sendGrades?token=" + gradeToken;
-            System.Console.Out.WriteLine(url);
+            //System.Console.Out.WriteLine(url);
             WebRequest request;
             request = WebRequest.Create(url);
             request.Method = "PUT";
             request.ContentType = "application/json charset=utf-8";
-            
+
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-                string json = "{\"discipline\":"+ disciplineID.ToString() +"," +
-                               "\"recordbook\":"+ recordBookID.ToString() +"," +
-                               "\"submodules\": [" +
-                               "{" +
-                               "\"id\":" + submoduleID.ToString() + "," + 
-                               "\"value\":" + value.ToString(System.Globalization.CultureInfo.InvariantCulture) +
-                               "}" +
-                               "]" +
+                string json = "{\"subject\":\"" + subject + "\"," +
+                              "\"nick\":\"" + nickname + "\"," +
+                              "\"semester\":" + semester.ToString() + "," +
+                              "\"service\":\"" + service + "\"," +
+                              "\"submodules\": [" +
+                              "{" +
+                              "\"number\":" + submoduleNumber.ToString() + "," +
+                              "\"value\":" + value.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                              "}" +
+                              "]" +
                               "}";
 
-                System.Console.WriteLine(json);
+                //System.Console.WriteLine(json);
                 streamWriter.Write(json);
             }
-            
+
             Stream objStream;
             var httpResponse = (HttpWebResponse) request.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd();
-                System.Console.Out.WriteLine(result);
+                // System.Console.Out.WriteLine(result);
             }
         }
 
         static void CountGrades(string userName)
         {
-            string configPath = @"../../../grades/Grades.json"; 
+            string configPath = @"../../../grades/Grades.json";
             if (basePath != "")
             {
                 configPath = basePath + @"/grades/Grades.json";
             }
-            
+
             JObject grades = JObject.Parse(File.ReadAllText(configPath));
 
-            JArray tasks = (JArray) grades["Tasks"];
+            JArray tasks = (JArray) grades["Projects"];
 
-            var countedGrades = new Dictionary<string, double>();
+            var countedGrades = new Dictionary<int, double>();
             foreach (XmlNode testcase in cases)
             {
                 string caseClass;
@@ -94,7 +97,8 @@ namespace NunitReport
                 {
                     caseClass = testcase.Attributes["classname"].Value.Split('.')[0];
                     caseName = testcase.Attributes["name"].Value;
-                } catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     string[] fullName = testcase.Attributes["name"].Value.Split('.');
                     caseClass = fullName[0];
@@ -103,17 +107,18 @@ namespace NunitReport
 
                 foreach (JObject task in tasks)
                 {
-                    if ((string) task["name"] == caseClass)
+                    if ((string) task["namespace"] == caseClass)
                     {
-                        double maxGrade = (double) task["grades"][caseName];
+                        double maxGrade = (double) task["tests"][caseName]["grade"];
+                        int subModuleNumber = (int) task["tests"][caseName]["subModuleNumber"];
                         if (testcase.Attributes["result"].Value == "Passed")
                         {
-                            if (!countedGrades.ContainsKey(caseClass))
+                            if (!countedGrades.ContainsKey(subModuleNumber))
                             {
-                                countedGrades[caseClass] = 0;
+                                countedGrades[subModuleNumber] = 0;
                             }
 
-                            countedGrades[caseClass] += maxGrade;
+                            countedGrades[subModuleNumber] += maxGrade;
                         }
                     }
                 }
@@ -121,38 +126,23 @@ namespace NunitReport
                 //System.Console.Out.WriteLine(countedGrades[caseClass]);
             }
 
-            int discipline = (int) grades["Discipline"]["ID"];
-            
-            foreach (KeyValuePair<string, double> g in countedGrades)
+            string subject = (string) grades["Discipline"]["Subject"];
+            int semester = (int) grades["Discipline"]["Semester"];
+            string nick = userName;
+            string service = (string) grades["Service"];
+
+            foreach (KeyValuePair<int, double> g in countedGrades)
             {
                 if (g.Value > 0)
                 {
                     double grade = g.Value;
                     grade *= 0.6;
-                    
-                    System.Console.Out.WriteLine(g.Key + " = " + grade.ToString());
 
-                    int recordBook = (int) grades["RecordBooks"][userName];
-                    JArray allTasks = (JArray) grades["Tasks"];
-                    foreach (JObject task in allTasks)
-                    {
-                        if ((string) task["name"] == g.Key)
-                        {
-                            JArray modules = (JArray) task["modules"];
-                            foreach (JObject module in modules)
-                            {
-                                int moduleid = (int) module["id"];
-                                double w = (double) module["weight"];
-                                double v = w * grade;
-                                SendGrades(grades, recordBook, moduleid, discipline, v);            
-                            }
-                        }   
-                    }
-                    
+                    System.Console.Out.WriteLine("submodule #" + g.Key.ToString() + " = " + grade.ToString());
+
+                    SendGrades(grades, nick, g.Key, semester, service, subject, grade);
                 }
             }
-            
-            
         }
 
         static void Main(string[] args)
@@ -171,6 +161,7 @@ namespace NunitReport
                 userName = "czen";
                 filePath = @"./TestResult.xml";
             }
+
             doc.Load(filePath);
             string[] XmlText = File.ReadAllLines(filePath);
 //            System.Console.WriteLine("+++++++++++++++++++++++++");
@@ -186,7 +177,6 @@ namespace NunitReport
 
             foreach (XmlNode node in nodes)
             {
-                Console.Out.WriteLine(node.Name);
                 if (node.Name == "test-suite")
                 {
                     ParseTestSuite(node);
