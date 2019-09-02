@@ -1,11 +1,11 @@
 {
   "GradeService": {
-      "url": "http://grade/~dev_rating/",
+      "url": "http://testgrade.sfedu.ru/",
       "token": "39se9832fh3e78fl23ois33mhfdff34gbuj34896"
   },
   "Discipline": {
       "Subject": "Разработка компиляторов",
-      "Semester": 9
+      "Semester": 11
   },
   "Service": "github",
   "Projects": [  

@@ -72,7 +72,8 @@ namespace NunitReport
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd();
-                // System.Console.Out.WriteLine(result);
+                System.Console.Out.WriteLine("grade response: ");
+                System.Console.Out.WriteLine(result);
             }
         }
 
@@ -107,11 +108,12 @@ namespace NunitReport
 
                 foreach (JObject task in tasks)
                 {
-                    if ((string) task["namespace"] == caseClass)
+                    string namespaceName = (string) task["namespace"];
+                    if (namespaceName == caseClass)
                     {
                         double maxGrade = (double) task["tests"][caseName]["grade"];
                         int subModuleNumber = (int) task["tests"][caseName]["subModuleNumber"];
-                        if (testcase.Attributes["result"].Value == "Passed")
+                        if (testcase.Attributes["result"].Value == "Success")
                         {
                             if (!countedGrades.ContainsKey(subModuleNumber))
                             {
@@ -142,6 +144,10 @@ namespace NunitReport
 
                     SendGrades(grades, nick, g.Key, semester, service, subject, grade);
                 }
+                else
+                {
+                    System.Console.Out.WriteLine("submodule #" + g.Key.ToString() + " = empty");
+                }
             }
         }
 
@@ -154,16 +160,22 @@ namespace NunitReport
             {
                 basePath = args[0];
                 filePath = basePath + @"/TestResult.xml";
-                userName = args[1].Split('/')[0];
+                //userName = args[1].Split('/')[0];
+                string repoName = args[1].Split('/')[1];
+                userName = repoName.Substring(23, repoName.Length - 23);
             }
             else
             {
                 userName = "czen";
                 filePath = @"./TestResult.xml";
             }
+            System.Console.WriteLine("user name: " + userName);
+            System.Console.WriteLine("base path: " + basePath);
 
             doc.Load(filePath);
             string[] XmlText = File.ReadAllLines(filePath);
+//            System.Console.WriteLine("+++++++++++++++++++++++++");
+//            System.Console.WriteLine("nunit report:");
 //            System.Console.WriteLine("+++++++++++++++++++++++++");
 //            foreach (string line in XmlText)
 //            {
