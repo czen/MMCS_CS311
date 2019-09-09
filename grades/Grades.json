@@ -1,6 +1,6 @@
 {
   "GradeService": {
-      "url": "http://testgrade.sfedu.ru/",
+      "url": "http://grade.sfedu.ru/",
       "token": "39se9832fh3e78fl23ois33mhfdff34gbuj34896"
   },
   "Discipline": {
