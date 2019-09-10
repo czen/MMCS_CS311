@@ -113,7 +113,7 @@ namespace NunitReport
                     {
                         double maxGrade = (double) task["tests"][caseName]["grade"];
                         int subModuleNumber = (int) task["tests"][caseName]["subModuleNumber"];
-                        if (testcase.Attributes["result"].Value == "Success")
+                        if (testcase.Attributes["result"].Value == "Passed" || testcase.Attributes["result"].Value == "Success")
                         {
                             if (!countedGrades.ContainsKey(subModuleNumber))
                             {
