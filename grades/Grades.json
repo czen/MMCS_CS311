@@ -1,6 +1,6 @@
 {
   "GradeService": {
-      "url": "http://grade.sfedu.ru/",
+      "url": "http://grade/~dev_rating/",
       "token": "39se9832fh3e78fl23ois33mhfdff34gbuj34896"
   },
   "Discipline": {
@@ -152,11 +152,11 @@
            
            "TestLetterListParse": { 
                 "grade": 0.5,
-                "subModuleNumber": 1,
+                "subModuleNumber": 0,
             },
            "TestLetterListFail": { 
                 "grade": 0.5,
-                "subModuleNumber": 1,
+                "subModuleNumber": 0,
             },
            
            "TestDigitListParse":  { 
