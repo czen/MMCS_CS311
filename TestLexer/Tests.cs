@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using Lexer;
 
@@ -384,20 +384,19 @@ namespace TestLexer
 
             DoubleLexer l = new DoubleLexer("123.4");
             Assert.IsTrue(l.Parse(), "Не понимает 123.4");
-            Assert.AreEqual(l.ParseResult, 123.4, "Неправильно прочитал 123.4");
+            Assert.AreEqual(l.ParseResult, 123.4, 0.01, "Неправильно прочитал 123.4");
 
             l = new DoubleLexer("123");
             Assert.IsTrue(l.Parse(), "Не понимает 123");
-            Assert.AreEqual(l.ParseResult, 123, "Неправильно прочитал 123");
+            Assert.AreEqual(l.ParseResult, 123, 0.01, "Неправильно прочитал 123");
 
             l = new DoubleLexer("0.4");
             Assert.IsTrue(l.Parse(), "Не понимает 0.4");
-            Assert.AreEqual(l.ParseResult, 0.4, "Неправильно прочитал 0.4");
+            Assert.AreEqual(l.ParseResult, 0.4, 0.01, "Неправильно прочитал 0.4");
 
             l = new DoubleLexer("0.4");
             Assert.IsTrue(l.Parse(), "Не понимает 0.4");
-            Assert.AreEqual(l.ParseResult, 0.4, "Неправильно прочитал 0.4");
-
+            Assert.AreEqual(l.ParseResult, 0.4, 0.01, "Неправильно прочитал 0.4");
         }
 
         [Test]
