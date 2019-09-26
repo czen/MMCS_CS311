@@ -58,7 +58,7 @@ namespace TestDescentParser
             Assert.IsTrue(Parse(@"begin 
                                      for a:=1 to 5 do 
                                       begin 
-                                       b:=b+1 
+                                       b:=1
                                      end
                                   end"));
                                   
@@ -66,8 +66,8 @@ namespace TestDescentParser
                                      for a:=1 to 5 do 
                                       begin 
                                        for i:=1 to 6 do
-                                          c:=c-1;
-                                       b:=b+1 
+                                          c:=1;
+                                       b:=1 
                                      end
                                   end"));
             
