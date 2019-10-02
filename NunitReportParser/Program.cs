@@ -138,7 +138,7 @@ namespace NunitReport
                 if (g.Value > 0)
                 {
                     double grade = g.Value;
-                    grade *= 0.6;
+                    grade *= 0.4;
 
                     System.Console.Out.WriteLine("submodule #" + g.Key.ToString() + " = " + grade.ToString());
 
