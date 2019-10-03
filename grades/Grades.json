@@ -1,6 +1,6 @@
 {
   "GradeService": {
-      "url": "http://grade.sfedu.ru/",
+      "url": "http://grade/~dev_rating/",
       "token": "39se9832fh3e78fl23ois33mhfdff34gbuj34896"
   },
   "Discipline": {
@@ -344,12 +344,12 @@
                 "subModuleNumber": 13,
             },
            "TestIntDivMod": { 
-                "grade": 8,
+                "grade": 7,
                 "subModuleNumber": 13,
             },
            "TestIf": { 
                 "grade": 3,
-                "subModuleNumber": 13,
+                "subModuleNumber": 14,
             },
            "TestWhile": { 
                 "grade": 3,
