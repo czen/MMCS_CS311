@@ -1,7 +1,7 @@
 language: csharp
 solution: Compilers.sln
 mono:
- - latest
+ - 6.4.0
  
 install:
   - sudo apt-get install nunit-console
