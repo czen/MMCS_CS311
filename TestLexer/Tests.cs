@@ -378,25 +378,25 @@ namespace TestLexer
     [TestFixture]
     public class TestDoubleLexer
     {
+        public TestDoubleLexer()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+        }
+
         [Test]
         public void TestDoubleParse()
         {
-
             DoubleLexer l = new DoubleLexer("123.4");
             Assert.IsTrue(l.Parse(), "Не понимает 123.4");
-            Assert.AreEqual(l.ParseResult, 123.4, 0.01, "Неправильно прочитал 123.4");
+            Assert.AreEqual(123.4, l.ParseResult, 0.01, "Неправильно прочитал 123.4");
 
             l = new DoubleLexer("123");
             Assert.IsTrue(l.Parse(), "Не понимает 123");
-            Assert.AreEqual(l.ParseResult, 123, 0.01, "Неправильно прочитал 123");
+            Assert.AreEqual(123, l.ParseResult, 0.01, "Неправильно прочитал 123");
 
             l = new DoubleLexer("0.4");
             Assert.IsTrue(l.Parse(), "Не понимает 0.4");
-            Assert.AreEqual(l.ParseResult, 0.4, 0.01, "Неправильно прочитал 0.4");
-
-            l = new DoubleLexer("0.4");
-            Assert.IsTrue(l.Parse(), "Не понимает 0.4");
-            Assert.AreEqual(l.ParseResult, 0.4, 0.01, "Неправильно прочитал 0.4");
+            Assert.AreEqual(0.4, l.ParseResult, 0.01, "Неправильно прочитал 0.4");
         }
 
         [Test]
