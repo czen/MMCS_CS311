@@ -1,7 +1,9 @@
 image:
   file: .gitpod.Dockerfile
 
-
+tasks:
+  - init: nuget restore Compilers.sln
+    command: echo "Nuget packages restored"
 
 vscode:
   extensions:
