@@ -1,0 +1,131 @@
+{  
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "xbuild",
+			"args": [
+				// Ask msbuild to generate full paths for file names.
+				//"/property:GenerateFullPaths=true",
+				//"/t:build",
+				// Do not generate summary otherwise it leads to duplicate errors in Problems panel
+				//"/consoleloggerparameters:NoSummary",
+                "/p:TargetFrameworkVersion=\"v4.0\""
+			],
+			"group": "build",
+			"presentation": {
+				// Reveal the output only if unrecognized errors occur.
+				"reveal": "silent"
+			},
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test lexer",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestLexer/bin/Debug/TestLexer.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test simple lexer",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestSimpleLexer/bin/Debug/TestSimpleLexer.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test generated lexer",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestGeneratedLexer/bin/Debug/TestGeneratedLexer.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test descent parser",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestDescentParser/bin/Debug/TestDescentParser.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test generated parser",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestGeneratedParser/bin/Debug/TestGeneratedParser.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test ast parser",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestASTParser/bin/Debug/TestASTParser.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test visitors",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestVisitors/bin/Debug/TestVisitors.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		},
+        {
+			"label": "test code generator",
+			"type": "shell",
+			"command": "mono",
+			"args": [
+				"packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe",
+                " --labels=All",
+                "TestCodeGenerator/bin/Debug/TestCodeGenerator.dll"
+			],
+			"group": "test",
+			// Use the standard MS compiler pattern to detect errors, warnings and infos
+			"problemMatcher": "$msCompile"
+		}
+	]
+}

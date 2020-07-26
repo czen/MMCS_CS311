@@ -1,0 +1,12 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: nuget restore Compilers.sln
+    command: echo "Nuget packages restored"
+
+vscode:
+  extensions:
+    - patcx.vscode-nuget-gallery@0.0.20:ogiC/AHEtkvJiOuDFESvdQ==
+    - jsw.csharpextensions@1.3.5:IAR0yr75KBtC7ZW0lqOD3w==
+    - genuitecllc.codetogether@2.0.0:V/RKT60bcDRMrXqiAcuNzQ==
