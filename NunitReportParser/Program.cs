@@ -84,6 +84,10 @@ namespace NunitReport
             {
                 configPath = basePath + @"/grades/Grades.json";
             }
+            else
+            {
+                configPath = @"C:/work/CS311/MMCS_CS311/grades/Grades.json";
+            }
 
             JObject grades = JObject.Parse(File.ReadAllText(configPath));
 
@@ -166,8 +170,9 @@ namespace NunitReport
             }
             else
             {
-                userName = "czen";
+                userName = "bostanigor";
                 filePath = @"./TestResult.xml";
+                //filePath = @"C:/work/CS311/MMCS_CS311/TestResult.xml";
             }
             System.Console.WriteLine("user name: " + userName);
             System.Console.WriteLine("base path: " + basePath);
