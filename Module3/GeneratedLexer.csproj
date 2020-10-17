@@ -98,7 +98,4 @@
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
-  <PropertyGroup>
-    <PreBuildEvent>dir</PreBuildEvent>
-  </PropertyGroup>
 </Project>
