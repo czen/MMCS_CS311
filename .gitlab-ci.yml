@@ -1,0 +1,24 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: czen/ubuntu_xbuild
+  script:
+    - ./prebuild.sh
+    - ./build.sh
+    - ./run_tests.sh
+  tags:
+    - docker
+  
+grade:
+  stage: grade
+  image: czen/ubuntu_xbuild
+  script:
+    - ./prebuild.sh
+    - ./build.sh
+    - ./grade.sh
+  only:
+    - master
+  tags:
+    - docker
