@@ -12,7 +12,7 @@ test:
     - docker
   
 grade:
-  stage: grade
+  stage: test
   image: czen/ubuntu_xbuild
   script:
     - ./prebuild.sh
