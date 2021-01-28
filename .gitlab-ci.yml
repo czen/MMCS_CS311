@@ -1,24 +1,65 @@
 stages:
-  - test
+  - build
+  - simplelexer
+  - lexer
+  - generatedlexer
+  - descentparser
+  - generatedparser
+  - astparser
+  - visitors
+  - codegenerator
 
-test:
-  stage: test
+build_all:
+  stage: build
   image: czen/ubuntu_xbuild
   script:
     - ./prebuild.sh
     - ./build.sh
-    - ./run_tests.sh
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - ./NunitReportParser/bin/Debug/NunitReportParser.exe
+      - ./TestSimpleLexer/bin/Debug/TestSimpleLexer.dll
+      - ./TestLexer/bin/Debug/TestLexer.dll
+      - ./TestGeneratedLexer/bin/Debug/TestGeneratedLexer.dll
+      - ./TestDescentParser/bin/Debug/TestDescentParser.dll
+      - ./TestGeneratedParser/bin/Debug/TestGeneratedParser.dll
+      - ./TestASTParser/bin/Debug/TestASTParser.dll
+      - ./TestVisitors/bin/Debug/TestVisitors.dll
+      - ./TestCodeGenerator/bin/Debug/TestCodeGenerator.dll
+    expire_in: 1 week
+
+testsimplelexer:
+  stage: simplelexer
+  image: czen/ubuntu_xbuild
+  script:
+    - ./prebuild.sh
+    - ./build.sh
+    - mono packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --labels=ON TestSimpleLexer/bin/Debug/TestSimpleLexer.dll
+    - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR} ${TRAVIS_REPO_SLUG}
   tags:
     - docker
   
-grade:
-  stage: test
+testlexer:
+  stage: lexer
   image: czen/ubuntu_xbuild
   script:
     - ./prebuild.sh
     - ./build.sh
-    - ./grade.sh
-  only:
-    - master
+    - mono packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --labels=ON TestLexer/bin/Debug/TestLexer.dll
+    - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR} ${TRAVIS_REPO_SLUG}
   tags:
     - docker
+
+testgeneratedlexer:
+  stage: generatedlexer
+  image: czen/ubuntu_xbuild
+  script:
+    - ./prebuild.sh
+    - ./build.sh
+    - mono packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --labels=ON TestGeneratedLexer/bin/Debug/TestGeneratedLexer.dll
+    - mono NunitReportParser/bin/Debug/NunitReportParser.exe ${TRAVIS_BUILD_DIR} ${TRAVIS_REPO_SLUG}
+  tags:
+    - docker    
+  
