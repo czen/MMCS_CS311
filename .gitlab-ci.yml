@@ -30,6 +30,7 @@ build_all:
       - ./TestCodeGenerator/bin/Debug/TestCodeGenerator.dll
     expire_in: 1 week
 
+
 testsimplelexer:
   stage: simplelexer
   image: czen/ubuntu_xbuild
