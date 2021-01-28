@@ -165,7 +165,7 @@ namespace NunitReport
                 basePath = args[0];
                 filePath = basePath + @"/TestResult.xml";
                 //userName = args[1].Split('/')[0];
-                nameparts = args[1].Split('/');
+                var nameparts = args[1].Split('/');
                 string repoName = "";
                 if (nameparts.Length > 1) {
                     repoName = nameparts[1];
