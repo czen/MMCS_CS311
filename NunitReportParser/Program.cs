@@ -167,7 +167,6 @@ namespace NunitReport
                 //userName = args[1].Split('/')[0];
                 nameparts = args[1].Split('/');
                 string repoName = "";
-                string userName = "";
                 if (nameparts.Length > 1) {
                     repoName = nameparts[1];
                     userName = repoName.Substring(23, repoName.Length - 23);
